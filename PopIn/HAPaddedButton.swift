@@ -6,7 +6,6 @@
 //  Copyright © 2016 Aly LLC. All rights reserved.
 //
 
-import Foundation
 import AsyncDisplayKit
 
 class HAPaddedButton: ASButtonNode {

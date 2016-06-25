@@ -9,29 +9,106 @@
 /* Begin PBXBuildFile section */
 		2FF8F416E60F3DD5478679A4 /* Pods_PopIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 026A7B17F0E52BC5F5E3DB02 /* Pods_PopIn.framework */; };
 		3403D5A81CD6F760001577BB /* CreateUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3403D5A71CD6F760001577BB /* CreateUsernameViewController.swift */; };
-		3410157D1CD46D3300F3DEEC /* SigninViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3410157C1CD46D3300F3DEEC /* SigninViewController.swift */; };
 		34186B7B1CD7E9AA00F9189E /* CreateUserNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B7A1CD7E9AA00F9189E /* CreateUserNode.swift */; };
 		34186B7D1CD8166E00F9189E /* HAPaddedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B7C1CD8166E00F9189E /* HAPaddedButton.swift */; };
 		34186B7F1CD8401600F9189E /* HAPaddedEditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B7E1CD8401600F9189E /* HAPaddedEditableText.swift */; };
+		34186B841CD993C100F9189E /* HACircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B831CD993C100F9189E /* HACircleButton.swift */; };
+		34186B861CD9BD2F00F9189E /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 34186B851CD9BD2F00F9189E /* circle.png */; };
+		34186B881CD9E7EE00F9189E /* HATabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B871CD9E7EE00F9189E /* HATabBarController.swift */; };
+		34186B8B1CD9E8EB00F9189E /* HAFollowingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B8A1CD9E8EB00F9189E /* HAFollowingVC.swift */; };
+		34186B8D1CD9E8FB00F9189E /* HADiscoveryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B8C1CD9E8FB00F9189E /* HADiscoveryVC.swift */; };
+		34186B8F1CD9E90E00F9189E /* HAChitChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B8E1CD9E90E00F9189E /* HAChitChatVC.swift */; };
+		34186B911CD9E91F00F9189E /* HASettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B901CD9E91F00F9189E /* HASettingsVC.swift */; };
+		34186B931CD9F80000F9189E /* home-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 34186B921CD9F80000F9189E /* home-7.png */; };
+		34186B951CD9F82300F9189E /* pin-map-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 34186B941CD9F82300F9189E /* pin-map-7.png */; };
+		34186B971CD9F83200F9189E /* search-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 34186B961CD9F83200F9189E /* search-7.png */; };
+		34186B991CD9F83A00F9189E /* star-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 34186B981CD9F83A00F9189E /* star-7.png */; };
+		34186BE21CDC97BB00F9189E /* HADiscoveryNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186BE11CDC97BB00F9189E /* HADiscoveryNode.swift */; };
+		34186BF61CDD784800F9189E /* FullPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186BF51CDD784800F9189E /* FullPage.swift */; };
+		34186C091CDF24CB00F9189E /* POPViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C081CDF24CB00F9189E /* POPViewController.swift */; };
+		34186C0C1CDF638700F9189E /* POPTransformViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C0B1CDF638700F9189E /* POPTransformViewController.swift */; };
+		34186C0E1CE168B100F9189E /* PageNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C0D1CE168B100F9189E /* PageNavigation.swift */; };
+		34186C141CE25D5D00F9189E /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C131CE25D5D00F9189E /* PageViewController.swift */; };
+		34186C1E1CE7809A00F9189E /* AlbumModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C1D1CE7809A00F9189E /* AlbumModel.swift */; };
+		34186C211CE7823D00F9189E /* TESTFollowFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C201CE7823D00F9189E /* TESTFollowFeedModel.swift */; };
+		34186C231CE7850D00F9189E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C221CE7850D00F9189E /* Constants.swift */; };
+		34186C251CE7892600F9189E /* FollowFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C241CE7892600F9189E /* FollowFeedModel.swift */; };
+		34186C271CE78D7C00F9189E /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C261CE78D7C00F9189E /* UserModel.swift */; };
+		34186C291CE78D9500F9189E /* GroupAlbumModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C281CE78D9500F9189E /* GroupAlbumModel.swift */; };
+		34186C2D1CE78E5300F9189E /* FriendAlbumModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C2C1CE78E5300F9189E /* FriendAlbumModel.swift */; };
+		34186C321CE7AE4C00F9189E /* AlbumCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C311CE7AE4C00F9189E /* AlbumCellNode.swift */; };
+		34186C341CE7B49B00F9189E /* PhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186C331CE7B49B00F9189E /* PhotoModel.swift */; };
+		34186C3A1CE8E3D800F9189E /* boy4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34186C361CE8E3D800F9189E /* boy4.jpg */; };
+		34186C3B1CE8E3D800F9189E /* boy2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34186C371CE8E3D800F9189E /* boy2.jpg */; };
+		34186C3C1CE8E3D800F9189E /* girl2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34186C381CE8E3D800F9189E /* girl2.jpg */; };
+		34186C3D1CE8E3D800F9189E /* boy3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34186C391CE8E3D800F9189E /* boy3.jpg */; };
+		34186C401CE8E3E200F9189E /* girl1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34186C3E1CE8E3E200F9189E /* girl1.jpg */; };
+		34186C411CE8E3E200F9189E /* boy1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34186C3F1CE8E3E200F9189E /* boy1.jpg */; };
+		341893DD1CF565FD00F6AC15 /* TESTFullAppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341893DC1CF565FD00F6AC15 /* TESTFullAppModel.swift */; };
+		343DC19A1D0FE15A00A52381 /* AlbumUploadBottomButtonDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1991D0FE15A00A52381 /* AlbumUploadBottomButtonDisplay.swift */; };
+		343DC19E1D0FFA1400A52381 /* NewAlbumVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC19D1D0FFA1400A52381 /* NewAlbumVC.swift */; };
+		343DC1A01D0FFE3500A52381 /* NewAlbumDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC19F1D0FFE3500A52381 /* NewAlbumDisplayView.swift */; };
+		343DC1A21D0FFE4B00A52381 /* NewAlbumBottomButtonDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1A11D0FFE4B00A52381 /* NewAlbumBottomButtonDisplay.swift */; };
+		343DC1A61D10332B00A52381 /* HATitleCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1A51D10332B00A52381 /* HATitleCN.swift */; };
+		343DC1A81D10352C00A52381 /* HASearchCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1A71D10352C00A52381 /* HASearchCN.swift */; };
+		343DC1AA1D1039A200A52381 /* HASearchFriendCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1A91D1039A200A52381 /* HASearchFriendCN.swift */; };
+		343DC1AC1D1154AF00A52381 /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1AB1D1154AF00A52381 /* HATextField.swift */; };
+		343DC1AE1D115F7400A52381 /* Debuggin Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1AD1D115F7400A52381 /* Debuggin Notes.swift */; };
+		343DC1B01D11633D00A52381 /* HASearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1AF1D11633D00A52381 /* HASearchBar.swift */; };
+		343DC1B61D12091B00A52381 /* HASearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1B51D12091B00A52381 /* HASearchTextField.swift */; };
+		343DC1B81D1311B500A52381 /* HAFollowingTableNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1B71D1311B500A52381 /* HAFollowingTableNode.swift */; };
+		343DC1BA1D1311C700A52381 /* HAFollowingVC2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1B91D1311C700A52381 /* HAFollowingVC2.swift */; };
+		343DC1BC1D134B3C00A52381 /* HAPaddedTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1BB1D134B3C00A52381 /* HAPaddedTextNode.swift */; };
+		343DC1BF1D14699300A52381 /* HAFillTitlePaddedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1BE1D14699300A52381 /* HAFillTitlePaddedButton.swift */; };
+		343DC1C11D1470EB00A52381 /* HAButtonDisableOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1C01D1470EB00A52381 /* HAButtonDisableOverlay.swift */; };
+		343DC1C61D14B79000A52381 /* HorizontalScrollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1C51D14B79000A52381 /* HorizontalScrollCell.swift */; };
+		343DC1C81D14B79C00A52381 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1C71D14B79C00A52381 /* ImageCell.swift */; };
+		343DC1CA1D17046200A52381 /* HACompletionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1C91D17046200A52381 /* HACompletionBlock.swift */; };
+		343DC1CC1D17C31C00A52381 /* FakeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1CB1D17C31C00A52381 /* FakeVC.swift */; };
+		343DC1CE1D17C76600A52381 /* FakeDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1CD1D17C76600A52381 /* FakeDisplay.swift */; };
+		343DC1D01D18490F00A52381 /* HASearchControllerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1CF1D18490F00A52381 /* HASearchControllerNode.swift */; };
+		343DC1D31D1875F700A52381 /* HASearchControllerCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1D21D1875F700A52381 /* HASearchControllerCN.swift */; };
+		343DC1D51D1A66B600A52381 /* HAActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1D41D1A66B600A52381 /* HAActivityIndicatorView.swift */; };
+		343DC1D71D1B5DC200A52381 /* HASettingsRealVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1D61D1B5DC200A52381 /* HASettingsRealVC.swift */; };
+		343DC1DA1D1B63A200A52381 /* HASettingCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1D91D1B63A200A52381 /* HASettingCN.swift */; };
+		343DC1DE1D1B9BC500A52381 /* connect-arrow-right-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 343DC1DD1D1B9BC500A52381 /* connect-arrow-right-7.png */; };
+		343DC1E01D1C7BDE00A52381 /* HASimpleUserDetailCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DC1DF1D1C7BDE00A52381 /* HASimpleUserDetailCN.swift */; };
 		345999941CD027790057997B /* WelcomeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345999931CD027790057997B /* WelcomeNode.swift */; };
+		3464D9691D0B3A36007BCCA7 /* HABasicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3464D9681D0B3A36007BCCA7 /* HABasicViewController.swift */; };
+		3464D96B1D0B48BE007BCCA7 /* AlbumUploadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3464D96A1D0B48BE007BCCA7 /* AlbumUploadVC.swift */; };
+		3464D9711D0C652C007BCCA7 /* INCameraTopNavCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3464D9701D0C652C007BCCA7 /* INCameraTopNavCN.swift */; };
+		3466CAA51D0EFF1E00796B99 /* AlbumUploadDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3466CAA41D0EFF1E00796B99 /* AlbumUploadDisplayView.swift */; };
+		3477DBFA1D03CFE9009ADB67 /* HANotificationCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DBF91D03CFE9009ADB67 /* HANotificationCellNode.swift */; };
+		3477DC001D056EEA009ADB67 /* HAAlbumDisplayVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DBFF1D056EEA009ADB67 /* HAAlbumDisplayVC.swift */; };
+		3477DC021D05704E009ADB67 /* HAAlbumDisplayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DC011D05704E009ADB67 /* HAAlbumDisplayNode.swift */; };
+		3477DC041D057059009ADB67 /* HAAlbumDisplayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DC031D057059009ADB67 /* HAAlbumDisplayModel.swift */; };
+		3477DC0A1D0578E9009ADB67 /* fake1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3477DC051D0578E9009ADB67 /* fake1.jpg */; };
+		3477DC0B1D0578E9009ADB67 /* fake2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3477DC061D0578E9009ADB67 /* fake2.jpg */; };
+		3477DC0C1D0578E9009ADB67 /* fake3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3477DC071D0578E9009ADB67 /* fake3.jpg */; };
+		3477DC0D1D0578E9009ADB67 /* fake4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3477DC081D0578E9009ADB67 /* fake4.jpg */; };
+		3477DC0E1D0578E9009ADB67 /* fake5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3477DC091D0578E9009ADB67 /* fake5.jpg */; };
+		3477DC111D057983009ADB67 /* MediaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DC101D057983009ADB67 /* MediaModel.swift */; };
+		3477DC171D084626009ADB67 /* HABasicUserDetailsCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DC161D084626009ADB67 /* HABasicUserDetailsCN.swift */; };
+		3477DC191D0877E6009ADB67 /* MyAlbumCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DC181D0877E6009ADB67 /* MyAlbumCN.swift */; };
+		3477DC1B1D087C6F009ADB67 /* dot-more-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 3477DC1A1D087C6F009ADB67 /* dot-more-7.png */; };
+		3477DC1F1D08847A009ADB67 /* HAEditUsersVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DC1E1D08847A009ADB67 /* HAEditUsersVC.swift */; };
+		3477DC211D088498009ADB67 /* HAEditAlbumVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3477DC201D088498009ADB67 /* HAEditAlbumVC.swift */; };
 		34828D651CCEC78600707A1C /* WindowWithStatusBarUnderlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34828D641CCEC78600707A1C /* WindowWithStatusBarUnderlay.swift */; };
 		34828D671CCEF42D00707A1C /* SigninNodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34828D661CCEF42D00707A1C /* SigninNodeController.swift */; };
 		34828D691CCF09DC00707A1C /* mad-men-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 34828D681CCF09DC00707A1C /* mad-men-1.png */; };
 		34828D6B1CCFFCF100707A1C /* SignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34828D6A1CCFFCF100707A1C /* SignInButton.swift */; };
+		348999111D1CED5E00077B6C /* HAContactUsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999101D1CED5E00077B6C /* HAContactUsVC.swift */; };
+		348999131D1DB44C00077B6C /* HAContactFormDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999121D1DB44C00077B6C /* HAContactFormDisplay.swift */; };
+		348999191D1DF6F400077B6C /* HANotificationsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999181D1DF6F400077B6C /* HANotificationsVC.swift */; };
+		3489991B1D1DFE1200077B6C /* HASwitchNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489991A1D1DFE1200077B6C /* HASwitchNode.swift */; };
+		3489991D1D1DFFB000077B6C /* HASwitchCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489991C1D1DFFB000077B6C /* HASwitchCN.swift */; };
+		348999211D1E225400077B6C /* HAEditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999201D1E225400077B6C /* HAEditProfileVC.swift */; };
+		348999231D1E386200077B6C /* HAEditableProfileCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999221D1E386200077B6C /* HAEditableProfileCN.swift */; };
 		348CE44E1CCC445B00BCB276 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348CE44D1CCC445B00BCB276 /* AppDelegate.swift */; };
 		348CE4551CCC445B00BCB276 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4541CCC445B00BCB276 /* Assets.xcassets */; };
 		348CE4581CCC445B00BCB276 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4561CCC445B00BCB276 /* LaunchScreen.storyboard */; };
-		348CE4901CCCF42E00BCB276 /* PhotoCellNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE48D1CCCF42E00BCB276 /* PhotoCellNode.m */; };
-		348CE4911CCCF42E00BCB276 /* CommentsNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE48F1CCCF42E00BCB276 /* CommentsNode.m */; };
-		348CE4A21CCCF43A00BCB276 /* PhotoFeedModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE4931CCCF43A00BCB276 /* PhotoFeedModel.m */; };
-		348CE4A31CCCF43A00BCB276 /* PhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE4951CCCF43A00BCB276 /* PhotoModel.m */; };
-		348CE4A41CCCF43A00BCB276 /* ImageURLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE4971CCCF43A00BCB276 /* ImageURLModel.m */; };
-		348CE4A51CCCF43A00BCB276 /* CommentFeedModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE4991CCCF43A00BCB276 /* CommentFeedModel.m */; };
-		348CE4A61CCCF43A00BCB276 /* CommentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE49B1CCCF43A00BCB276 /* CommentModel.m */; };
-		348CE4A71CCCF43A00BCB276 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE49D1CCCF43A00BCB276 /* UserModel.m */; };
 		348CE4A81CCCF43A00BCB276 /* LocationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE49F1CCCF43A00BCB276 /* LocationModel.m */; };
 		348CE4A91CCCF43A00BCB276 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CE4A11CCCF43A00BCB276 /* Utilities.m */; };
-		348CE4AB1CCCFA6C00BCB276 /* PhotoFeedNodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348CE4AA1CCCFA6C00BCB276 /* PhotoFeedNodeController.swift */; };
 		348CE4B81CCD5CBA00BCB276 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4AD1CCD5CBA00BCB276 /* camera.png */; };
 		348CE4B91CCD5CBA00BCB276 /* camera@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4AE1CCD5CBA00BCB276 /* camera@2x.png */; };
 		348CE4BA1CCD5CBA00BCB276 /* cameraRaw.png in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4AF1CCD5CBA00BCB276 /* cameraRaw.png */; };
@@ -43,47 +120,191 @@
 		348CE4C01CCD5CBA00BCB276 /* profile.png in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4B51CCD5CBA00BCB276 /* profile.png */; };
 		348CE4C11CCD5CBA00BCB276 /* profile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4B61CCD5CBA00BCB276 /* profile@2x.png */; };
 		348CE4C21CCD5CBA00BCB276 /* profileRaw.png in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4B71CCD5CBA00BCB276 /* profileRaw.png */; };
+		34C280191D0019D200D5610A /* HAProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C280181D0019D200D5610A /* HAProfileVC.swift */; };
+		34C6E20C1CF7AB1F002167A1 /* HACameraPagerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E20B1CF7AB1F002167A1 /* HACameraPagerVC.swift */; };
+		34C6E20F1CF7AD68002167A1 /* HACameraNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E20E1CF7AD68002167A1 /* HACameraNavigation.swift */; };
+		34C6E2111CF7B58B002167A1 /* HACameraNavigationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2101CF7B58B002167A1 /* HACameraNavigationNode.swift */; };
+		34C6E2141CF7B77F002167A1 /* HACameraPagerControllerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2131CF7B77F002167A1 /* HACameraPagerControllerNode.swift */; };
+		34C6E2161CF7B893002167A1 /* HACameraViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2151CF7B893002167A1 /* HACameraViewNode.swift */; };
+		34C6E2181CF7CF5B002167A1 /* HACameraControlPageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2171CF7CF5B002167A1 /* HACameraControlPageNode.swift */; };
+		34C6E21B1CF7D0A7002167A1 /* HACameraControlsPagerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E21A1CF7D0A7002167A1 /* HACameraControlsPagerVC.swift */; };
+		34C6E21D1CF7D216002167A1 /* HACameraLibraryControlNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E21C1CF7D216002167A1 /* HACameraLibraryControlNode.swift */; };
+		34C6E2221CF7FEAE002167A1 /* HACameraVC2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2211CF7FEAE002167A1 /* HACameraVC2.swift */; };
+		34C6E2241CF7FFEE002167A1 /* HACameraNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2231CF7FFEE002167A1 /* HACameraNavigationController.swift */; };
+		34C6E2261CF82057002167A1 /* HAFullCameraNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2251CF82057002167A1 /* HAFullCameraNode.swift */; };
+		34C6E2281CF8242B002167A1 /* HAFullCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2271CF8242B002167A1 /* HAFullCameraVC.swift */; };
+		34C6E22C1CFABBB0002167A1 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E22B1CFABBB0002167A1 /* CameraVC.swift */; };
+		34C6E22E1CFABBBB002167A1 /* CameraNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E22D1CFABBBB002167A1 /* CameraNode.swift */; };
+		34C6E2321CFAC3D0002167A1 /* CameraContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2311CFAC3D0002167A1 /* CameraContainerView.swift */; };
+		34C6E2341CFAC798002167A1 /* CameraControlsCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2331CFAC798002167A1 /* CameraControlsCellNode.swift */; };
+		34C6E2371CFC30E3002167A1 /* INCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2361CFC30E3002167A1 /* INCameraVC.swift */; };
+		34C6E2391CFC30EC002167A1 /* INFullCameraDisplayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2381CFC30EC002167A1 /* INFullCameraDisplayNode.swift */; };
+		34C6E23B1CFC30F8002167A1 /* INCameraContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E23A1CFC30F8002167A1 /* INCameraContainerView.swift */; };
+		34C6E23D1CFC3105002167A1 /* INCameraControlsCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E23C1CFC3105002167A1 /* INCameraControlsCellNode.swift */; };
+		34C6E23F1CFC4A16002167A1 /* INCameraTableNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E23E1CFC4A16002167A1 /* INCameraTableNode.swift */; };
+		34C6E2411CFFA1D5002167A1 /* INCameraNextCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2401CFFA1D5002167A1 /* INCameraNextCellNode.swift */; };
+		34C6E2431CFFA3F6002167A1 /* HAGlobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2421CFFA3F5002167A1 /* HAGlobal.swift */; };
+		34C79F8E1CF3833300F5AA35 /* UserProfilePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C79F8D1CF3833300F5AA35 /* UserProfilePageVC.swift */; };
+		34C79F921CF39A5500F5AA35 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C79F911CF39A5500F5AA35 /* ProfileModel.swift */; };
+		34C79F961CF3C06700F5AA35 /* BasicDetailCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C79F951CF3C06700F5AA35 /* BasicDetailCellNode.swift */; };
+		34C79F991CF3C13300F5AA35 /* SocialStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C79F981CF3C13300F5AA35 /* SocialStatus.swift */; };
+		34C79F9B1CF3C18300F5AA35 /* AboutCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C79F9A1CF3C18300F5AA35 /* AboutCellNode.swift */; };
+		34C79F9D1CF3C19300F5AA35 /* PublicAlbumsCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C79F9C1CF3C19300F5AA35 /* PublicAlbumsCellNode.swift */; };
+		34C79FA01CF4F75E00F5AA35 /* circle-tick-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 34C79F9F1CF4F75E00F5AA35 /* circle-tick-7.png */; };
+		34C79FA31CF50D2400F5AA35 /* HAGlobalNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C79FA21CF50D2400F5AA35 /* HAGlobalNode.swift */; };
+		34D314F21CEE948C008678BC /* HACameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D314F11CEE948C008678BC /* HACameraVC.swift */; };
+		34D314F41CEE9835008678BC /* HASearchTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D314F31CEE9835008678BC /* HASearchTableVC.swift */; };
+		34D314F71CEF7726008678BC /* TESTSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D314F61CEF7726008678BC /* TESTSearchModel.swift */; };
+		34D3150B1CEF8333008678BC /* ben.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D314F81CEF8333008678BC /* ben.jpeg */; };
+		34D3150C1CEF8333008678BC /* Betty.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D314F91CEF8333008678BC /* Betty.jpeg */; };
+		34D3150D1CEF8333008678BC /* claire.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D314FA1CEF8333008678BC /* claire.jpeg */; };
+		34D3150E1CEF8333008678BC /* desmond.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D314FB1CEF8333008678BC /* desmond.jpeg */; };
+		34D3150F1CEF8333008678BC /* don.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D314FC1CEF8333008678BC /* don.jpeg */; };
+		34D315101CEF8333008678BC /* Harry Crane.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D314FD1CEF8333008678BC /* Harry Crane.jpeg */; };
+		34D315111CEF8333008678BC /* jack.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D314FE1CEF8333008678BC /* jack.jpeg */; };
+		34D315121CEF8333008678BC /* james.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D314FF1CEF8333008678BC /* james.jpeg */; };
+		34D315131CEF8333008678BC /* kate.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315001CEF8333008678BC /* kate.jpeg */; };
+		34D315141CEF8333008678BC /* ken.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315011CEF8333008678BC /* ken.jpeg */; };
+		34D315151CEF8333008678BC /* Lane Pryce.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315021CEF8333008678BC /* Lane Pryce.jpeg */; };
+		34D315161CEF8333008678BC /* peggy.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315031CEF8333008678BC /* peggy.jpeg */; };
+		34D315171CEF8333008678BC /* Pete.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315041CEF8333008678BC /* Pete.jpeg */; };
+		34D315181CEF8333008678BC /* red.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315051CEF8333008678BC /* red.jpeg */; };
+		34D315191CEF8333008678BC /* Roger Sterling.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315061CEF8333008678BC /* Roger Sterling.jpg */; };
+		34D3151A1CEF8333008678BC /* Sally.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315071CEF8333008678BC /* Sally.jpg */; };
+		34D3151B1CEF8333008678BC /* Stan.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315081CEF8333008678BC /* Stan.jpeg */; };
+		34D3151C1CEF8333008678BC /* ted.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D315091CEF8333008678BC /* ted.jpeg */; };
+		34D3151D1CEF8333008678BC /* Trudy.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 34D3150A1CEF8333008678BC /* Trudy.jpeg */; };
+		34D315201CF0F0CD008678BC /* UserSearchTableCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D3151F1CF0F0CD008678BC /* UserSearchTableCN.swift */; };
+		34D4EDB31CEA7254005E6E16 /* album3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34D4EDAE1CEA7254005E6E16 /* album3.jpg */; };
+		34D4EDB51CEA7254005E6E16 /* album1.png in Resources */ = {isa = PBXBuildFile; fileRef = 34D4EDB01CEA7254005E6E16 /* album1.png */; };
+		34D4EDB61CEA7254005E6E16 /* album5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34D4EDB11CEA7254005E6E16 /* album5.jpg */; };
+		34D4EDB71CEA7254005E6E16 /* album2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34D4EDB21CEA7254005E6E16 /* album2.jpg */; };
+		34D4EDB91CEA7280005E6E16 /* album4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 34D4EDB81CEA7280005E6E16 /* album4.jpg */; };
+		34D804201CF769EC005B96D1 /* HAFollowingPagerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D8041F1CF769EC005B96D1 /* HAFollowingPagerVC.swift */; };
+		34D804231CF76C45005B96D1 /* HAAlbumMediaShareVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D804221CF76C45005B96D1 /* HAAlbumMediaShareVC.swift */; };
+		34E581CD1CECBE97006DF688 /* SimpleMessageCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E581CC1CECBE97006DF688 /* SimpleMessageCellNode.swift */; };
+		34EBB7601D015F22009ADB97 /* BasicProfileCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB75F1D015F22009ADB97 /* BasicProfileCellNode.swift */; };
+		34EBB7621D01625C009ADB97 /* HADoubleLabelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB7611D01625C009ADB97 /* HADoubleLabelButton.swift */; };
+		34EBB7641D016277009ADB97 /* HABasicNodeLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB7631D016277009ADB97 /* HABasicNodeLayout.swift */; };
+		34EBB7661D0173FD009ADB97 /* ProfilePagerControlCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB7651D0173FD009ADB97 /* ProfilePagerControlCellNode.swift */; };
+		34EBB7681D01DEE4009ADB97 /* HAProfilePagerCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB7671D01DEE4009ADB97 /* HAProfilePagerCellNode.swift */; };
+		34EBB76B1D01E4AD009ADB97 /* HAProfilePagerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB76A1D01E4AD009ADB97 /* HAProfilePagerNode.swift */; };
+		34EBB76D1D01E92B009ADB97 /* HAProfileTablePagerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB76C1D01E92B009ADB97 /* HAProfileTablePagerNode.swift */; };
+		34EBB7701D0212F3009ADB97 /* ASTaggedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB76F1D0212F3009ADB97 /* ASTaggedButton.swift */; };
+		34EBB7731D02DB4D009ADB97 /* HANotificationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB7721D02DB4D009ADB97 /* HANotificationVC.swift */; };
+		34EBB7761D02DFD0009ADB97 /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB7751D02DFD0009ADB97 /* NotificationModel.swift */; };
+		34EBB7781D02E340009ADB97 /* HATESTNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBB7771D02E340009ADB97 /* HATESTNotification.swift */; };
+		34EBB77A1D02ED27009ADB97 /* bell-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 34EBB7791D02ED27009ADB97 /* bell-7.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		026A7B17F0E52BC5F5E3DB02 /* Pods_PopIn.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PopIn.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3403D5A71CD6F760001577BB /* CreateUsernameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateUsernameViewController.swift; sourceTree = "<group>"; };
-		3410157C1CD46D3300F3DEEC /* SigninViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SigninViewController.swift; sourceTree = "<group>"; };
 		34186B7A1CD7E9AA00F9189E /* CreateUserNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateUserNode.swift; sourceTree = "<group>"; };
 		34186B7C1CD8166E00F9189E /* HAPaddedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPaddedButton.swift; sourceTree = "<group>"; };
 		34186B7E1CD8401600F9189E /* HAPaddedEditableText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPaddedEditableText.swift; sourceTree = "<group>"; };
+		34186B831CD993C100F9189E /* HACircleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACircleButton.swift; sourceTree = "<group>"; };
+		34186B851CD9BD2F00F9189E /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
+		34186B871CD9E7EE00F9189E /* HATabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HATabBarController.swift; sourceTree = "<group>"; };
+		34186B8A1CD9E8EB00F9189E /* HAFollowingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFollowingVC.swift; sourceTree = "<group>"; };
+		34186B8C1CD9E8FB00F9189E /* HADiscoveryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HADiscoveryVC.swift; sourceTree = "<group>"; };
+		34186B8E1CD9E90E00F9189E /* HAChitChatVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAChitChatVC.swift; sourceTree = "<group>"; };
+		34186B901CD9E91F00F9189E /* HASettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASettingsVC.swift; sourceTree = "<group>"; };
+		34186B921CD9F80000F9189E /* home-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "home-7.png"; sourceTree = "<group>"; };
+		34186B941CD9F82300F9189E /* pin-map-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-map-7.png"; sourceTree = "<group>"; };
+		34186B961CD9F83200F9189E /* search-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "search-7.png"; sourceTree = "<group>"; };
+		34186B981CD9F83A00F9189E /* star-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-7.png"; sourceTree = "<group>"; };
+		34186BE11CDC97BB00F9189E /* HADiscoveryNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HADiscoveryNode.swift; sourceTree = "<group>"; };
+		34186BF51CDD784800F9189E /* FullPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullPage.swift; sourceTree = "<group>"; };
+		34186C081CDF24CB00F9189E /* POPViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = POPViewController.swift; sourceTree = "<group>"; };
+		34186C0B1CDF638700F9189E /* POPTransformViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = POPTransformViewController.swift; sourceTree = "<group>"; };
+		34186C0D1CE168B100F9189E /* PageNavigation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageNavigation.swift; sourceTree = "<group>"; };
+		34186C131CE25D5D00F9189E /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		34186C1D1CE7809A00F9189E /* AlbumModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumModel.swift; sourceTree = "<group>"; };
+		34186C201CE7823D00F9189E /* TESTFollowFeedModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TESTFollowFeedModel.swift; sourceTree = "<group>"; };
+		34186C221CE7850D00F9189E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		34186C241CE7892600F9189E /* FollowFeedModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowFeedModel.swift; sourceTree = "<group>"; };
+		34186C261CE78D7C00F9189E /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		34186C281CE78D9500F9189E /* GroupAlbumModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupAlbumModel.swift; sourceTree = "<group>"; };
+		34186C2C1CE78E5300F9189E /* FriendAlbumModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendAlbumModel.swift; sourceTree = "<group>"; };
+		34186C301CE7AD3B00F9189E /* PopIn_Bridging_Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopIn_Bridging_Header.h; sourceTree = "<group>"; };
+		34186C311CE7AE4C00F9189E /* AlbumCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCellNode.swift; sourceTree = "<group>"; };
+		34186C331CE7B49B00F9189E /* PhotoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoModel.swift; sourceTree = "<group>"; };
+		34186C361CE8E3D800F9189E /* boy4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = boy4.jpg; sourceTree = "<group>"; };
+		34186C371CE8E3D800F9189E /* boy2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = boy2.jpg; sourceTree = "<group>"; };
+		34186C381CE8E3D800F9189E /* girl2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = girl2.jpg; sourceTree = "<group>"; };
+		34186C391CE8E3D800F9189E /* boy3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = boy3.jpg; sourceTree = "<group>"; };
+		34186C3E1CE8E3E200F9189E /* girl1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = girl1.jpg; sourceTree = "<group>"; };
+		34186C3F1CE8E3E200F9189E /* boy1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = boy1.jpg; sourceTree = "<group>"; };
+		341893DC1CF565FD00F6AC15 /* TESTFullAppModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TESTFullAppModel.swift; path = ../TESTFullAppModel.swift; sourceTree = "<group>"; };
+		343DC1991D0FE15A00A52381 /* AlbumUploadBottomButtonDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumUploadBottomButtonDisplay.swift; sourceTree = "<group>"; };
+		343DC19D1D0FFA1400A52381 /* NewAlbumVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewAlbumVC.swift; sourceTree = "<group>"; };
+		343DC19F1D0FFE3500A52381 /* NewAlbumDisplayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewAlbumDisplayView.swift; sourceTree = "<group>"; };
+		343DC1A11D0FFE4B00A52381 /* NewAlbumBottomButtonDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewAlbumBottomButtonDisplay.swift; sourceTree = "<group>"; };
+		343DC1A51D10332B00A52381 /* HATitleCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HATitleCN.swift; sourceTree = "<group>"; };
+		343DC1A71D10352C00A52381 /* HASearchCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASearchCN.swift; sourceTree = "<group>"; };
+		343DC1A91D1039A200A52381 /* HASearchFriendCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASearchFriendCN.swift; sourceTree = "<group>"; };
+		343DC1AB1D1154AF00A52381 /* HATextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
+		343DC1AD1D115F7400A52381 /* Debuggin Notes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Debuggin Notes.swift"; sourceTree = "<group>"; };
+		343DC1AF1D11633D00A52381 /* HASearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASearchBar.swift; sourceTree = "<group>"; };
+		343DC1B51D12091B00A52381 /* HASearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASearchTextField.swift; sourceTree = "<group>"; };
+		343DC1B71D1311B500A52381 /* HAFollowingTableNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFollowingTableNode.swift; sourceTree = "<group>"; };
+		343DC1B91D1311C700A52381 /* HAFollowingVC2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFollowingVC2.swift; sourceTree = "<group>"; };
+		343DC1BB1D134B3C00A52381 /* HAPaddedTextNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPaddedTextNode.swift; sourceTree = "<group>"; };
+		343DC1BE1D14699300A52381 /* HAFillTitlePaddedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFillTitlePaddedButton.swift; sourceTree = "<group>"; };
+		343DC1C01D1470EB00A52381 /* HAButtonDisableOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAButtonDisableOverlay.swift; sourceTree = "<group>"; };
+		343DC1C51D14B79000A52381 /* HorizontalScrollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalScrollCell.swift; sourceTree = "<group>"; };
+		343DC1C71D14B79C00A52381 /* ImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		343DC1C91D17046200A52381 /* HACompletionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACompletionBlock.swift; sourceTree = "<group>"; };
+		343DC1CB1D17C31C00A52381 /* FakeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeVC.swift; sourceTree = "<group>"; };
+		343DC1CD1D17C76600A52381 /* FakeDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDisplay.swift; sourceTree = "<group>"; };
+		343DC1CF1D18490F00A52381 /* HASearchControllerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASearchControllerNode.swift; sourceTree = "<group>"; };
+		343DC1D21D1875F700A52381 /* HASearchControllerCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASearchControllerCN.swift; sourceTree = "<group>"; };
+		343DC1D41D1A66B600A52381 /* HAActivityIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAActivityIndicatorView.swift; sourceTree = "<group>"; };
+		343DC1D61D1B5DC200A52381 /* HASettingsRealVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASettingsRealVC.swift; sourceTree = "<group>"; };
+		343DC1D91D1B63A200A52381 /* HASettingCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASettingCN.swift; sourceTree = "<group>"; };
+		343DC1DD1D1B9BC500A52381 /* connect-arrow-right-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "connect-arrow-right-7.png"; sourceTree = "<group>"; };
+		343DC1DF1D1C7BDE00A52381 /* HASimpleUserDetailCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASimpleUserDetailCN.swift; sourceTree = "<group>"; };
 		345999931CD027790057997B /* WelcomeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeNode.swift; sourceTree = "<group>"; };
+		3464D9681D0B3A36007BCCA7 /* HABasicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HABasicViewController.swift; sourceTree = "<group>"; };
+		3464D96A1D0B48BE007BCCA7 /* AlbumUploadVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumUploadVC.swift; sourceTree = "<group>"; };
+		3464D9701D0C652C007BCCA7 /* INCameraTopNavCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INCameraTopNavCN.swift; sourceTree = "<group>"; };
+		3466CAA41D0EFF1E00796B99 /* AlbumUploadDisplayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumUploadDisplayView.swift; sourceTree = "<group>"; };
+		3477DBF91D03CFE9009ADB67 /* HANotificationCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HANotificationCellNode.swift; sourceTree = "<group>"; };
+		3477DBFF1D056EEA009ADB67 /* HAAlbumDisplayVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAlbumDisplayVC.swift; sourceTree = "<group>"; };
+		3477DC011D05704E009ADB67 /* HAAlbumDisplayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAlbumDisplayNode.swift; sourceTree = "<group>"; };
+		3477DC031D057059009ADB67 /* HAAlbumDisplayModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAlbumDisplayModel.swift; sourceTree = "<group>"; };
+		3477DC051D0578E9009ADB67 /* fake1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fake1.jpg; sourceTree = "<group>"; };
+		3477DC061D0578E9009ADB67 /* fake2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fake2.jpg; sourceTree = "<group>"; };
+		3477DC071D0578E9009ADB67 /* fake3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fake3.jpg; sourceTree = "<group>"; };
+		3477DC081D0578E9009ADB67 /* fake4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fake4.jpg; sourceTree = "<group>"; };
+		3477DC091D0578E9009ADB67 /* fake5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fake5.jpg; sourceTree = "<group>"; };
+		3477DC101D057983009ADB67 /* MediaModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaModel.swift; sourceTree = "<group>"; };
+		3477DC161D084626009ADB67 /* HABasicUserDetailsCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HABasicUserDetailsCN.swift; sourceTree = "<group>"; };
+		3477DC181D0877E6009ADB67 /* MyAlbumCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyAlbumCN.swift; sourceTree = "<group>"; };
+		3477DC1A1D087C6F009ADB67 /* dot-more-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dot-more-7.png"; sourceTree = "<group>"; };
+		3477DC1E1D08847A009ADB67 /* HAEditUsersVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAEditUsersVC.swift; sourceTree = "<group>"; };
+		3477DC201D088498009ADB67 /* HAEditAlbumVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAEditAlbumVC.swift; sourceTree = "<group>"; };
 		34828D641CCEC78600707A1C /* WindowWithStatusBarUnderlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WindowWithStatusBarUnderlay.swift; sourceTree = "<group>"; };
 		34828D661CCEF42D00707A1C /* SigninNodeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SigninNodeController.swift; sourceTree = "<group>"; };
 		34828D681CCF09DC00707A1C /* mad-men-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mad-men-1.png"; sourceTree = "<group>"; };
 		34828D6A1CCFFCF100707A1C /* SignInButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInButton.swift; sourceTree = "<group>"; };
+		348999101D1CED5E00077B6C /* HAContactUsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAContactUsVC.swift; sourceTree = "<group>"; };
+		348999121D1DB44C00077B6C /* HAContactFormDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAContactFormDisplay.swift; sourceTree = "<group>"; };
+		348999181D1DF6F400077B6C /* HANotificationsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HANotificationsVC.swift; sourceTree = "<group>"; };
+		3489991A1D1DFE1200077B6C /* HASwitchNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASwitchNode.swift; sourceTree = "<group>"; };
+		3489991C1D1DFFB000077B6C /* HASwitchCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASwitchCN.swift; sourceTree = "<group>"; };
+		348999201D1E225400077B6C /* HAEditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAEditProfileVC.swift; sourceTree = "<group>"; };
+		348999221D1E386200077B6C /* HAEditableProfileCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAEditableProfileCN.swift; sourceTree = "<group>"; };
 		348CE44A1CCC445B00BCB276 /* PopIn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopIn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		348CE44D1CCC445B00BCB276 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		348CE4541CCC445B00BCB276 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		348CE4571CCC445B00BCB276 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		348CE4591CCC445B00BCB276 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		348CE45F1CCC465000BCB276 /* PopIn-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PopIn-Bridging-Header.h"; sourceTree = "<group>"; };
-		348CE48C1CCCF42E00BCB276 /* PhotoCellNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoCellNode.h; sourceTree = "<group>"; };
-		348CE48D1CCCF42E00BCB276 /* PhotoCellNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoCellNode.m; sourceTree = "<group>"; };
-		348CE48E1CCCF42E00BCB276 /* CommentsNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsNode.h; sourceTree = "<group>"; };
-		348CE48F1CCCF42E00BCB276 /* CommentsNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsNode.m; sourceTree = "<group>"; };
-		348CE4921CCCF43A00BCB276 /* PhotoFeedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFeedModel.h; sourceTree = "<group>"; };
-		348CE4931CCCF43A00BCB276 /* PhotoFeedModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFeedModel.m; sourceTree = "<group>"; };
-		348CE4941CCCF43A00BCB276 /* PhotoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoModel.h; sourceTree = "<group>"; };
-		348CE4951CCCF43A00BCB276 /* PhotoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoModel.m; sourceTree = "<group>"; };
-		348CE4961CCCF43A00BCB276 /* ImageURLModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageURLModel.h; sourceTree = "<group>"; };
-		348CE4971CCCF43A00BCB276 /* ImageURLModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageURLModel.m; sourceTree = "<group>"; };
-		348CE4981CCCF43A00BCB276 /* CommentFeedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentFeedModel.h; sourceTree = "<group>"; };
-		348CE4991CCCF43A00BCB276 /* CommentFeedModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentFeedModel.m; sourceTree = "<group>"; };
-		348CE49A1CCCF43A00BCB276 /* CommentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentModel.h; sourceTree = "<group>"; };
-		348CE49B1CCCF43A00BCB276 /* CommentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentModel.m; sourceTree = "<group>"; };
-		348CE49C1CCCF43A00BCB276 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
-		348CE49D1CCCF43A00BCB276 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		348CE49E1CCCF43A00BCB276 /* LocationModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationModel.h; sourceTree = "<group>"; };
 		348CE49F1CCCF43A00BCB276 /* LocationModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationModel.m; sourceTree = "<group>"; };
 		348CE4A01CCCF43A00BCB276 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		348CE4A11CCCF43A00BCB276 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
-		348CE4AA1CCCFA6C00BCB276 /* PhotoFeedNodeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoFeedNodeController.swift; path = Controller/PhotoFeedNodeController.swift; sourceTree = "<group>"; };
 		348CE4AD1CCD5CBA00BCB276 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
 		348CE4AE1CCD5CBA00BCB276 /* camera@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera@2x.png"; sourceTree = "<group>"; };
 		348CE4AF1CCD5CBA00BCB276 /* cameraRaw.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraRaw.png; sourceTree = "<group>"; };
@@ -95,6 +316,81 @@
 		348CE4B51CCD5CBA00BCB276 /* profile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profile.png; sourceTree = "<group>"; };
 		348CE4B61CCD5CBA00BCB276 /* profile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile@2x.png"; sourceTree = "<group>"; };
 		348CE4B71CCD5CBA00BCB276 /* profileRaw.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileRaw.png; sourceTree = "<group>"; };
+		34C280181D0019D200D5610A /* HAProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAProfileVC.swift; sourceTree = "<group>"; };
+		34C6E20B1CF7AB1F002167A1 /* HACameraPagerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraPagerVC.swift; sourceTree = "<group>"; };
+		34C6E20E1CF7AD68002167A1 /* HACameraNavigation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraNavigation.swift; sourceTree = "<group>"; };
+		34C6E2101CF7B58B002167A1 /* HACameraNavigationNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraNavigationNode.swift; sourceTree = "<group>"; };
+		34C6E2131CF7B77F002167A1 /* HACameraPagerControllerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraPagerControllerNode.swift; sourceTree = "<group>"; };
+		34C6E2151CF7B893002167A1 /* HACameraViewNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraViewNode.swift; sourceTree = "<group>"; };
+		34C6E2171CF7CF5B002167A1 /* HACameraControlPageNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraControlPageNode.swift; sourceTree = "<group>"; };
+		34C6E21A1CF7D0A7002167A1 /* HACameraControlsPagerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraControlsPagerVC.swift; sourceTree = "<group>"; };
+		34C6E21C1CF7D216002167A1 /* HACameraLibraryControlNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraLibraryControlNode.swift; sourceTree = "<group>"; };
+		34C6E2211CF7FEAE002167A1 /* HACameraVC2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraVC2.swift; sourceTree = "<group>"; };
+		34C6E2231CF7FFEE002167A1 /* HACameraNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraNavigationController.swift; sourceTree = "<group>"; };
+		34C6E2251CF82057002167A1 /* HAFullCameraNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFullCameraNode.swift; sourceTree = "<group>"; };
+		34C6E2271CF8242B002167A1 /* HAFullCameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFullCameraVC.swift; sourceTree = "<group>"; };
+		34C6E22B1CFABBB0002167A1 /* CameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
+		34C6E22D1CFABBBB002167A1 /* CameraNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraNode.swift; sourceTree = "<group>"; };
+		34C6E2311CFAC3D0002167A1 /* CameraContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraContainerView.swift; sourceTree = "<group>"; };
+		34C6E2331CFAC798002167A1 /* CameraControlsCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraControlsCellNode.swift; sourceTree = "<group>"; };
+		34C6E2361CFC30E3002167A1 /* INCameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INCameraVC.swift; sourceTree = "<group>"; };
+		34C6E2381CFC30EC002167A1 /* INFullCameraDisplayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INFullCameraDisplayNode.swift; sourceTree = "<group>"; };
+		34C6E23A1CFC30F8002167A1 /* INCameraContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INCameraContainerView.swift; sourceTree = "<group>"; };
+		34C6E23C1CFC3105002167A1 /* INCameraControlsCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INCameraControlsCellNode.swift; sourceTree = "<group>"; };
+		34C6E23E1CFC4A16002167A1 /* INCameraTableNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INCameraTableNode.swift; sourceTree = "<group>"; };
+		34C6E2401CFFA1D5002167A1 /* INCameraNextCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INCameraNextCellNode.swift; sourceTree = "<group>"; };
+		34C6E2421CFFA3F5002167A1 /* HAGlobal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HAGlobal.swift; path = ../HAGlobal.swift; sourceTree = "<group>"; };
+		34C79F8D1CF3833300F5AA35 /* UserProfilePageVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfilePageVC.swift; sourceTree = "<group>"; };
+		34C79F911CF39A5500F5AA35 /* ProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		34C79F951CF3C06700F5AA35 /* BasicDetailCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicDetailCellNode.swift; sourceTree = "<group>"; };
+		34C79F981CF3C13300F5AA35 /* SocialStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialStatus.swift; sourceTree = "<group>"; };
+		34C79F9A1CF3C18300F5AA35 /* AboutCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutCellNode.swift; sourceTree = "<group>"; };
+		34C79F9C1CF3C19300F5AA35 /* PublicAlbumsCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicAlbumsCellNode.swift; sourceTree = "<group>"; };
+		34C79F9F1CF4F75E00F5AA35 /* circle-tick-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "circle-tick-7.png"; sourceTree = "<group>"; };
+		34C79FA21CF50D2400F5AA35 /* HAGlobalNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HAGlobalNode.swift; path = ../HAGlobalNode.swift; sourceTree = "<group>"; };
+		34D314F11CEE948C008678BC /* HACameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACameraVC.swift; sourceTree = "<group>"; };
+		34D314F31CEE9835008678BC /* HASearchTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASearchTableVC.swift; sourceTree = "<group>"; };
+		34D314F61CEF7726008678BC /* TESTSearchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TESTSearchModel.swift; sourceTree = "<group>"; };
+		34D314F81CEF8333008678BC /* ben.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ben.jpeg; sourceTree = "<group>"; };
+		34D314F91CEF8333008678BC /* Betty.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Betty.jpeg; sourceTree = "<group>"; };
+		34D314FA1CEF8333008678BC /* claire.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = claire.jpeg; sourceTree = "<group>"; };
+		34D314FB1CEF8333008678BC /* desmond.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = desmond.jpeg; sourceTree = "<group>"; };
+		34D314FC1CEF8333008678BC /* don.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = don.jpeg; sourceTree = "<group>"; };
+		34D314FD1CEF8333008678BC /* Harry Crane.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Harry Crane.jpeg"; sourceTree = "<group>"; };
+		34D314FE1CEF8333008678BC /* jack.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = jack.jpeg; sourceTree = "<group>"; };
+		34D314FF1CEF8333008678BC /* james.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = james.jpeg; sourceTree = "<group>"; };
+		34D315001CEF8333008678BC /* kate.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = kate.jpeg; sourceTree = "<group>"; };
+		34D315011CEF8333008678BC /* ken.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ken.jpeg; sourceTree = "<group>"; };
+		34D315021CEF8333008678BC /* Lane Pryce.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Lane Pryce.jpeg"; sourceTree = "<group>"; };
+		34D315031CEF8333008678BC /* peggy.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = peggy.jpeg; sourceTree = "<group>"; };
+		34D315041CEF8333008678BC /* Pete.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pete.jpeg; sourceTree = "<group>"; };
+		34D315051CEF8333008678BC /* red.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = red.jpeg; sourceTree = "<group>"; };
+		34D315061CEF8333008678BC /* Roger Sterling.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Roger Sterling.jpg"; sourceTree = "<group>"; };
+		34D315071CEF8333008678BC /* Sally.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Sally.jpg; sourceTree = "<group>"; };
+		34D315081CEF8333008678BC /* Stan.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Stan.jpeg; sourceTree = "<group>"; };
+		34D315091CEF8333008678BC /* ted.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ted.jpeg; sourceTree = "<group>"; };
+		34D3150A1CEF8333008678BC /* Trudy.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Trudy.jpeg; sourceTree = "<group>"; };
+		34D3151F1CF0F0CD008678BC /* UserSearchTableCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSearchTableCN.swift; sourceTree = "<group>"; };
+		34D4EDAE1CEA7254005E6E16 /* album3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = album3.jpg; sourceTree = "<group>"; };
+		34D4EDB01CEA7254005E6E16 /* album1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = album1.png; sourceTree = "<group>"; };
+		34D4EDB11CEA7254005E6E16 /* album5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = album5.jpg; sourceTree = "<group>"; };
+		34D4EDB21CEA7254005E6E16 /* album2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = album2.jpg; sourceTree = "<group>"; };
+		34D4EDB81CEA7280005E6E16 /* album4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = album4.jpg; sourceTree = "<group>"; };
+		34D8041F1CF769EC005B96D1 /* HAFollowingPagerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HAFollowingPagerVC.swift; path = PopIn/HAFollowingPagerVC.swift; sourceTree = "<group>"; };
+		34D804221CF76C45005B96D1 /* HAAlbumMediaShareVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAlbumMediaShareVC.swift; sourceTree = "<group>"; };
+		34E581CC1CECBE97006DF688 /* SimpleMessageCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleMessageCellNode.swift; sourceTree = "<group>"; };
+		34EBB75F1D015F22009ADB97 /* BasicProfileCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicProfileCellNode.swift; sourceTree = "<group>"; };
+		34EBB7611D01625C009ADB97 /* HADoubleLabelButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HADoubleLabelButton.swift; sourceTree = "<group>"; };
+		34EBB7631D016277009ADB97 /* HABasicNodeLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HABasicNodeLayout.swift; sourceTree = "<group>"; };
+		34EBB7651D0173FD009ADB97 /* ProfilePagerControlCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePagerControlCellNode.swift; sourceTree = "<group>"; };
+		34EBB7671D01DEE4009ADB97 /* HAProfilePagerCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAProfilePagerCellNode.swift; sourceTree = "<group>"; };
+		34EBB76A1D01E4AD009ADB97 /* HAProfilePagerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAProfilePagerNode.swift; sourceTree = "<group>"; };
+		34EBB76C1D01E92B009ADB97 /* HAProfileTablePagerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAProfileTablePagerNode.swift; sourceTree = "<group>"; };
+		34EBB76F1D0212F3009ADB97 /* ASTaggedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTaggedButton.swift; sourceTree = "<group>"; };
+		34EBB7721D02DB4D009ADB97 /* HANotificationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HANotificationVC.swift; sourceTree = "<group>"; };
+		34EBB7751D02DFD0009ADB97 /* NotificationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationModel.swift; sourceTree = "<group>"; };
+		34EBB7771D02E340009ADB97 /* HATESTNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HATESTNotification.swift; sourceTree = "<group>"; };
+		34EBB7791D02ED27009ADB97 /* bell-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bell-7.png"; sourceTree = "<group>"; };
 		42B6B0AF99524418FE2199FB /* Pods-PopIn.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PopIn.release.xcconfig"; path = "Pods/Target Support Files/Pods-PopIn/Pods-PopIn.release.xcconfig"; sourceTree = "<group>"; };
 		58799F29B11EFF766F6F20DC /* Pods-PopIn.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PopIn.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PopIn/Pods-PopIn.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,6 +410,7 @@
 		3403D5A61CD6F706001577BB /* CreateUsernameController */ = {
 			isa = PBXGroup;
 			children = (
+				34186B851CD9BD2F00F9189E /* circle.png */,
 				3403D5A71CD6F760001577BB /* CreateUsernameViewController.swift */,
 				34186B791CD7E96000F9189E /* SubNodes */,
 			);
@@ -143,15 +440,458 @@
 			isa = PBXGroup;
 			children = (
 				34186B7A1CD7E9AA00F9189E /* CreateUserNode.swift */,
-				34186B7C1CD8166E00F9189E /* HAPaddedButton.swift */,
-				34186B7E1CD8401600F9189E /* HAPaddedEditableText.swift */,
 			);
 			name = SubNodes;
+			sourceTree = "<group>";
+		};
+		34186B801CD8800B00F9189E /* PagerNode with buttons */ = {
+			isa = PBXGroup;
+			children = (
+				34186BE01CDC975900F9189E /* ViewNodes */,
+				34186B891CD9E84E00F9189E /* ViewControllers */,
+			);
+			name = "PagerNode with buttons";
+			path = PopIn;
+			sourceTree = "<group>";
+		};
+		34186B891CD9E84E00F9189E /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				34186B8C1CD9E8FB00F9189E /* HADiscoveryVC.swift */,
+				34186B901CD9E91F00F9189E /* HASettingsVC.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		34186B9B1CDAADF100F9189E /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				34EBB7791D02ED27009ADB97 /* bell-7.png */,
+				34186B921CD9F80000F9189E /* home-7.png */,
+				34186B981CD9F83A00F9189E /* star-7.png */,
+				34186B941CD9F82300F9189E /* pin-map-7.png */,
+				34186B961CD9F83200F9189E /* search-7.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		34186BE01CDC975900F9189E /* ViewNodes */ = {
+			isa = PBXGroup;
+			children = (
+				34186BE11CDC97BB00F9189E /* HADiscoveryNode.swift */,
+			);
+			name = ViewNodes;
+			sourceTree = "<group>";
+		};
+		34186BF31CDD781E00F9189E /* Search with Pager - Test */ = {
+			isa = PBXGroup;
+			children = (
+				34186B8E1CD9E90E00F9189E /* HAChitChatVC.swift */,
+				34186C0D1CE168B100F9189E /* PageNavigation.swift */,
+				34186C131CE25D5D00F9189E /* PageViewController.swift */,
+				34186BF51CDD784800F9189E /* FullPage.swift */,
+			);
+			name = "Search with Pager - Test";
+			sourceTree = "<group>";
+		};
+		34186C0A1CDF635600F9189E /* POP Animation */ = {
+			isa = PBXGroup;
+			children = (
+				34186C081CDF24CB00F9189E /* POPViewController.swift */,
+				34186C0B1CDF638700F9189E /* POPTransformViewController.swift */,
+			);
+			name = "POP Animation";
+			path = PopIn;
+			sourceTree = "<group>";
+		};
+		34186C191CE77FF900F9189E /* Following Page */ = {
+			isa = PBXGroup;
+			children = (
+				34186C1F1CE7820900F9189E /* Test Data */,
+				34186C1A1CE7800800F9189E /* Controller */,
+				34186C1C1CE7802E00F9189E /* Model */,
+				34186C1B1CE7801900F9189E /* View */,
+			);
+			name = "Following Page";
+			sourceTree = "<group>";
+		};
+		34186C1A1CE7800800F9189E /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				34186B8A1CD9E8EB00F9189E /* HAFollowingVC.swift */,
+				34D804221CF76C45005B96D1 /* HAAlbumMediaShareVC.swift */,
+				343DC1B91D1311C700A52381 /* HAFollowingVC2.swift */,
+				343DC1B71D1311B500A52381 /* HAFollowingTableNode.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		34186C1B1CE7801900F9189E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				34186C311CE7AE4C00F9189E /* AlbumCellNode.swift */,
+				34E581CC1CECBE97006DF688 /* SimpleMessageCellNode.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		34186C1C1CE7802E00F9189E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				34186C241CE7892600F9189E /* FollowFeedModel.swift */,
+				34186C1D1CE7809A00F9189E /* AlbumModel.swift */,
+				3477DC101D057983009ADB67 /* MediaModel.swift */,
+				34186C2C1CE78E5300F9189E /* FriendAlbumModel.swift */,
+				34186C281CE78D9500F9189E /* GroupAlbumModel.swift */,
+				34186C261CE78D7C00F9189E /* UserModel.swift */,
+				34186C331CE7B49B00F9189E /* PhotoModel.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		34186C1F1CE7820900F9189E /* Test Data */ = {
+			isa = PBXGroup;
+			children = (
+				34186C201CE7823D00F9189E /* TESTFollowFeedModel.swift */,
+			);
+			name = "Test Data";
+			sourceTree = "<group>";
+		};
+		34186C351CE8E3C600F9189E /* App Test Images */ = {
+			isa = PBXGroup;
+			children = (
+				34186C431CEA4BEE00F9189E /* Album Cover */,
+				34186C421CEA4BDD00F9189E /* User Avatars */,
+			);
+			name = "App Test Images";
+			sourceTree = "<group>";
+		};
+		34186C421CEA4BDD00F9189E /* User Avatars */ = {
+			isa = PBXGroup;
+			children = (
+				34D314F81CEF8333008678BC /* ben.jpeg */,
+				34D314F91CEF8333008678BC /* Betty.jpeg */,
+				34D314FA1CEF8333008678BC /* claire.jpeg */,
+				34D314FB1CEF8333008678BC /* desmond.jpeg */,
+				34D314FC1CEF8333008678BC /* don.jpeg */,
+				34D314FD1CEF8333008678BC /* Harry Crane.jpeg */,
+				34D314FE1CEF8333008678BC /* jack.jpeg */,
+				34D314FF1CEF8333008678BC /* james.jpeg */,
+				34D315001CEF8333008678BC /* kate.jpeg */,
+				34D315011CEF8333008678BC /* ken.jpeg */,
+				34D315021CEF8333008678BC /* Lane Pryce.jpeg */,
+				34D315031CEF8333008678BC /* peggy.jpeg */,
+				34D315041CEF8333008678BC /* Pete.jpeg */,
+				34D315051CEF8333008678BC /* red.jpeg */,
+				34D315061CEF8333008678BC /* Roger Sterling.jpg */,
+				34D315071CEF8333008678BC /* Sally.jpg */,
+				34D315081CEF8333008678BC /* Stan.jpeg */,
+				34D315091CEF8333008678BC /* ted.jpeg */,
+				34D3150A1CEF8333008678BC /* Trudy.jpeg */,
+				34186C3E1CE8E3E200F9189E /* girl1.jpg */,
+				34186C381CE8E3D800F9189E /* girl2.jpg */,
+				34186C3F1CE8E3E200F9189E /* boy1.jpg */,
+				34186C371CE8E3D800F9189E /* boy2.jpg */,
+				34186C391CE8E3D800F9189E /* boy3.jpg */,
+				34186C361CE8E3D800F9189E /* boy4.jpg */,
+			);
+			name = "User Avatars";
+			sourceTree = "<group>";
+		};
+		34186C431CEA4BEE00F9189E /* Album Cover */ = {
+			isa = PBXGroup;
+			children = (
+				34D4EDB01CEA7254005E6E16 /* album1.png */,
+				34D4EDB21CEA7254005E6E16 /* album2.jpg */,
+				34D4EDAE1CEA7254005E6E16 /* album3.jpg */,
+				34D4EDB81CEA7280005E6E16 /* album4.jpg */,
+				34D4EDB11CEA7254005E6E16 /* album5.jpg */,
+			);
+			name = "Album Cover";
+			sourceTree = "<group>";
+		};
+		343DC19C1D0FF9FD00A52381 /* Create New Album */ = {
+			isa = PBXGroup;
+			children = (
+				343DC1D11D18497D00A52381 /* Testing table, searchbar, textfield */,
+				343DC1C21D14B45200A52381 /* Move Things */,
+				343DC1A41D10330E00A52381 /* Table Cells */,
+				343DC1A31D10330000A52381 /* View */,
+				343DC19D1D0FFA1400A52381 /* NewAlbumVC.swift */,
+				343DC19F1D0FFE3500A52381 /* NewAlbumDisplayView.swift */,
+				343DC1A11D0FFE4B00A52381 /* NewAlbumBottomButtonDisplay.swift */,
+				343DC1BE1D14699300A52381 /* HAFillTitlePaddedButton.swift */,
+				343DC1C01D1470EB00A52381 /* HAButtonDisableOverlay.swift */,
+			);
+			name = "Create New Album";
+			sourceTree = "<group>";
+		};
+		343DC1A31D10330000A52381 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		343DC1A41D10330E00A52381 /* Table Cells */ = {
+			isa = PBXGroup;
+			children = (
+				343DC1A51D10332B00A52381 /* HATitleCN.swift */,
+				343DC1B51D12091B00A52381 /* HASearchTextField.swift */,
+				343DC1A91D1039A200A52381 /* HASearchFriendCN.swift */,
+				343DC1A71D10352C00A52381 /* HASearchCN.swift */,
+				343DC1D41D1A66B600A52381 /* HAActivityIndicatorView.swift */,
+			);
+			name = "Table Cells";
+			sourceTree = "<group>";
+		};
+		343DC1BD1D145C9600A52381 /* Pick Albums */ = {
+			isa = PBXGroup;
+			children = (
+				3466CAA71D0EFF2700796B99 /* Controller */,
+				3466CAA61D0EFF2300796B99 /* View */,
+			);
+			name = "Pick Albums";
+			sourceTree = "<group>";
+		};
+		343DC1C21D14B45200A52381 /* Move Things */ = {
+			isa = PBXGroup;
+			children = (
+				343DC1C51D14B79000A52381 /* HorizontalScrollCell.swift */,
+				343DC1C71D14B79C00A52381 /* ImageCell.swift */,
+			);
+			name = "Move Things";
+			sourceTree = "<group>";
+		};
+		343DC1D11D18497D00A52381 /* Testing table, searchbar, textfield */ = {
+			isa = PBXGroup;
+			children = (
+				343DC1CB1D17C31C00A52381 /* FakeVC.swift */,
+				343DC1CD1D17C76600A52381 /* FakeDisplay.swift */,
+				343DC1D21D1875F700A52381 /* HASearchControllerCN.swift */,
+				343DC1CF1D18490F00A52381 /* HASearchControllerNode.swift */,
+			);
+			name = "Testing table, searchbar, textfield";
+			sourceTree = "<group>";
+		};
+		343DC1D81D1B638A00A52381 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				3489990F1D1CECBB00077B6C /* ChildrenVC */,
+				343DC1D61D1B5DC200A52381 /* HASettingsRealVC.swift */,
+				343DC1D91D1B63A200A52381 /* HASettingCN.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		3464D9671D0B395C007BCCA7 /* Select Album to Upload to */ = {
+			isa = PBXGroup;
+			children = (
+				343DC19C1D0FF9FD00A52381 /* Create New Album */,
+				343DC1BD1D145C9600A52381 /* Pick Albums */,
+			);
+			name = "Select Album to Upload to";
+			sourceTree = "<group>";
+		};
+		3464D96C1D0BEE94007BCCA7 /* Bottom Cell Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				34C6E23C1CFC3105002167A1 /* INCameraControlsCellNode.swift */,
+				34C6E2401CFFA1D5002167A1 /* INCameraNextCellNode.swift */,
+			);
+			name = "Bottom Cell Nodes";
+			sourceTree = "<group>";
+		};
+		3464D96F1D0C650B007BCCA7 /* Top Cell Node */ = {
+			isa = PBXGroup;
+			children = (
+				3464D9701D0C652C007BCCA7 /* INCameraTopNavCN.swift */,
+			);
+			name = "Top Cell Node";
+			sourceTree = "<group>";
+		};
+		3466CAA61D0EFF2300796B99 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3466CAA41D0EFF1E00796B99 /* AlbumUploadDisplayView.swift */,
+				343DC1991D0FE15A00A52381 /* AlbumUploadBottomButtonDisplay.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		3466CAA71D0EFF2700796B99 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				3464D96A1D0B48BE007BCCA7 /* AlbumUploadVC.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		3477DBF81D03CFCD009ADB67 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3477DBF91D03CFE9009ADB67 /* HANotificationCellNode.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		3477DBFB1D040152009ADB67 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				34EBB7751D02DFD0009ADB97 /* NotificationModel.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		3477DBFC1D0408E4009ADB67 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				34EBB7721D02DB4D009ADB97 /* HANotificationVC.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		3477DBFD1D0408EF009ADB67 /* Test Data */ = {
+			isa = PBXGroup;
+			children = (
+				34EBB7771D02E340009ADB97 /* HATESTNotification.swift */,
+			);
+			name = "Test Data";
+			sourceTree = "<group>";
+		};
+		3477DBFE1D056EA9009ADB67 /* Watch Album Display */ = {
+			isa = PBXGroup;
+			children = (
+				3477DC0F1D0578ED009ADB67 /* Test images */,
+				3477DBFF1D056EEA009ADB67 /* HAAlbumDisplayVC.swift */,
+				3477DC011D05704E009ADB67 /* HAAlbumDisplayNode.swift */,
+				3477DC031D057059009ADB67 /* HAAlbumDisplayModel.swift */,
+			);
+			name = "Watch Album Display";
+			sourceTree = "<group>";
+		};
+		3477DC0F1D0578ED009ADB67 /* Test images */ = {
+			isa = PBXGroup;
+			children = (
+				3477DC051D0578E9009ADB67 /* fake1.jpg */,
+				3477DC061D0578E9009ADB67 /* fake2.jpg */,
+				3477DC071D0578E9009ADB67 /* fake3.jpg */,
+				3477DC081D0578E9009ADB67 /* fake4.jpg */,
+				3477DC091D0578E9009ADB67 /* fake5.jpg */,
+			);
+			name = "Test images";
+			sourceTree = "<group>";
+		};
+		3477DC121D082B05009ADB67 /* Example Code */ = {
+			isa = PBXGroup;
+			children = (
+				34186B801CD8800B00F9189E /* PagerNode with buttons */,
+				34186C0A1CDF635600F9189E /* POP Animation */,
+				34D8041F1CF769EC005B96D1 /* HAFollowingPagerVC.swift */,
+				34EBB7631D016277009ADB97 /* HABasicNodeLayout.swift */,
+				3464D9681D0B3A36007BCCA7 /* HABasicViewController.swift */,
+				343DC1C91D17046200A52381 /* HACompletionBlock.swift */,
+			);
+			name = "Example Code";
+			path = ..;
+			sourceTree = "<group>";
+		};
+		3477DC131D083106009ADB67 /* Camera Controller */ = {
+			isa = PBXGroup;
+			children = (
+				34C6E2361CFC30E3002167A1 /* INCameraVC.swift */,
+				34C6E23E1CFC4A16002167A1 /* INCameraTableNode.swift */,
+				34C6E2381CFC30EC002167A1 /* INFullCameraDisplayNode.swift */,
+				3464D96F1D0C650B007BCCA7 /* Top Cell Node */,
+				34C280161CFFC37C00D5610A /* Camera Image View */,
+				3464D96C1D0BEE94007BCCA7 /* Bottom Cell Nodes */,
+			);
+			name = "Camera Controller";
+			sourceTree = "<group>";
+		};
+		3477DC141D083C3B009ADB67 /* Old cameras */ = {
+			isa = PBXGroup;
+			children = (
+				34C6E22A1CFAA7AD002167A1 /* Instagram like */,
+				34C6E2291CFAA737002167A1 /* Best Camera */,
+				34C6E2201CF7FEA4002167A1 /* Camera 2 */,
+				34C6E2191CF7D07E002167A1 /* Camera Controllers */,
+				34C6E2121CF7B6B7002167A1 /* Camera Nodes */,
+			);
+			name = "Old cameras";
+			sourceTree = "<group>";
+		};
+		3477DC151D083CA9009ADB67 /* Constants and Supporting files */ = {
+			isa = PBXGroup;
+			children = (
+				34828D641CCEC78600707A1C /* WindowWithStatusBarUnderlay.swift */,
+				348CE44D1CCC445B00BCB276 /* AppDelegate.swift */,
+				34C6E2421CFFA3F5002167A1 /* HAGlobal.swift */,
+				34186C221CE7850D00F9189E /* Constants.swift */,
+				34C79FA21CF50D2400F5AA35 /* HAGlobalNode.swift */,
+				341893DC1CF565FD00F6AC15 /* TESTFullAppModel.swift */,
+				343DC1AD1D115F7400A52381 /* Debuggin Notes.swift */,
+			);
+			name = "Constants and Supporting files";
+			sourceTree = "<group>";
+		};
+		3477DC1C1D088452009ADB67 /* Edit Users */ = {
+			isa = PBXGroup;
+			children = (
+				3477DC1E1D08847A009ADB67 /* HAEditUsersVC.swift */,
+			);
+			name = "Edit Users";
+			sourceTree = "<group>";
+		};
+		3477DC1D1D08845A009ADB67 /* Edit Media Content */ = {
+			isa = PBXGroup;
+			children = (
+				3477DC201D088498009ADB67 /* HAEditAlbumVC.swift */,
+			);
+			name = "Edit Media Content";
+			sourceTree = "<group>";
+		};
+		3489990F1D1CECBB00077B6C /* ChildrenVC */ = {
+			isa = PBXGroup;
+			children = (
+				348999171D1DF6E400077B6C /* Notifications */,
+				348999161D1DF6D300077B6C /* Contact Us */,
+			);
+			name = ChildrenVC;
+			sourceTree = "<group>";
+		};
+		348999161D1DF6D300077B6C /* Contact Us */ = {
+			isa = PBXGroup;
+			children = (
+				348999101D1CED5E00077B6C /* HAContactUsVC.swift */,
+				348999121D1DB44C00077B6C /* HAContactFormDisplay.swift */,
+			);
+			name = "Contact Us";
+			sourceTree = "<group>";
+		};
+		348999171D1DF6E400077B6C /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				348999181D1DF6F400077B6C /* HANotificationsVC.swift */,
+				3489991C1D1DFFB000077B6C /* HASwitchCN.swift */,
+				3489991A1D1DFE1200077B6C /* HASwitchNode.swift */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
+		3489991F1D1E216F00077B6C /* Edit Profile */ = {
+			isa = PBXGroup;
+			children = (
+				348999201D1E225400077B6C /* HAEditProfileVC.swift */,
+				348999221D1E386200077B6C /* HAEditableProfileCN.swift */,
+			);
+			name = "Edit Profile";
 			sourceTree = "<group>";
 		};
 		348CE4411CCC445B00BCB276 = {
 			isa = PBXGroup;
 			children = (
+				34186C301CE7AD3B00F9189E /* PopIn_Bridging_Header.h */,
 				348CE44C1CCC445B00BCB276 /* PopIn */,
 				348CE44B1CCC445B00BCB276 /* Products */,
 				871A6B2A45551FE867B69F7F /* Pods */,
@@ -170,12 +910,27 @@
 		348CE44C1CCC445B00BCB276 /* PopIn */ = {
 			isa = PBXGroup;
 			children = (
-				348CE45F1CCC465000BCB276 /* PopIn-Bridging-Header.h */,
-				348CE44D1CCC445B00BCB276 /* AppDelegate.swift */,
-				34828D641CCEC78600707A1C /* WindowWithStatusBarUnderlay.swift */,
+				3477DC151D083CA9009ADB67 /* Constants and Supporting files */,
+				34EBB76E1D0212B0009ADB97 /* ASNode Extras */,
+				3477DC121D082B05009ADB67 /* Example Code */,
+				348DF0371CEE479A0032B7A5 /* Tabbar Controller */,
+				34EBB7711D02DA91009ADB97 /* Notification Table */,
+				343DC1D81D1B638A00A52381 /* Settings */,
+				34C280171D00182600D5610A /* Profiles */,
+				34C79F9E1CF4F74B00F5AA35 /* iconBeast Images */,
+				34186C351CE8E3C600F9189E /* App Test Images */,
+				34C79F8C1CF380C500F5AA35 /* User Profile Page */,
+				348DF0361CEE47600032B7A5 /* Search Page */,
+				3477DBFE1D056EA9009ADB67 /* Watch Album Display */,
+				3464D9671D0B395C007BCCA7 /* Select Album to Upload to */,
+				3477DC131D083106009ADB67 /* Camera Controller */,
+				34186C191CE77FF900F9189E /* Following Page */,
+				3477DC141D083C3B009ADB67 /* Old cameras */,
+				3403D5A61CD6F706001577BB /* CreateUsernameController */,
+				3403D5A91CD70129001577BB /* SigninController */,
+				34186BF31CDD781E00F9189E /* Search with Pager - Test */,
 				348CE4851CCCF3E500BCB276 /* ASDK */,
 				348CE4541CCC445B00BCB276 /* Assets.xcassets */,
-				348CE4AC1CCD5CBA00BCB276 /* tabBarIcons */,
 				348CE4561CCC445B00BCB276 /* LaunchScreen.storyboard */,
 				348CE4591CCC445B00BCB276 /* Info.plist */,
 			);
@@ -185,8 +940,6 @@
 		348CE4851CCCF3E500BCB276 /* ASDK */ = {
 			isa = PBXGroup;
 			children = (
-				348CE4881CCCF3FC00BCB276 /* Controller */,
-				348CE4871CCCF3F500BCB276 /* View */,
 				348CE4861CCCF3EF00BCB276 /* Model */,
 			);
 			name = ASDK;
@@ -195,46 +948,12 @@
 		348CE4861CCCF3EF00BCB276 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				348CE4921CCCF43A00BCB276 /* PhotoFeedModel.h */,
-				348CE4931CCCF43A00BCB276 /* PhotoFeedModel.m */,
-				348CE4941CCCF43A00BCB276 /* PhotoModel.h */,
-				348CE4951CCCF43A00BCB276 /* PhotoModel.m */,
-				348CE4961CCCF43A00BCB276 /* ImageURLModel.h */,
-				348CE4971CCCF43A00BCB276 /* ImageURLModel.m */,
-				348CE4981CCCF43A00BCB276 /* CommentFeedModel.h */,
-				348CE4991CCCF43A00BCB276 /* CommentFeedModel.m */,
-				348CE49A1CCCF43A00BCB276 /* CommentModel.h */,
-				348CE49B1CCCF43A00BCB276 /* CommentModel.m */,
-				348CE49C1CCCF43A00BCB276 /* UserModel.h */,
-				348CE49D1CCCF43A00BCB276 /* UserModel.m */,
 				348CE49E1CCCF43A00BCB276 /* LocationModel.h */,
 				348CE49F1CCCF43A00BCB276 /* LocationModel.m */,
 				348CE4A01CCCF43A00BCB276 /* Utilities.h */,
 				348CE4A11CCCF43A00BCB276 /* Utilities.m */,
 			);
 			name = Model;
-			sourceTree = "<group>";
-		};
-		348CE4871CCCF3F500BCB276 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				348CE48C1CCCF42E00BCB276 /* PhotoCellNode.h */,
-				348CE48D1CCCF42E00BCB276 /* PhotoCellNode.m */,
-				348CE48E1CCCF42E00BCB276 /* CommentsNode.h */,
-				348CE48F1CCCF42E00BCB276 /* CommentsNode.m */,
-			);
-			name = View;
-			sourceTree = "<group>";
-		};
-		348CE4881CCCF3FC00BCB276 /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				3403D5A91CD70129001577BB /* SigninController */,
-				3403D5A61CD6F706001577BB /* CreateUsernameController */,
-				3410157C1CD46D3300F3DEEC /* SigninViewController.swift */,
-				348CE4AA1CCCFA6C00BCB276 /* PhotoFeedNodeController.swift */,
-			);
-			name = Controller;
 			sourceTree = "<group>";
 		};
 		348CE4AC1CCD5CBA00BCB276 /* tabBarIcons */ = {
@@ -253,6 +972,234 @@
 				348CE4B71CCD5CBA00BCB276 /* profileRaw.png */,
 			);
 			path = tabBarIcons;
+			sourceTree = "<group>";
+		};
+		348DF0361CEE47600032B7A5 /* Search Page */ = {
+			isa = PBXGroup;
+			children = (
+				34C79FA11CF4F98000F5AA35 /* Contoller */,
+				34D3151E1CF0F0A8008678BC /* View */,
+				34D314F51CEF7707008678BC /* Test Data */,
+			);
+			name = "Search Page";
+			sourceTree = "<group>";
+		};
+		348DF0371CEE479A0032B7A5 /* Tabbar Controller */ = {
+			isa = PBXGroup;
+			children = (
+				348CE4AC1CCD5CBA00BCB276 /* tabBarIcons */,
+				34186B871CD9E7EE00F9189E /* HATabBarController.swift */,
+				34186B9B1CDAADF100F9189E /* Images */,
+			);
+			name = "Tabbar Controller";
+			sourceTree = "<group>";
+		};
+		34C280161CFFC37C00D5610A /* Camera Image View */ = {
+			isa = PBXGroup;
+			children = (
+				34C6E23A1CFC30F8002167A1 /* INCameraContainerView.swift */,
+			);
+			name = "Camera Image View";
+			sourceTree = "<group>";
+		};
+		34C280171D00182600D5610A /* Profiles */ = {
+			isa = PBXGroup;
+			children = (
+				3489991F1D1E216F00077B6C /* Edit Profile */,
+				3477DC1D1D08845A009ADB67 /* Edit Media Content */,
+				3477DC1C1D088452009ADB67 /* Edit Users */,
+				34EBB7741D02DBB9009ADB97 /* Controller */,
+				34EBB7691D01DFA6009ADB97 /* Model */,
+				34EBB75E1D015F01009ADB97 /* View */,
+			);
+			name = Profiles;
+			sourceTree = "<group>";
+		};
+		34C6E2121CF7B6B7002167A1 /* Camera Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				34C6E2101CF7B58B002167A1 /* HACameraNavigationNode.swift */,
+				34C6E2151CF7B893002167A1 /* HACameraViewNode.swift */,
+				34C6E2131CF7B77F002167A1 /* HACameraPagerControllerNode.swift */,
+			);
+			name = "Camera Nodes";
+			sourceTree = "<group>";
+		};
+		34C6E2191CF7D07E002167A1 /* Camera Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				34D314F11CEE948C008678BC /* HACameraVC.swift */,
+				34C6E21A1CF7D0A7002167A1 /* HACameraControlsPagerVC.swift */,
+				34C6E2171CF7CF5B002167A1 /* HACameraControlPageNode.swift */,
+				34C6E21C1CF7D216002167A1 /* HACameraLibraryControlNode.swift */,
+			);
+			name = "Camera Controllers";
+			sourceTree = "<group>";
+		};
+		34C6E2201CF7FEA4002167A1 /* Camera 2 */ = {
+			isa = PBXGroup;
+			children = (
+				34C6E2211CF7FEAE002167A1 /* HACameraVC2.swift */,
+				34C6E2231CF7FFEE002167A1 /* HACameraNavigationController.swift */,
+				34C6E20E1CF7AD68002167A1 /* HACameraNavigation.swift */,
+				34C6E20B1CF7AB1F002167A1 /* HACameraPagerVC.swift */,
+			);
+			name = "Camera 2";
+			sourceTree = "<group>";
+		};
+		34C6E2291CFAA737002167A1 /* Best Camera */ = {
+			isa = PBXGroup;
+			children = (
+				34C6E2271CF8242B002167A1 /* HAFullCameraVC.swift */,
+				34C6E2251CF82057002167A1 /* HAFullCameraNode.swift */,
+			);
+			name = "Best Camera";
+			sourceTree = "<group>";
+		};
+		34C6E22A1CFAA7AD002167A1 /* Instagram like */ = {
+			isa = PBXGroup;
+			children = (
+				34C6E22B1CFABBB0002167A1 /* CameraVC.swift */,
+				34C6E22D1CFABBBB002167A1 /* CameraNode.swift */,
+				34C6E2331CFAC798002167A1 /* CameraControlsCellNode.swift */,
+				34C6E2311CFAC3D0002167A1 /* CameraContainerView.swift */,
+			);
+			name = "Instagram like";
+			sourceTree = "<group>";
+		};
+		34C79F8C1CF380C500F5AA35 /* User Profile Page */ = {
+			isa = PBXGroup;
+			children = (
+				34C79F931CF39AA200F5AA35 /* Test Data */,
+				34C79F901CF39A4A00F5AA35 /* Model */,
+				34C79F941CF3C05400F5AA35 /* View */,
+				34C79F8F1CF3833B00F5AA35 /* Controller */,
+			);
+			name = "User Profile Page";
+			sourceTree = "<group>";
+		};
+		34C79F8F1CF3833B00F5AA35 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				34C79F8D1CF3833300F5AA35 /* UserProfilePageVC.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		34C79F901CF39A4A00F5AA35 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				34C79F911CF39A5500F5AA35 /* ProfileModel.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		34C79F931CF39AA200F5AA35 /* Test Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Test Data";
+			sourceTree = "<group>";
+		};
+		34C79F941CF3C05400F5AA35 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3477DC161D084626009ADB67 /* HABasicUserDetailsCN.swift */,
+				34C79F951CF3C06700F5AA35 /* BasicDetailCellNode.swift */,
+				343DC1DF1D1C7BDE00A52381 /* HASimpleUserDetailCN.swift */,
+				34C79F981CF3C13300F5AA35 /* SocialStatus.swift */,
+				34C79F9A1CF3C18300F5AA35 /* AboutCellNode.swift */,
+				34C79F9C1CF3C19300F5AA35 /* PublicAlbumsCellNode.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		34C79F9E1CF4F74B00F5AA35 /* iconBeast Images */ = {
+			isa = PBXGroup;
+			children = (
+				343DC1DD1D1B9BC500A52381 /* connect-arrow-right-7.png */,
+				34C79F9F1CF4F75E00F5AA35 /* circle-tick-7.png */,
+			);
+			name = "iconBeast Images";
+			sourceTree = "<group>";
+		};
+		34C79FA11CF4F98000F5AA35 /* Contoller */ = {
+			isa = PBXGroup;
+			children = (
+				34D314F31CEE9835008678BC /* HASearchTableVC.swift */,
+			);
+			name = Contoller;
+			sourceTree = "<group>";
+		};
+		34D314F51CEF7707008678BC /* Test Data */ = {
+			isa = PBXGroup;
+			children = (
+				34D314F61CEF7726008678BC /* TESTSearchModel.swift */,
+			);
+			name = "Test Data";
+			sourceTree = "<group>";
+		};
+		34D3151E1CF0F0A8008678BC /* View */ = {
+			isa = PBXGroup;
+			children = (
+				34D3151F1CF0F0CD008678BC /* UserSearchTableCN.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		34EBB75E1D015F01009ADB97 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				34EBB75F1D015F22009ADB97 /* BasicProfileCellNode.swift */,
+				3477DC181D0877E6009ADB67 /* MyAlbumCN.swift */,
+				3477DC1A1D087C6F009ADB67 /* dot-more-7.png */,
+				34EBB7651D0173FD009ADB97 /* ProfilePagerControlCellNode.swift */,
+				34EBB7671D01DEE4009ADB97 /* HAProfilePagerCellNode.swift */,
+				34EBB76C1D01E92B009ADB97 /* HAProfileTablePagerNode.swift */,
+				34EBB76A1D01E4AD009ADB97 /* HAProfilePagerNode.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		34EBB7691D01DFA6009ADB97 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		34EBB76E1D0212B0009ADB97 /* ASNode Extras */ = {
+			isa = PBXGroup;
+			children = (
+				343DC1AB1D1154AF00A52381 /* HATextField.swift */,
+				343DC1AF1D11633D00A52381 /* HASearchBar.swift */,
+				34EBB76F1D0212F3009ADB97 /* ASTaggedButton.swift */,
+				34EBB7611D01625C009ADB97 /* HADoubleLabelButton.swift */,
+				343DC1BB1D134B3C00A52381 /* HAPaddedTextNode.swift */,
+				34186B7C1CD8166E00F9189E /* HAPaddedButton.swift */,
+				34186B7E1CD8401600F9189E /* HAPaddedEditableText.swift */,
+				34186B831CD993C100F9189E /* HACircleButton.swift */,
+			);
+			name = "ASNode Extras";
+			sourceTree = "<group>";
+		};
+		34EBB7711D02DA91009ADB97 /* Notification Table */ = {
+			isa = PBXGroup;
+			children = (
+				3477DBFD1D0408EF009ADB67 /* Test Data */,
+				3477DBFC1D0408E4009ADB67 /* Controller */,
+				3477DBFB1D040152009ADB67 /* Model */,
+				3477DBF81D03CFCD009ADB67 /* View */,
+			);
+			name = "Notification Table";
+			sourceTree = "<group>";
+		};
+		34EBB7741D02DBB9009ADB97 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				34C280181D0019D200D5610A /* HAProfileVC.swift */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 		871A6B2A45551FE867B69F7F /* Pods */ = {
@@ -333,18 +1280,62 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34D315151CEF8333008678BC /* Lane Pryce.jpeg in Resources */,
+				34D3150F1CEF8333008678BC /* don.jpeg in Resources */,
+				34C79FA01CF4F75E00F5AA35 /* circle-tick-7.png in Resources */,
+				34D3150E1CEF8333008678BC /* desmond.jpeg in Resources */,
 				348CE4581CCC445B00BCB276 /* LaunchScreen.storyboard in Resources */,
 				348CE4B91CCD5CBA00BCB276 /* camera@2x.png in Resources */,
+				34D315131CEF8333008678BC /* kate.jpeg in Resources */,
+				34D315161CEF8333008678BC /* peggy.jpeg in Resources */,
 				348CE4BD1CCD5CBA00BCB276 /* home.png in Resources */,
 				34828D691CCF09DC00707A1C /* mad-men-1.png in Resources */,
+				34D3151A1CEF8333008678BC /* Sally.jpg in Resources */,
 				348CE4C11CCD5CBA00BCB276 /* profile@2x.png in Resources */,
+				3477DC0B1D0578E9009ADB67 /* fake2.jpg in Resources */,
+				34186B991CD9F83A00F9189E /* star-7.png in Resources */,
+				34D315181CEF8333008678BC /* red.jpeg in Resources */,
+				3477DC0E1D0578E9009ADB67 /* fake5.jpg in Resources */,
+				34D315111CEF8333008678BC /* jack.jpeg in Resources */,
+				34EBB77A1D02ED27009ADB97 /* bell-7.png in Resources */,
+				34D315141CEF8333008678BC /* ken.jpeg in Resources */,
+				34D3150C1CEF8333008678BC /* Betty.jpeg in Resources */,
+				3477DC1B1D087C6F009ADB67 /* dot-more-7.png in Resources */,
+				34D4EDB71CEA7254005E6E16 /* album2.jpg in Resources */,
 				348CE4551CCC445B00BCB276 /* Assets.xcassets in Resources */,
+				34186C401CE8E3E200F9189E /* girl1.jpg in Resources */,
+				34186C3A1CE8E3D800F9189E /* boy4.jpg in Resources */,
+				34D3151B1CEF8333008678BC /* Stan.jpeg in Resources */,
+				34D3150D1CEF8333008678BC /* claire.jpeg in Resources */,
+				34186C3D1CE8E3D800F9189E /* boy3.jpg in Resources */,
+				34D315171CEF8333008678BC /* Pete.jpeg in Resources */,
+				3477DC0A1D0578E9009ADB67 /* fake1.jpg in Resources */,
+				34186C3B1CE8E3D800F9189E /* boy2.jpg in Resources */,
+				34D4EDB91CEA7280005E6E16 /* album4.jpg in Resources */,
+				34D315191CEF8333008678BC /* Roger Sterling.jpg in Resources */,
+				343DC1DE1D1B9BC500A52381 /* connect-arrow-right-7.png in Resources */,
 				348CE4BB1CCD5CBA00BCB276 /* earth.png in Resources */,
+				34D4EDB61CEA7254005E6E16 /* album5.jpg in Resources */,
+				34186C411CE8E3E200F9189E /* boy1.jpg in Resources */,
+				34186B971CD9F83200F9189E /* search-7.png in Resources */,
 				348CE4BE1CCD5CBA00BCB276 /* home@2x.png in Resources */,
 				348CE4BF1CCD5CBA00BCB276 /* homeRaw.png in Resources */,
+				34D315121CEF8333008678BC /* james.jpeg in Resources */,
+				34D3150B1CEF8333008678BC /* ben.jpeg in Resources */,
 				348CE4C01CCD5CBA00BCB276 /* profile.png in Resources */,
+				3477DC0C1D0578E9009ADB67 /* fake3.jpg in Resources */,
+				34186B931CD9F80000F9189E /* home-7.png in Resources */,
 				348CE4B81CCD5CBA00BCB276 /* camera.png in Resources */,
+				34D315101CEF8333008678BC /* Harry Crane.jpeg in Resources */,
 				348CE4BC1CCD5CBA00BCB276 /* earth@2x.png in Resources */,
+				34186B861CD9BD2F00F9189E /* circle.png in Resources */,
+				34D3151C1CEF8333008678BC /* ted.jpeg in Resources */,
+				34D3151D1CEF8333008678BC /* Trudy.jpeg in Resources */,
+				34D4EDB31CEA7254005E6E16 /* album3.jpg in Resources */,
+				34D4EDB51CEA7254005E6E16 /* album1.png in Resources */,
+				34186C3C1CE8E3D800F9189E /* girl2.jpg in Resources */,
+				3477DC0D1D0578E9009ADB67 /* fake4.jpg in Resources */,
+				34186B951CD9F82300F9189E /* pin-map-7.png in Resources */,
 				348CE4C21CCD5CBA00BCB276 /* profileRaw.png in Resources */,
 				348CE4BA1CCD5CBA00BCB276 /* cameraRaw.png in Resources */,
 			);
@@ -405,27 +1396,135 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34186BF61CDD784800F9189E /* FullPage.swift in Sources */,
+				3466CAA51D0EFF1E00796B99 /* AlbumUploadDisplayView.swift in Sources */,
 				34828D6B1CCFFCF100707A1C /* SignInButton.swift in Sources */,
 				3403D5A81CD6F760001577BB /* CreateUsernameViewController.swift in Sources */,
 				345999941CD027790057997B /* WelcomeNode.swift in Sources */,
-				348CE4A61CCCF43A00BCB276 /* CommentModel.m in Sources */,
-				348CE4A41CCCF43A00BCB276 /* ImageURLModel.m in Sources */,
-				348CE4A71CCCF43A00BCB276 /* UserModel.m in Sources */,
+				34C79F961CF3C06700F5AA35 /* BasicDetailCellNode.swift in Sources */,
+				34C6E2111CF7B58B002167A1 /* HACameraNavigationNode.swift in Sources */,
+				34C6E20F1CF7AD68002167A1 /* HACameraNavigation.swift in Sources */,
+				34C6E2261CF82057002167A1 /* HAFullCameraNode.swift in Sources */,
+				34186C0E1CE168B100F9189E /* PageNavigation.swift in Sources */,
+				343DC1A81D10352C00A52381 /* HASearchCN.swift in Sources */,
+				34EBB7621D01625C009ADB97 /* HADoubleLabelButton.swift in Sources */,
+				343DC1C61D14B79000A52381 /* HorizontalScrollCell.swift in Sources */,
+				34C6E2411CFFA1D5002167A1 /* INCameraNextCellNode.swift in Sources */,
+				34C6E23B1CFC30F8002167A1 /* INCameraContainerView.swift in Sources */,
+				34EBB7701D0212F3009ADB97 /* ASTaggedButton.swift in Sources */,
+				34186C341CE7B49B00F9189E /* PhotoModel.swift in Sources */,
+				34EBB7681D01DEE4009ADB97 /* HAProfilePagerCellNode.swift in Sources */,
+				34C6E2221CF7FEAE002167A1 /* HACameraVC2.swift in Sources */,
+				343DC1C81D14B79C00A52381 /* ImageCell.swift in Sources */,
+				34EBB7661D0173FD009ADB97 /* ProfilePagerControlCellNode.swift in Sources */,
+				3477DC191D0877E6009ADB67 /* MyAlbumCN.swift in Sources */,
 				34186B7F1CD8401600F9189E /* HAPaddedEditableText.swift in Sources */,
-				348CE4A31CCCF43A00BCB276 /* PhotoModel.m in Sources */,
-				348CE4911CCCF42E00BCB276 /* CommentsNode.m in Sources */,
-				3410157D1CD46D3300F3DEEC /* SigninViewController.swift in Sources */,
+				34C6E2141CF7B77F002167A1 /* HACameraPagerControllerNode.swift in Sources */,
+				3464D9691D0B3A36007BCCA7 /* HABasicViewController.swift in Sources */,
+				34EBB7601D015F22009ADB97 /* BasicProfileCellNode.swift in Sources */,
+				34186C271CE78D7C00F9189E /* UserModel.swift in Sources */,
+				34D314F21CEE948C008678BC /* HACameraVC.swift in Sources */,
+				34C6E2321CFAC3D0002167A1 /* CameraContainerView.swift in Sources */,
+				34C6E22C1CFABBB0002167A1 /* CameraVC.swift in Sources */,
+				34186C291CE78D9500F9189E /* GroupAlbumModel.swift in Sources */,
+				343DC1AE1D115F7400A52381 /* Debuggin Notes.swift in Sources */,
+				34186B8F1CD9E90E00F9189E /* HAChitChatVC.swift in Sources */,
+				34C6E21B1CF7D0A7002167A1 /* HACameraControlsPagerVC.swift in Sources */,
+				343DC1A61D10332B00A52381 /* HATitleCN.swift in Sources */,
+				34C79F8E1CF3833300F5AA35 /* UserProfilePageVC.swift in Sources */,
+				34186C231CE7850D00F9189E /* Constants.swift in Sources */,
+				343DC1D71D1B5DC200A52381 /* HASettingsRealVC.swift in Sources */,
+				3477DC111D057983009ADB67 /* MediaModel.swift in Sources */,
+				3489991D1D1DFFB000077B6C /* HASwitchCN.swift in Sources */,
+				34186B8D1CD9E8FB00F9189E /* HADiscoveryVC.swift in Sources */,
+				343DC1A01D0FFE3500A52381 /* NewAlbumDisplayView.swift in Sources */,
+				343DC1D31D1875F700A52381 /* HASearchControllerCN.swift in Sources */,
+				34C6E2181CF7CF5B002167A1 /* HACameraControlPageNode.swift in Sources */,
+				34186B8B1CD9E8EB00F9189E /* HAFollowingVC.swift in Sources */,
+				34C6E23D1CFC3105002167A1 /* INCameraControlsCellNode.swift in Sources */,
+				34EBB7761D02DFD0009ADB97 /* NotificationModel.swift in Sources */,
+				3477DC1F1D08847A009ADB67 /* HAEditUsersVC.swift in Sources */,
+				34C6E20C1CF7AB1F002167A1 /* HACameraPagerVC.swift in Sources */,
+				3477DC021D05704E009ADB67 /* HAAlbumDisplayNode.swift in Sources */,
+				34C6E21D1CF7D216002167A1 /* HACameraLibraryControlNode.swift in Sources */,
+				34186C0C1CDF638700F9189E /* POPTransformViewController.swift in Sources */,
+				34C6E2391CFC30EC002167A1 /* INFullCameraDisplayNode.swift in Sources */,
+				34C6E2431CFFA3F6002167A1 /* HAGlobal.swift in Sources */,
+				34C79F921CF39A5500F5AA35 /* ProfileModel.swift in Sources */,
+				343DC1C11D1470EB00A52381 /* HAButtonDisableOverlay.swift in Sources */,
+				34C6E2371CFC30E3002167A1 /* INCameraVC.swift in Sources */,
+				34186B841CD993C100F9189E /* HACircleButton.swift in Sources */,
+				34EBB7641D016277009ADB97 /* HABasicNodeLayout.swift in Sources */,
 				34828D651CCEC78600707A1C /* WindowWithStatusBarUnderlay.swift in Sources */,
+				34D804231CF76C45005B96D1 /* HAAlbumMediaShareVC.swift in Sources */,
+				343DC1B01D11633D00A52381 /* HASearchBar.swift in Sources */,
+				34EBB76B1D01E4AD009ADB97 /* HAProfilePagerNode.swift in Sources */,
 				34186B7B1CD7E9AA00F9189E /* CreateUserNode.swift in Sources */,
-				348CE4A21CCCF43A00BCB276 /* PhotoFeedModel.m in Sources */,
+				3477DC211D088498009ADB67 /* HAEditAlbumVC.swift in Sources */,
+				34C6E2161CF7B893002167A1 /* HACameraViewNode.swift in Sources */,
+				343DC1DA1D1B63A200A52381 /* HASettingCN.swift in Sources */,
+				3464D9711D0C652C007BCCA7 /* INCameraTopNavCN.swift in Sources */,
+				343DC1AC1D1154AF00A52381 /* HATextField.swift in Sources */,
 				348CE4A81CCCF43A00BCB276 /* LocationModel.m in Sources */,
-				348CE4A51CCCF43A00BCB276 /* CommentFeedModel.m in Sources */,
-				348CE4AB1CCCFA6C00BCB276 /* PhotoFeedNodeController.swift in Sources */,
-				348CE4901CCCF42E00BCB276 /* PhotoCellNode.m in Sources */,
+				34C79FA31CF50D2400F5AA35 /* HAGlobalNode.swift in Sources */,
+				34C79F9B1CF3C18300F5AA35 /* AboutCellNode.swift in Sources */,
+				34C6E2281CF8242B002167A1 /* HAFullCameraVC.swift in Sources */,
+				343DC19A1D0FE15A00A52381 /* AlbumUploadBottomButtonDisplay.swift in Sources */,
+				34186C2D1CE78E5300F9189E /* FriendAlbumModel.swift in Sources */,
+				34186C211CE7823D00F9189E /* TESTFollowFeedModel.swift in Sources */,
+				34186C091CDF24CB00F9189E /* POPViewController.swift in Sources */,
+				341893DD1CF565FD00F6AC15 /* TESTFullAppModel.swift in Sources */,
+				34C79F991CF3C13300F5AA35 /* SocialStatus.swift in Sources */,
+				343DC19E1D0FFA1400A52381 /* NewAlbumVC.swift in Sources */,
+				343DC1BA1D1311C700A52381 /* HAFollowingVC2.swift in Sources */,
+				348999191D1DF6F400077B6C /* HANotificationsVC.swift in Sources */,
+				34C280191D0019D200D5610A /* HAProfileVC.swift in Sources */,
+				34186C321CE7AE4C00F9189E /* AlbumCellNode.swift in Sources */,
+				34C6E2241CF7FFEE002167A1 /* HACameraNavigationController.swift in Sources */,
+				34D804201CF769EC005B96D1 /* HAFollowingPagerVC.swift in Sources */,
+				343DC1D51D1A66B600A52381 /* HAActivityIndicatorView.swift in Sources */,
+				348999111D1CED5E00077B6C /* HAContactUsVC.swift in Sources */,
 				34828D671CCEF42D00707A1C /* SigninNodeController.swift in Sources */,
+				343DC1A21D0FFE4B00A52381 /* NewAlbumBottomButtonDisplay.swift in Sources */,
+				34C6E23F1CFC4A16002167A1 /* INCameraTableNode.swift in Sources */,
+				343DC1AA1D1039A200A52381 /* HASearchFriendCN.swift in Sources */,
+				343DC1D01D18490F00A52381 /* HASearchControllerNode.swift in Sources */,
+				34D314F71CEF7726008678BC /* TESTSearchModel.swift in Sources */,
+				343DC1E01D1C7BDE00A52381 /* HASimpleUserDetailCN.swift in Sources */,
+				343DC1CC1D17C31C00A52381 /* FakeVC.swift in Sources */,
+				34186C141CE25D5D00F9189E /* PageViewController.swift in Sources */,
+				34186B911CD9E91F00F9189E /* HASettingsVC.swift in Sources */,
+				343DC1B61D12091B00A52381 /* HASearchTextField.swift in Sources */,
 				348CE4A91CCCF43A00BCB276 /* Utilities.m in Sources */,
+				3464D96B1D0B48BE007BCCA7 /* AlbumUploadVC.swift in Sources */,
+				348999131D1DB44C00077B6C /* HAContactFormDisplay.swift in Sources */,
+				34D315201CF0F0CD008678BC /* UserSearchTableCN.swift in Sources */,
+				3477DC171D084626009ADB67 /* HABasicUserDetailsCN.swift in Sources */,
+				34186B881CD9E7EE00F9189E /* HATabBarController.swift in Sources */,
+				348999211D1E225400077B6C /* HAEditProfileVC.swift in Sources */,
+				34186C1E1CE7809A00F9189E /* AlbumModel.swift in Sources */,
+				34EBB7731D02DB4D009ADB97 /* HANotificationVC.swift in Sources */,
+				34EBB76D1D01E92B009ADB97 /* HAProfileTablePagerNode.swift in Sources */,
 				34186B7D1CD8166E00F9189E /* HAPaddedButton.swift in Sources */,
+				3489991B1D1DFE1200077B6C /* HASwitchNode.swift in Sources */,
+				34C79F9D1CF3C19300F5AA35 /* PublicAlbumsCellNode.swift in Sources */,
+				34C6E22E1CFABBBB002167A1 /* CameraNode.swift in Sources */,
+				343DC1B81D1311B500A52381 /* HAFollowingTableNode.swift in Sources */,
+				34EBB7781D02E340009ADB97 /* HATESTNotification.swift in Sources */,
+				343DC1CA1D17046200A52381 /* HACompletionBlock.swift in Sources */,
 				348CE44E1CCC445B00BCB276 /* AppDelegate.swift in Sources */,
+				34D314F41CEE9835008678BC /* HASearchTableVC.swift in Sources */,
+				343DC1BF1D14699300A52381 /* HAFillTitlePaddedButton.swift in Sources */,
+				3477DBFA1D03CFE9009ADB67 /* HANotificationCellNode.swift in Sources */,
+				34C6E2341CFAC798002167A1 /* CameraControlsCellNode.swift in Sources */,
+				343DC1CE1D17C76600A52381 /* FakeDisplay.swift in Sources */,
+				348999231D1E386200077B6C /* HAEditableProfileCN.swift in Sources */,
+				3477DC041D057059009ADB67 /* HAAlbumDisplayModel.swift in Sources */,
+				3477DC001D056EEA009ADB67 /* HAAlbumDisplayVC.swift in Sources */,
+				343DC1BC1D134B3C00A52381 /* HAPaddedTextNode.swift in Sources */,
+				34186BE21CDC97BB00F9189E /* HADiscoveryNode.swift in Sources */,
+				34E581CD1CECBE97006DF688 /* SimpleMessageCellNode.swift in Sources */,
+				34186C251CE7892600F9189E /* FollowFeedModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +1582,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-D DEV_PUBLIC_ALBUMS -D DEV_FOLLOWERS";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEV_PUBLIC_ALBUMS -D DEV_FOLLOWERS";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -522,6 +1623,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_SWIFT_FLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				VALIDATE_PRODUCT = YES;
@@ -537,7 +1639,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nocom.alyllc.PopIn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "PopIn/PopIn-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = PopIn_bridging_Header.h;
 			};
 			name = Debug;
 		};
@@ -550,7 +1652,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nocom.alyllc.PopIn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "PopIn/PopIn-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = PopIn_bridging_Header.h;
 			};
 			name = Release;
 		};

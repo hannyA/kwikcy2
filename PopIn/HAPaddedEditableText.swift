@@ -65,7 +65,8 @@ class HAPaddedEditableText: ASEditableTextNode {
 //        
 //        let titleInsets = UIEdgeInsetsMake(kInsetTitleTop, kInsetTitleSides, kInsetTitleBottom, kInsetTitleSides);
 //        
-//        let textWrapper = ASInsetLayoutSpec(insets: titleInsets, child: title)
+//        let layout = ASLayoutable
+//        let textWrapper = ASInsetLayoutSpec(insets: titleInsets, child: )
 //        textWrapper.flexGrow = true
 //        
 //        return textWrapper
