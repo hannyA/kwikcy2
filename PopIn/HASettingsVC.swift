@@ -9,7 +9,7 @@
 import UIKit
 import AsyncDisplayKit
 
-class HASettingsVC: ASViewController, ASPagerNodeDataSource {
+class HASettingsVC: ASViewController, ASPagerDataSource {
 
     var pagerNodeOriginY: CGFloat?
     let kPageButtonHeightFraction: CGFloat = 11

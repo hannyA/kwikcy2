@@ -11,7 +11,7 @@
 import AsyncDisplayKit
 
 
-class HAProfilePagerNode: ASPagerNode, ASPagerNodeDataSource {
+class HAProfilePagerNode: ASPagerNode, ASPagerDataSource {
     
     
     

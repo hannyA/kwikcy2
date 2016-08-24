@@ -11,257 +11,170 @@ import AsyncDisplayKit
 
 class CreateUserNode: ASDisplayNode, ASEditableTextNodeDelegate {
 
-    
-    enum StringAttributeType {
-        case AddPhotoTitle
-        case BackgroundColor
-        case UsernameText
-        case UsernameTextWithPlaceHolder
-        case UsernameTextBackground
-        case DisabledNextButton
-        case EnabledNextButton
-    }
+    let kbackgroundColor = UIColor(red: 1.0, green: 0.3, blue: 0.3, alpha: 1.0)
+    let kDisabledButtonColor = UIColor(red: 1.0, green: 0.6, blue: 0.6, alpha: 0.6)
+    let kEnabledButtonColor = UIColor(white: 1.0, alpha: 1.0)
     
     
-    let kRedBackground: CGFloat   = 1.0
-    let kGreenBackground: CGFloat = 0.65
-    let kBlueBackground: CGFloat  = 0.65
-    let kAlphaBackground: CGFloat = 0.5
-
-    let kbackgroundColor = UIColor.whiteColor()
+    let loadingScreenOverlay  : ASDisplayNode
+    let loadingScreenActivityIndicatorView : UIActivityIndicatorView
     
     
+    let userPhotoButton: ProfileButtonNode
+    let textFieldNode: HATextField
+    let nextButton: ASButtonNode
     
     
-    
-    
-    let userPhotoButton: ASButtonNode
-    let usernameTextNode: ASEditableTextNode
-    let nextButton: HAPaddedButton
-    
-//    let photoImageNode: ASImageNode
     
     override init() {
-        userPhotoButton = ASButtonNode()
-        usernameTextNode = ASEditableTextNode()
-        nextButton = HAPaddedButton()
         
-        super.init()
-                
-        setup()
-        
-        
-        /* For testing purposes */
-//        userPhotoButton.borderColor = UIColor.blackColor().CGColor
-//        usernameTextNode.borderColor = UIColor.blackColor().CGColor
-//        nextButton.borderColor = UIColor.blackColor().CGColor
-//        userPhotoButton.borderWidth = 2
-//        usernameTextNode.borderWidth = 2
-//        nextButton.borderWidth = 2
-        
-        
-        addSubnode(userPhotoButton)
-        addSubnode(usernameTextNode)
-        addSubnode(nextButton)
-    }
-    
-    
-    
-    
-//    override func didLoad() {
-//        super.didLoad()
-//
-//        print(userPhotoButton.view.frame)
-//        
-//        //        let diameter = min(frame.size.height, frame.size.width)
-//        //        //        let diameter = min(bounds.size.height, bounds.size.width)
-//        //        view.frame = CGRectMake(0, 0, diameter, diameter)
-//        //        view.clipsToBounds = true
-//        //        view.layer.cornerRadius = 50
-//        //        view.layer.borderColor = UIColor.blueColor().CGColor
-//        //        view.layer.borderWidth = 2
-//        //
-//        
-//    }
 
-    
-    
-    func setup() {
-        
-        userPhotoButton.flexGrow = true
-        usernameTextNode.flexGrow = true
-        nextButton.flexGrow = true
+        //Center Spining wheel
+        loadingScreenActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+        loadingScreenActivityIndicatorView.color = UIColor.blackColor()
 
-        backgroundColor = colorForType(.BackgroundColor)
+        
+        // Full screen Cover to show that screen cannot be used
 
-        // Setup Add Photo Button
-
-        //        userPhotoButton.backgroundImageNode.image = UIImage(named: "mad-men-1")
-//        userPhotoButton.imageNode.image  = UIImage(named: "circle")
-//        userPhotoButton.imageNode.contentMode = .ScaleAspectFit
-        
-        // Setup button image
-        userPhotoButton.setBackgroundImage(UIImage(named: "circle"), forState: .Normal)
-//        userPhotoButton.setBackgroundImage(UIImage(named: "circle"), forState: .Selected)
+        loadingScreenOverlay = ASDisplayNode()
+        loadingScreenOverlay.backgroundColor = UIColor(white: 0.3, alpha: 0.4)
+        loadingScreenOverlay.flexGrow = true
+        loadingScreenOverlay.layerBacked = true
         
         
-        userPhotoButton.backgroundImageNode.contentMode = .ScaleAspectFit
-
-        // Set button title
-        let photoAttributedTitle = NSAttributedString(string: "PHOTO",
-                                                      attributes: stringAttributesForType(.AddPhotoTitle) )
-        userPhotoButton.setAttributedTitle(photoAttributedTitle, forState: .Normal)
-        userPhotoButton.titleNode.contentMode = .ScaleAspectFit
-        
-        
-        
-        
-//        photoButton.backgroundImageNode.contentMode = .ScaleAspectFit
-//        photoButton.setBackgroundImage(_image, forState: .Normal)
-//        photoButton.titleNode.attributedString = nil
-        
-        
-        
-    
-        
-        userPhotoButton.flexGrow = true
-        
-        
-//        userPhotoButton.imageNode.image = UIImage(named: "mad-men-1")
-//        userPhotoButton.imageNode.contentMode = .ScaleAspectFit
-   
-        
-        
-    
         
         
         // Setup username Text Field
+        textFieldNode = HATextField(shouldSetLeftPadding: true, useForVerification: true)
+        textFieldNode.textField.placeholder = "Select Username"
+        textFieldNode.textField.autocapitalizationType = .None
         
-        usernameTextNode.attributedPlaceholderText = NSAttributedString(string: "SELECT USERNAME",
-                                                                        attributes: stringAttributesForType(.UsernameTextWithPlaceHolder))
-        usernameTextNode.typingAttributes = stringAttributesForType(.UsernameText)
-        
-        usernameTextNode.backgroundColor = userTextFieldBackground()
-        
-        usernameTextNode.returnKeyType = .Done
-        
-        usernameTextNode.textView.autocorrectionType = .No
-        usernameTextNode.textView.autocapitalizationType = .None
-        
-        usernameTextNode.cornerRadius = 5
-        usernameTextNode.borderColor = colorForType(.BackgroundColor).CGColor
-        usernameTextNode.textContainerInset = UIEdgeInsetsMake(20, 20, 20, 20)
-        
-        // usernameTextNode.alignSelf = .Center
-//        usernameTextNode.flexGrow = true
+        textFieldNode.textField.borderStyle = .RoundedRect
 
         
-        // NextButton
+        userPhotoButton = ProfileButtonNode()
+
         
-        nextButton.cornerRadius = 7
+        
+        nextButton = ASButtonNode()
+        
+        nextButton.cornerRadius = 6
         nextButton.borderWidth = 3
-        setupNextButton()
+        
+        
+        
+        let enabledButtonAttributed = HAGlobal.titlesAttributedString("NEXT",
+                                                                      color: kEnabledButtonColor,
+                                                                      textSize: kTextSizeSmall)
+        let disabledButtonAttributed = HAGlobal.titlesAttributedString("NEXT",
+                                                                       color: kDisabledButtonColor,
+                                                                       textSize: kTextSizeSmall)
+
+        nextButton.setAttributedTitle(enabledButtonAttributed, forState: .Normal)
+        nextButton.setAttributedTitle(disabledButtonAttributed, forState: .Disabled)
+        
+        super.init()
+    }
+    
+
+    override func didLoad() {
+        super.didLoad()
+        
+        backgroundColor = kbackgroundColor
+        
+        enableNextButton(false)
+        
+        addSubnode(userPhotoButton)
+        addSubnode(textFieldNode)
+        addSubnode(nextButton)
+        addSubnode(loadingScreenOverlay)
+        
+        blockViewController(false)
+        view.addSubview(loadingScreenActivityIndicatorView)
     }
     
     
-    func setupNextButton() {
-        attributesForNextButtonEnabled(false)
-        
-        
-        let enabledButton = NSAttributedString(string: "NEXT",
-                                               attributes: stringAttributesForType(.EnabledNextButton))
-        
-        let disabledButton = NSAttributedString(string: "NEXT",
-                                                attributes: stringAttributesForType(.DisabledNextButton))
-        
-        
-        nextButton.setAttributedTitle(disabledButton, forState: .Disabled)
-        nextButton.setAttributedTitle(enabledButton, forState: .Normal)
-
-        nextButton.enabled = false
-
+    override func layout() {
+        super.layout()
+        loadingScreenActivityIndicatorView.center = view.center
     }
     
-    func attributesForNextButtonEnabled(enabled: Bool) {
+    
+    func setTextFieldNodeDelegate(vc: RegisterUserVC) {
+        textFieldNode.textField.delegate = vc
+    }
+    
+    func photoButtonAddTarget(target: AnyObject?, action: Selector) {
+        userPhotoButton.buttonNode.addTarget(target, action: action, forControlEvents: .TouchUpInside)
+    }
+    
+    func nextButtonAddTarget(target: AnyObject?, action: Selector) {
+        nextButton.addTarget(target, action: action, forControlEvents: .TouchUpInside)
+    }
+    
+    
+    
+    
+    
+    func blockViewController(block: Bool) {
         
-        if enabled {
-            let color: UIColor = colorForType(.EnabledNextButton)
-            nextButton.borderColor = color.CGColor
-            nextButton.enabled = true
-            print("Next button should be enabled")
+        if block {
+            loadingScreenActivityIndicatorView.startAnimating()
+            loadingScreenOverlay.hidden = false
         } else {
-            let color: UIColor = colorForType(.DisabledNextButton)
-            nextButton.borderColor = color.CGColor
-            nextButton.enabled = false
+            loadingScreenActivityIndicatorView.stopAnimating()
+            loadingScreenOverlay.hidden = true
+        }
+    }
+    
+    
+    //MARK: Next Button Funcs
+    
+    
+    
+    func enableNextButton(enabled: Bool) {
+        nextButton.enabled = enabled
 
+        if enabled {
+            nextButton.borderColor = UIColor.whiteColor().CGColor
+        } else {
+            nextButton.borderColor = kDisabledButtonColor.CGColor
         }
+    }
+    
+    //MARK: Photo Funcs
+
+    func enableUserPhotoButton( enabled:Bool ) {
+        userPhotoButton.enableButton(enabled)
+        userPhotoButton.loadingImage(!enabled)
     }
 
     
-    
-    
-    func userTextFieldBackground() -> UIColor {
-        return colorForType(.UsernameTextBackground)
+    func replaceUserPhoto(image: UIImage) {
+        let imageButtonWidth = calculatedSize.width * (3/5)
+        print("imageButtonWidth: \(imageButtonWidth)")
+        userPhotoButton.setImage(image, cornerRadius: imageButtonWidth)
     }
     
-//    func colorForUsernameTextFieldType(type: TextFieldType) -> UIColor {
-//        
-//        switch type {
-//        case .Text:
-//            <#code#>
-//        default:
-//            <#code#>
-//        }
-//    }
+    func userDidSelectProfilePhoto() -> Bool {
+        return !userPhotoButton.imageIsNull()
+    }
     
-    func colorForType(type: StringAttributeType) -> UIColor {
-        
-        switch type {
-        case .BackgroundColor:
-            return UIColor.blackColor()
-//            return UIColor(red: kRedBackground, green: kGreenBackground, blue: kBlueBackground, alpha: kAlphaBackground)
-        case .AddPhotoTitle:
-            return UIColor.whiteColor()
-        case .UsernameText:
-            return UIColor.blackColor()
-        case .UsernameTextWithPlaceHolder:
-            return UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.9)
-            // return UIColor(red: kRedBackground, green: kGreenBackground, blue: kBlueBackground, alpha: kAlphaBackground)
-        case .UsernameTextBackground:
-            return UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.9)
-        case .DisabledNextButton:
-            return UIColor(red: kRedBackground, green: kGreenBackground, blue: kBlueBackground, alpha: kAlphaBackground)
-        case .EnabledNextButton:
-            return UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.8)
+    
+    
+    //MARK: Textfield Funcs
+    
+    func textField() -> UITextField {
+        return textFieldNode.textField
+    }
+    
+    
+    func typedUsername() -> String {
+        if let username = textFieldNode.textField.text {
+            return username
         }
+        return ""
     }
-    
-    
-    func stringAttributesForType(type: StringAttributeType) -> [String: AnyObject] {
-        
-        switch type {
-        case .AddPhotoTitle:
-            return [NSForegroundColorAttributeName: colorForType(.AddPhotoTitle),
-                    NSFontAttributeName: UIFont(name: "HelveticaNeue", size: 28)!]
-        case .UsernameText:
-            return [NSForegroundColorAttributeName: colorForType(.UsernameText),
-                    NSFontAttributeName: UIFont(name: "HelveticaNeue", size: 20)!]
-        case .UsernameTextWithPlaceHolder:
-            return [NSForegroundColorAttributeName: colorForType(.UsernameTextWithPlaceHolder),
-                    NSFontAttributeName: UIFont(name: "HelveticaNeue", size: 20)!]
-//                  NSFontAttributeName: UIFont.systemFontOfSize(20)
-        case .DisabledNextButton:
-            return [NSForegroundColorAttributeName: colorForType(.DisabledNextButton),
-                    NSFontAttributeName: UIFont(name: "HelveticaNeue", size: 22)!]
-        case .EnabledNextButton:
-            return [NSForegroundColorAttributeName: colorForType(.EnabledNextButton),
-                    NSFontAttributeName: UIFont(name: "HelveticaNeue", size: 22)!]
-        default:
-            return [NSForegroundColorAttributeName: UIColor.blackColor(),
-             NSFontAttributeName: UIFont(name: "HelveticaNeue", size: 22)!]
-        }
-    }
-    
     
     
 
@@ -269,97 +182,66 @@ class CreateUserNode: ASDisplayNode, ASEditableTextNodeDelegate {
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
+        let maxWidth = constrainedSize.max.width
+        let textFieldHeight: CGFloat = 50.0
+        let nextButtonHeight: CGFloat = 40.0
         
-//        userPhotoButton.preferredFrameSize = CGSizeMake(100, 100);              // constrain photo frame size
-
+        let fourFifthsWidth = maxWidth * (4/5)
+        let imageButtonWidth = maxWidth * (3/5)
         
-//        userPhotoButton.preferredFrameSize  = CGSizeMake(photoDiameter, photoDiameter);     // constrain avatar image frame size
-
         
-//        let cellWidth: CGFloat = constrainedSize.max.width/2
-//        userPhotoButton.preferredFrameSize = CGSizeMake(cellWidth, cellWidth)
+//        userPhotoButton.contentEdgeInsets = UIEdgeInsetsMake(128,128,128,128)
+        //        userPhotoButton.preferredFrameSize = CGSizeMake(128, 128)
 //        
-//        userPhotoButton.preferredFrameSize = CGSizeMake(cellWidth, cellWidth)
-//        userPhotoButton.imageNode.preferredFrameSize = CGSizeMake(cellWidth, cellWidth)
+//        userPhotoButton.setBackgroundImage(UIImage(named: "circle"), forState: .Normal)
+//        userPhotoButton.backgroundImageNode.contentMode = .ScaleAspectFit
+//        userPhotoButton.backgroundImageNode.preferredFrameSize = CGSizeMake(128, 128)
+        
+        
+        
+        userPhotoButton.preferredFrameSize = CGSizeMake(imageButtonWidth, imageButtonWidth)
+        let staticUserPhotoButtonSpec = ASStaticLayoutSpec(children: [userPhotoButton])
 
 
-//        userPhotoButton.borderColor = UIColor.whiteColor().CGColor
-//        userPhotoButton.borderWidth = 3
-        
-        //Top Title
-        let kInsetTitleTop: CGFloat = 50.0
-        let kInsetTitleBottom: CGFloat = 0.0
-        let kInsetTitleSides: CGFloat = 0
-        
-        
-        // Photo image
-        
-        let userPhotoRatio = ASRatioLayoutSpec(ratio: 0.6, child: userPhotoButton)
-        
-        let photoInsets = UIEdgeInsetsMake(kInsetTitleTop, kInsetTitleSides, kInsetTitleBottom, kInsetTitleSides)
-        
-        let photoInsetWrapper = ASInsetLayoutSpec(insets: photoInsets, child: userPhotoRatio)
-        
-        
-        
-        
-    
-        
-        //Bottom half
-        
-        let kInsetLowerTop: CGFloat = 10.0
-        let kInsetLowerBottom: CGFloat = 230.0
-        let kInsetLowerSides: CGFloat = 40.0
-        
-        
-        let bottomInsets = UIEdgeInsetsMake(kInsetLowerTop, kInsetLowerSides, kInsetLowerBottom, kInsetLowerSides)
-        
-        
-        
-        //User selects username box
-
-//        let usernameTextWrapper = ASInsetLayoutSpec(insets: textInsets, child: usernameTextNode)
-//        usernameTextWrapper.flexGrow = true
-        
-        nextButton.titleNode.alignSelf = .Center
-        let nextButtonStack = ASStackLayoutSpec(direction: .Horizontal,
-                                                    spacing: 0,
-                                                    justifyContent: .Center,
-                                                    alignItems: .Center,
-                                                    children: [ nextButton])
-//        nextButtonStack.flexGrow = true
-        
-//        nextButton.alignSelf = .Center
-        
-//        nextButton.titleNode.alignSelf = .Center
-//        nextButton.titleNode.flexGrow = true
-        
-        let verticalLowerHalfStack = ASStackLayoutSpec(direction: .Vertical,
-                                           spacing: 20,
-                                           justifyContent: .SpaceAround,
-                                           alignItems: .Stretch,
-                                           children: [usernameTextNode, nextButtonStack])
-//        verticalButtonStack.flexGrow = true
-        
-        
-        let verticalLowerHalfWrapper = ASInsetLayoutSpec(insets: bottomInsets, child: verticalLowerHalfStack)
-
-        verticalLowerHalfWrapper.flexGrow = true
-        
-        
-        
-        let verticalSpacer = ASLayoutSpec()
-        verticalSpacer.flexGrow = true
+        textFieldNode.preferredFrameSize = CGSizeMake(fourFifthsWidth, textFieldHeight)
+        let staticTextNodeSpec = ASStaticLayoutSpec(children: [textFieldNode])
 
         
-        // Add them all up
         
-        let fullStack = ASStackLayoutSpec(direction: .Vertical,
-                                           spacing: 0,
-                                           justifyContent: .Center,
-                                           alignItems: .Center,
-                                           children: [ photoInsetWrapper, verticalLowerHalfWrapper])
-        return fullStack
+        nextButton.preferredFrameSize = CGSizeMake(fourFifthsWidth, nextButtonHeight)
+        let staticNextButtonSpec = ASStaticLayoutSpec(children: [nextButton])
+
+        
+        let textNodesSpec = ASStackLayoutSpec(direction: .Vertical,
+                                         spacing: 4,
+                                         justifyContent: .SpaceBetween,
+                                         alignItems: .Center,
+                                         children: [ staticTextNodeSpec])
+
+        
+        
+        let textSpec = ASStackLayoutSpec(direction: .Vertical,
+                                                       spacing: 20,
+                                                       justifyContent: .SpaceBetween,
+                                                       alignItems: .Center,
+                                                       children: [textNodesSpec, staticNextButtonSpec])
+
+        
+        
+        
+        let fullStackSpec = ASStackLayoutSpec(direction: .Vertical,
+                                              spacing: 10,
+                                              justifyContent: .Start,
+                                              alignItems: .Center,
+                                              children: [staticUserPhotoButtonSpec, textSpec])
+        
+        let fullWrapperInsets = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(20, 0, 0, 0) , child: fullStackSpec)
+
+        
+        
+        
+        return ASOverlayLayoutSpec(child: fullWrapperInsets, overlay: loadingScreenOverlay)
+
     }
     
     
@@ -420,44 +302,44 @@ class CreateUserNode: ASDisplayNode, ASEditableTextNodeDelegate {
 //        return roundedImage
 //    }
 //}
-
-extension UIBezierPath {
-    
-    /** Returns an image of the path drawn using a stroke */
-    func strokeMyImageWithColor() -> UIImage {
-        
-        // get your bounds
-        let bounds: CGRect = self.bounds
-        
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(bounds.size.width + self.lineWidth * 2, bounds.size.width + self.lineWidth * 2), false, UIScreen.mainScreen().scale)
-        
-        // get reference to the graphics context
-        let reference: CGContextRef = UIGraphicsGetCurrentContext()!
-        
-        // translate matrix so that path will be centered in bounds
-        CGContextTranslateCTM(reference, self.lineWidth, self.lineWidth)
-        
-        let strokeColor = UIColor.whiteColor()
-
-        let fillColor = UIColor.redColor()
-      
-        
-        // set the color
-        strokeColor.setStroke()
-        fillColor.setFill()
-        
-        
-        // draw the path
-        fill()
-        stroke()
-        
-        
-        // grab an image of the context
-        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
-        
-        UIGraphicsEndImageContext()
-        
-        return image
-    }
-    
-}
+//
+//extension UIBezierPath {
+//    
+//    /** Returns an image of the path drawn using a stroke */
+//    func strokeMyImageWithColor() -> UIImage {
+//        
+//        // get your bounds
+//        let bounds: CGRect = self.bounds
+//        
+//        UIGraphicsBeginImageContextWithOptions(CGSizeMake(bounds.size.width + self.lineWidth * 2, bounds.size.width + self.lineWidth * 2), false, UIScreen.mainScreen().scale)
+//        
+//        // get reference to the graphics context
+//        let reference: CGContextRef = UIGraphicsGetCurrentContext()!
+//        
+//        // translate matrix so that path will be centered in bounds
+//        CGContextTranslateCTM(reference, self.lineWidth, self.lineWidth)
+//        
+//        let strokeColor = UIColor.whiteColor()
+//
+//        let fillColor = UIColor.redColor()
+//      
+//        
+//        // set the color
+//        strokeColor.setStroke()
+//        fillColor.setFill()
+//        
+//        
+//        // draw the path
+//        fill()
+//        stroke()
+//        
+//        
+//        // grab an image of the context
+//        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+//        
+//        UIGraphicsEndImageContext()
+//        
+//        return image
+//    }
+//    
+//}

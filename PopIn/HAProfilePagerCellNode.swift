@@ -10,7 +10,7 @@
 import AsyncDisplayKit
 
 
-class HAProfilePagerCellNode: ASCellNode, ASPagerNodeDataSource {
+class HAProfilePagerCellNode: ASCellNode, ASPagerDataSource {
     
 
     let pagerNode: ASPagerNode

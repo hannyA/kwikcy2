@@ -14,49 +14,47 @@ protocol HAAlbumDisplayVCDelegate {
     func removeNewAlbumAtIndexPath(indexPath: NSIndexPath)
 }
 
-class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate {
+class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate, MediaModelDelegate {
 
     
     var delegate: HAAlbumDisplayVCDelegate?
     
-    let displayNode: HAAlbumDisplayNode
+    let albumDisplayNode: HAAlbumDisplayNode
     
     let albumModel: AlbumModel
-    let newAlbumSection: Bool
+    let isNewAlbumSection: Bool
 
-    var timer: NSTimer?
-
-    var isPaused = false
-    var timeLeft:Double
-//    var timeLimit:Double
+    var timeLeft:Double?
     
     let indexPath: NSIndexPath
     
     var albumError = false
     
-    init(album: AlbumModel, fromNewAlbumSection newSection: Bool, atIndexPath indexPath: NSIndexPath) {
+    var currentMediaContent: MediaModel
+
     
+    init(album: AlbumModel, isFromNewAlbumSection newSection: Bool, atIndexPath indexPath: NSIndexPath) {
+    
+        
+        // Change to loading images and video
         albumModel = album
         self.indexPath = indexPath
-        newAlbumSection = newSection
+        isNewAlbumSection = newSection
         
-        print("DisplayVC albumModel starting at: \(albumModel.newMediaIndex!) out of \(albumModel.mediaCount!). Current index: \(albumModel.currentItemIndex)")
         
-        let firstItem:MediaModel
-        
-        if newAlbumSection {
+        if isNewAlbumSection {
             print("startWithNewContent")
-            firstItem = albumModel.firstNewItem()!
+            currentMediaContent = albumModel.firstNewItem()!
         } else {
-            firstItem = albumModel.firstItem()!
+            currentMediaContent = albumModel.firstItem()!
         }
         
-        displayNode = HAAlbumDisplayNode(withMediaContent: firstItem)
-        timeLeft = Double(firstItem.viewTime!)
-        super.init(node: displayNode)
+        albumDisplayNode = HAAlbumDisplayNode()
+
+        super.init(node: albumDisplayNode)
         
         
-        displayNode.delegate = self
+        albumDisplayNode.delegate = self
     }
     
     
@@ -69,50 +67,66 @@ class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
+        print("viewWillAppear")
+        let image = UIImage(named: (self.currentMediaContent.media)!)
+        changeDisplayViewToImage(image!)
+        print("viewWillAppear done")
+
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        presentClearViewController()
-    }
-    
-    
-    
-    func presentClearViewController() {
         
-        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseIn , animations: {
+        UIView.animateWithDuration(0.1, delay: 0.0, options: .CurveEaseIn , animations: {
             self.view.alpha = 1.0
-            
+        
         }) { (complete) in
             
-            self.timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(self.timeLeftForMediaContent), userInfo: nil, repeats: true)
+            self.startCurrentTimer()
         }
     }
     
     
     
-    
-    func timeLeftForMediaContent() {
-        
+    func updateVCForTimeLeft(timeLeft: Int) {
+       
         print("Timeleft: \(timeLeft)")
-        timeLeft -= 1
+        
         if timeLeft <= 0 {
             showNextItem()
         }
     }
     
-    
-    func stopTimer() {
-        timer?.invalidate()
+    func changeDisplayViewToImage(image: UIImage) {
+        
+        print("changeDisplayViewToImage start")
+
+        albumDisplayNode.imageNode.image = image
+        currentMediaContent.delegate = self
+        print("changeDisplayViewToImage done")
 
     }
     
-    func startTimer() {
-        print("Timer has started")
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(timeLeftForMediaContent), userInfo: nil, repeats: true)
+    func continueTimer() {
+        currentMediaContent.continueTimer()
     }
     
+    func startCurrentTimer() {
+        print("startCurrentTimer")
+
+        currentMediaContent.startTimer()
+    }
+    
+    func stopCurrentTimer() {
+        print("stopCurrentTimer")
+        currentMediaContent.stopTimer()
+    }
+
     
     
     
@@ -128,83 +142,68 @@ class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate {
     func closeAlbumVC() {
         
         
-        if newAlbumSection && !albumModel.hasNewContent {
+        if isNewAlbumSection && !albumModel.hasNewContent {
             delegate?.removeNewAlbumAtIndexPath(indexPath)
         }
         
-        stopTimer()
+        stopCurrentTimer()
         
         UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
             self.view.alpha = 0.0
             
         }) { (complete) in
             
-            self.navigationController?.popViewControllerAnimated(false)
+            self.dismissViewControllerAnimated(false, completion: nil)
+//            self.navigationController?.popViewControllerAnimated(false)
         }
     }
 
     
     func pauseAlbum() {
 
-        isPaused = !isPaused
-        if isPaused {
-            print("Timer is paused")
-            stopTimer()
-
+        if currentMediaContent.timerIsRunning() {
+            stopCurrentTimer()
         } else {
-            startTimer()
+            continueTimer()
         }
     }
-    func unPauseAlbum() {
+    
+    
+    func changeCurrentMediaContent(mediaContent: MediaModel) {
         
-        isPaused = false
+        currentMediaContent = mediaContent
+        let image = UIImage(named: (currentMediaContent.media)!)
+        changeDisplayViewToImage(image!)
+        startCurrentTimer()
     }
-    
-//    func startAlbum() {  }
-//    
-//    func previousAlbumMedia(){   }
-//    func nextAlbumMedia() { }
-    
     
     
     func showPreviousItem() {
         
-        unPauseAlbum()
+        print("===============================================================")
+        print("             HAAlbumDisplayVC ShowPreviousItem  ")
+        print("===============================================================")
 
-        print("showPreviousItem")
+        if let previousMediaContent = albumModel.previousItem() {
 
-        if let nextMediaContent = albumModel.previousItem() {
-            stopTimer()
+            stopCurrentTimer()
             
-            timeLeft = Double(nextMediaContent.viewTime!)
-            
-            let imageName = nextMediaContent.media
-            
-            displayNode.updateImageNamed(imageName!)
-            
-            startTimer()
-            
+            changeCurrentMediaContent(previousMediaContent)
         } else {
-            
+            print("This is the first image, Can't go back")
         }
     }
     
     func showNextItem() {
-        print("HAAlbumDisplayVC showNextItem")
-        unPauseAlbum()
-
+        print("===============================================================")
+        print("            HAAlbumDisplayVC showNextItem")
+        print("===============================================================")
 
         if let nextMediaContent = albumModel.nextItem() {
 
-            stopTimer()
-
-            timeLeft = Double(nextMediaContent.viewTime!)
+            stopCurrentTimer()
             
-            let imageName = nextMediaContent.media
-            
-            displayNode.updateImageNamed(imageName!)
-            
-            startTimer()
+            changeCurrentMediaContent(nextMediaContent)
             
         } else {
             closeAlbumVC()

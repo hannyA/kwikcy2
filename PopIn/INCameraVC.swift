@@ -32,7 +32,7 @@ INCameraContainerViewViewControllerDelegate {
     
     var cameraInitOnce: Bool = false
    
-    init() {
+    init(withCameraPosition position: AVCaptureDevicePosition) {
         
         controlsCellNode = INCameraControlsCellNode()
         nextControlsCellNode = INCameraNextCellNode()
@@ -47,7 +47,8 @@ INCameraContainerViewViewControllerDelegate {
         
         if !cameraInitOnce {
             cameraInitOnce = true
-            fullCameraDisplay.initializeCamera(withFrame: self.view.frame)
+            
+            fullCameraDisplay.initializeCamera(withFrame: self.view.frame, side: position, allowVideoRecording: true)
             fullCameraDisplay.cameraContainerView?.viewControllerDelegate = self
         }
     }
@@ -58,12 +59,8 @@ INCameraContainerViewViewControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBarHidden = true
-
 
         print("navigationController?.navigationBarHidden = \(navigationController?.navigationBarHidden)")
-        
-        
         
         view.addSubnode(fullCameraDisplay)
         
@@ -72,7 +69,14 @@ INCameraContainerViewViewControllerDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBarHidden = true
+        tabBarController?.tabBar.hidden = true
+
         fullCameraDisplay.cameraContainerView?.cameraWillAppear()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        fullCameraDisplay.cameraContainerView?.cameraWillDisappear()
+        super.viewWillDisappear(animated)
     }
     
     
@@ -80,7 +84,7 @@ INCameraContainerViewViewControllerDelegate {
         super.viewDidAppear(animated)
         UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: { 
             self.view.alpha = 1.0
-            }, completion: nil)
+        }, completion: nil)
     }
     
     
@@ -106,6 +110,7 @@ INCameraContainerViewViewControllerDelegate {
     }
     
     func gotoNextViewController() {
+        print("AlbumUploadVC gotoNextViewController")
         let albumUploadVC = AlbumUploadVC(withPhoto:photo!)
         navigationController?.pushViewController(albumUploadVC, animated: true)
     }
@@ -126,6 +131,7 @@ INCameraContainerViewViewControllerDelegate {
             self.view.alpha = 0.0
         }) { (complete) in
             self.navigationController?.popViewControllerAnimated(false)
+//            self.dismissViewControllerAnimated(false, completion: nil)
         }
     }
     
@@ -188,14 +194,7 @@ INCameraContainerViewViewControllerDelegate {
     }
     
     
-    let randomUpsetEmojis = ["😤","😰","😢","😭","😡","😩","😫","😔"]
     
-    func randomUpsetEmoji() -> String {
-        return randomUpsetEmojis[Int(arc4random_uniform(UInt32(randomUpsetEmojis.count)))]
-    }
-    
-    
-
 
     func photoWillBeTaken() {
         print("photoWillBeTaken")
@@ -209,10 +208,12 @@ INCameraContainerViewViewControllerDelegate {
     func videoStopped() {
         print("videoStopped")
     }
+    
+    // Either we use camera side for when photo is taken by camera, or change usingFrontCamera to Image width and height for import images
   
     
-    func cameraShotFinished(image: UIImage?) {
-      
+    func cameraShotFinished(image: UIImage?, fromCameraSide side: AVCaptureDevicePosition?) {
+        
         print("cameraShotFinished")
         if let photoImage = image {
             photo = photoImage
@@ -224,13 +225,13 @@ INCameraContainerViewViewControllerDelegate {
         
         fullCameraDisplay.showSpinningWheel()
         if let photo = photo {
-            UIImageWriteToSavedPhotosAlbum(photo, self, #selector(HAFollowingVC.image(_:didFinishSavingWithError:contextInfo:)), nil)
-
+            UIImageWriteToSavedPhotosAlbum(photo, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
         } else  {
             fullCameraDisplay.hideSpinningWheel()
-            fullCameraDisplay.showSuccessfulSaveMessage(false)
+            fullCameraDisplay.showMessageForSuccessfulSave(false)
         }
     }
+    
 
     // Save image to iPhone library
     func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafePointer<Void>) {
@@ -238,9 +239,9 @@ INCameraContainerViewViewControllerDelegate {
         fullCameraDisplay.hideSpinningWheel()
 
         if error == nil {
-            fullCameraDisplay.showSuccessfulSaveMessage(true)
+            fullCameraDisplay.showMessageForSuccessfulSave(true)
         } else {
-            fullCameraDisplay.showSuccessfulSaveMessage(false)
+            fullCameraDisplay.showMessageForSuccessfulSave(false)
         }
     }
     
@@ -253,7 +254,6 @@ INCameraContainerViewViewControllerDelegate {
 //            }, completion: nil)
 //        
     }
-    
 }
 
 

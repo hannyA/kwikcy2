@@ -11,7 +11,7 @@ import AsyncDisplayKit
 
 protocol HorizontalScrollCellDelegate {
     func numberOfItemsInCollectionView() -> Int
-    func itemAtIndexPathRow(row: Int) -> UserModel
+    func itemAtIndexPathRow(row: Int) -> UserUploadFriendModel
     func deleteItemFromTableAndCollectionNodeAtSelectedFriendsIndexRow(index: Int)
 }
 
@@ -326,14 +326,20 @@ class HorizontalScrollCell: ASCellNode,
     func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode
     {
         let userModel = delegate!.itemAtIndexPathRow(indexPath.row)
-        let image = UIImage(named: userModel.userTestPic!)
+//        
+        var image: UIImage?
+        if let downloadedFile = userModel.downloadFileURL {
+            if let data = NSData(contentsOfURL: downloadedFile) {
+                image = UIImage(data: data)!
+            }
+        }
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.intoThingAir))
         panGesture.minimumNumberOfTouches = 1
         panGesture.delegate = self
         
         
-        let imageCellNode = ImageCell(withImage: image!, size: self._elementSize, gesture: panGesture)
+        let imageCellNode = ImageCell(withImage: image, size: self._elementSize, gesture: panGesture, forUser: userModel)
 //        imageCellNode.preferredFrameSize = self._elementSize
         
         self.cellNodeViews.append(imageCellNode)

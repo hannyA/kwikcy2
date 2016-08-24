@@ -11,7 +11,7 @@ import AsyncDisplayKit
 class HASearchFriendCN: ASCellNode {
     
     
-    let userModel: UserModel
+    let userModel: UserSearchModel
     
     let userAvatarImageView: ASImageNode
     let userNameLabel: ASTextNode
@@ -21,9 +21,9 @@ class HASearchFriendCN: ASCellNode {
     let checkImage: ASImageNode
     let _divider: ASDisplayNode
     let hasTopDivider:Bool
-    var isSelected = false
+    var isUserSelected = false
     
-    init(withUserModel model: UserModel, hasDivider:Bool) {
+    init(withUserModel model: UserSearchModel, hasDivider:Bool) {
         
         userModel = model
         hasTopDivider = hasDivider
@@ -44,7 +44,6 @@ class HASearchFriendCN: ASCellNode {
         }
         
         userAvatarImageView = ASImageNode() //ASNetworkImageNode()
-        userAvatarImageView.image = userModel.userPic
         userAvatarImageView.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
         userAvatarImageView.preferredFrameSize = CGSizeMake(44, 44)
         userAvatarImageView.cornerRadius = 22.0
@@ -54,12 +53,26 @@ class HASearchFriendCN: ASCellNode {
         
         //        func
         
+//        func usernameAttributedStringWithFontSize(size: CGFloat) -> NSAttributedString {
+//            return NSAttributedString(string: userName, fontSize: size, color: UIColor.blackColor(), firstWordColor: nil)
+//        }
+//        
+//        func fullNameAttributedStringWithFontSize(size: CGFloat) -> NSAttributedString {
+//            return NSAttributedString(string: fullName, fontSize: size, color: UIColor.lightGrayColor(), firstWordColor: nil)
+//        }
+//
+        
+        
         userNameLabel = ASTextNode()
-        userNameLabel.attributedString = userModel.usernameAttributedStringWithFontSize(18)
+        userNameLabel.attributedString = HAGlobal.titlesAttributedString(userModel.userName,
+                                                                         color: UIColor.blackColor(),
+                                                                         textSize: 18)
         userNameLabel.layerBacked = true
         
         userRealnameLabel = ASTextNode()
-        userRealnameLabel.attributedString = userModel.fullNameAttributedStringWithFontSize(16)
+        userRealnameLabel.attributedString = HAGlobal.titlesAttributedString(userModel.fullName,
+                                                                         color: UIColor.blackColor(),
+                                                                         textSize: 16)
         userRealnameLabel.layerBacked = true
 
         //        friendsButton = ASButtonNode()
@@ -126,6 +139,24 @@ class HASearchFriendCN: ASCellNode {
         super.init()
         
         
+        
+        userModel.avatarImageClosure = { image in
+            self.userAvatarImageView.image = image
+        }
+        
+        
+        if userAvatarImageView.image == nil {
+            if let downloadedFile = userModel.downloadFileURL {
+                if let data = NSData(contentsOfURL: downloadedFile) {
+                    userAvatarImageView.image = UIImage(data: data)
+                }
+            }
+        }
+        
+
+        
+        
+        
         addSubnode(userAvatarImageView)
         addSubnode(userNameLabel)
         addSubnode(userRealnameLabel)
@@ -137,7 +168,7 @@ class HASearchFriendCN: ASCellNode {
     override func didLoad() {
         super.didLoad()
         
-        userSelected(isSelected)
+        userSelected(isUserSelected)
 
     }
     
@@ -145,8 +176,8 @@ class HASearchFriendCN: ASCellNode {
     func userSelected(selected:Bool) {
 
         print("userSelected")
-        isSelected = selected
-        if isSelected {
+        isUserSelected = selected
+        if isUserSelected {
             print("isSelected")
 
             checkImage.borderColor = UIColor.clearColor().CGColor

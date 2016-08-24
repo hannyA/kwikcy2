@@ -27,83 +27,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         self.window = window
         
         // SignIn viewController & navController
-        let signInVC = SigninNodeController()
-        let signInVCNavCtrl = UINavigationController(rootViewController: signInVC)
+//        let signInVC = RegisterUserVC()
+//        let signInVCNavCtrl = UINavigationController(rootViewController: signInVC)
+
+        let tabbarVC = HATabBarController()
+        let signInVCNavCtrl = UINavigationController(rootViewController: tabbarVC)
         signInVCNavCtrl.navigationBarHidden = true
         window.rootViewController = signInVCNavCtrl
         window.makeKeyAndVisible()
         
-        
-//        let signinVC = SigninViewController()
-//        let signInVCNavCtrl = UINavigationController(rootViewController: signinVC)
-//        signInVCNavCtrl.navigationBarHidden = true
-//        window.rootViewController = signInVCNavCtrl
-//        window.makeKeyAndVisible()
-        
-        
 
-        
+        //MARK: Uncomment this line
+//        return AWSMobileClient.sharedInstance.didFinishLaunching(application, withOptions: launchOptions)
         return true
         
-        /*
-        
-        // this UIWindow subclass is neccessary to make the status bar opaque
-        let window = WindowWithStatusBarUnderlay(frame: UIScreen.mainScreen().bounds)
-        window.backgroundColor = UIColor.whiteColor()
-        
-        
-        window.rootViewController = PhotoFeedNodeController()
-        
-        window.makeKeyAndVisible()
-        self.window = window
-       
-        
-        // ASDK Home Feed viewController & navController
-        let asdkHomeFeedVC: PhotoFeedNodeController = PhotoFeedNodeController()
-        let asdkHomeFeedNavCtrl: UINavigationController = UINavigationController(rootViewController: asdkHomeFeedVC)
-        asdkHomeFeedNavCtrl.tabBarItem = UITabBarItem(title: "PopRoll", image: UIImage(named: "home"), tag: 1)
-        asdkHomeFeedNavCtrl.hidesBarsOnSwipe = true
-        
-        
-        
-        // SignIn viewController & navController
-        let signInVC: SigninController = SigninController()
-        let signInVCNavCtrl: UINavigationController = UINavigationController(rootViewController: signInVC)
-        signInVCNavCtrl.tabBarItem = UITabBarItem(title: "Signin", image: UIImage(named: "home"), tag: 0)
-        signInVCNavCtrl.hidesBarsOnSwipe = true
-        
-        
-        
-        // UITabBarController
-        let tabBarController: UITabBarController = UITabBarController()
-        
-        tabBarController.viewControllers = [signInVC, asdkHomeFeedNavCtrl]
-        tabBarController.selectedViewController = signInVC
-        tabBarController.delegate = self
-        UITabBar.appearance().tintColor = UIColor.blueColor()
-        
-        
-        window.rootViewController = tabBarController
-        
-        window.makeKeyAndVisible()
-        self.window = window
-
-        
-        // Nav Bar appearance
-        
-        let attributes: Dictionary = [NSForegroundColorAttributeName: UIColor.whiteColor()]
-        let navigationBarAppearance = UINavigationBar.appearance()
-        navigationBarAppearance.titleTextAttributes = attributes
-        navigationBarAppearance.barTintColor = UIColor.blueColor()
-        navigationBarAppearance.translucent = false
-        
-        // iOS8 hides the status bar in landscape orientation, this forces the status bar hidden status to NO
-        // [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
-        // [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-        
-        return true
- 
- */
     }
     
     
@@ -122,7 +59,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 //        }
 //    }
     
-
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        // print("application application: \(application.description), openURL: \(url.absoluteURL), sourceApplication: \(sourceApplication)")
+        return AWSMobileClient.sharedInstance.withApplication(application, withURL: url, withSourceApplication: sourceApplication, withAnnotation: annotation)
+    }
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -135,16 +76,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+
     }
+    
+    
+    //MARK: Uncomment below
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        AWSMobileClient.sharedInstance.applicationDidBecomeActive(application)
     }
-
-    func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-
+//
+//    func applicationWillTerminate(application: UIApplication) {
+//        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+//    }
+//    
+//    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+//        AWSMobileClient.sharedInstance.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+//    }
+//    
+//    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+//        AWSMobileClient.sharedInstance.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
+//    }
+//    
+//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+//        AWSMobileClient.sharedInstance.application(application, didReceiveRemoteNotification: userInfo)
+//    }
 
 }
 

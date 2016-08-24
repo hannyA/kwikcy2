@@ -8,25 +8,39 @@
 
 
 import AsyncDisplayKit
+import AWSMobileHubHelper
+import SwiftyDrop
+
+
+
+/*
+ *  View Controller that shows the list of albums that we can choose to add the photo/video
+ *  Also has a "Create New Album" button on the bottom of the view
+ */
 
 class AlbumUploadVC: ASViewController, ASTableDelegate, ASTableDataSource,
 MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
-    
-//    let tableNode: ASTableNode
-    var profileModel: ProfileModel
+
+    var albums: MyAlbums
     let albumTableNodeDisplay: AlbumUploadDisplayView
-    
     var newPhoto: UIImage
+    var isLoadingAlbums = true
+    
+    var selectedAlbumModel = [AlbumModel]()
+    //    var albumsCellNodesList         = [MyAlbumCN]()
+    
+    // These are not sorted because of the async property of nodeblock
+    var oldAlbumsCellNodesList         = [MyAlbumCN]()
+    var newAlbumsCellNodesList         = [MyAlbumCN]()
+    
+
     
     init(withPhoto photo: UIImage) {
-       
+
         newPhoto = photo
-        
-        let userModel = TESTFullAppModel(numberOfUsers: 1).firstUser()
-        profileModel = ProfileModel(withUser: userModel!, withNumberOfAlbums: 10)
-        
         albumTableNodeDisplay = AlbumUploadDisplayView()
+        albums = MyAlbums()
         
         super.init(node: albumTableNodeDisplay)
         
@@ -37,19 +51,37 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         title = "My Albums"
     }
     
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         albumTableNodeDisplay.tableNode.view.allowsSelection = true
         albumTableNodeDisplay.tableNode.view.separatorStyle = .None
+        
+        albums.load { (success) in
+            
+            print("albums.load done")
+
+            self.isLoadingAlbums = false
+            if success {
+                print("success")
+            } else {
+                Drop.down("Couldn't get your albums \(randomUpsetEmoji())",
+                    state: .Error ,
+                    duration: 4.0,
+                    action: nil)
+            }
+            self.albumTableNodeDisplay.tableNode.view.reloadData()
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        print("AlbumUploadVC viewWillAppear")
+
         navigationController?.navigationBarHidden = false
     }
     
@@ -57,7 +89,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         super.viewDidDisappear(animated)
     }
     
-
+    
     
     //MARK: NewAlbum Delegate methods
     
@@ -67,9 +99,6 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         newAlbumVC.delegate = self
         let newAlbumNavCon = UINavigationController(rootViewController: newAlbumVC)
         newAlbumNavCon.modalTransitionStyle  = .CoverVertical
-        
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: .Plain, target: newAlbumVC, action: #selector(dismissVC))
-        newAlbumVC.navigationItem.setLeftBarButtonItem(cancelButton, animated: false)
         
         presentViewController(newAlbumNavCon, animated: true, completion: nil)
     }
@@ -83,42 +112,88 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
     
     
-    var didCreateNewAlbum = false
-    var numberOfSections = 1
-    
-    
-    
-    
-    
-    func createNewAlbum(newAlbum: AlbumModel, usersAccessControlList: [UserModel] ) {
-      
-        newAlbum.insertPhotoImage(newPhoto)
-        newAlbum.uploadAlbum(newAlbum)
-        
-        let lastRow = profileModel.insertNewAlbum(newAlbum)
-       
-        albumTableNodeDisplay.tableNode.view.beginUpdates()
+    func uploadMediaToSelectedAlbums() {
+        albumTableNodeDisplay.buttonsDisplay.disableDoneButton()
+        print("Lets update all new albus with the new media content")
 
-        if !didCreateNewAlbum {
-            didCreateNewAlbum = true
-            let newSection      = NSIndexSet(index: 0)
-            albumTableNodeDisplay.tableNode.view.insertSections(newSection, withRowAnimation: .Top)
+        for albumModel in selectedAlbumModel {
+            print("Uploading to Album - Title: \(albumModel.title), Id: \(albumModel.id)")
         }
         
-        let firstRowInSectionPath = NSIndexPath(forRow: 0, inSection: 0)
-        let lastIndexPath   = NSIndexPath(forRow: lastRow, inSection: 1)
         
-        let indexPaths = [firstRowInSectionPath, lastIndexPath]
-        albumTableNodeDisplay.tableNode.view.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
-       
-        albumTableNodeDisplay.tableNode.view.endUpdates()
     }
-
     
-    func cellNodesInList(list: [MyAlbumCN], forAlbum album: AlbumModel) -> [MyAlbumCN] {
+    func createNewAlbum(newAlbum: AlbumModel) {
+        
+        albumTableNodeDisplay.tableNode.view.beginUpdates()
+
+       
+        if albums.bothEmpty() {  // Delete "No Albums" row
+            albumTableNodeDisplay.tableNode.view.deleteRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)],
+                                                                        withRowAnimation: .None)
+        } else if albums.onlyOneFilled() && !albums.oldEmpty() {
+            albumTableNodeDisplay.tableNode.view.insertSections(NSIndexSet(index: 0),
+                                                                withRowAnimation: .Top)
+        }
+        
+        let _ = albums.insertNewAlbum(newAlbum)
+        
+        albumTableNodeDisplay.tableNode.view.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)],
+                                                                    withRowAnimation: .Top)
+        albumTableNodeDisplay.tableNode.view.endUpdates()
+        
+        print("end updates")
+
+        uploadAlbum(newAlbum)
+    }
+    
+    
+    
+    func uploadAlbum(newAlbum: AlbumModel) {
+        print("will uploadAlbum")
+//        let albumsCellNodes = self.findCellNodesInList(self.newAlbumsCellNodesList, containing: newAlbum)
+
+     
+        newAlbum.uploadAlbum { (successful) in
+//            print("albumsCellNodes count: \(albumsCellNodes.count)")
+            print("will newAlbum.uploadAlbum")
+            if successful {
+                print("will newAlbum.uploadAlbum successful")
+//                for albumCN in albumsCellNodes {
+//                    
+//                    self.selectedAlbumModel.append(albumCN.album)
+//                    albumCN.userSelected(true)
+//                    albumCN.uploadSuccessful(true)
+//                    newAlbum.insertPhotoImage(newPhoto)
+//                }
+                NSNotificationCenter.defaultCenter().postNotificationName("kAlbumUploadNotification",
+                                                                          object: newAlbum,
+                                                                          userInfo: ["success": true])
+            } else {
+                print("will newAlbum.uploadAlbum failed")
+//                for albumCN in albumsCellNodes {
+//                    albumCN.userSelected(false)
+//                    albumCN.uploadSuccessful(false)
+//                }
+                NSNotificationCenter.defaultCenter().postNotificationName("kAlbumUploadNotification",
+                                                                          object: newAlbum,
+                                                                          userInfo: ["success": false])
+                Drop.down("Couldn't create your album \(randomUpsetEmoji())",
+                          state: .Error ,
+                          duration: 3.0,
+                          action: nil)
+            }
+        }
+    }
+    
+    
+    
+    // Helper
+    
+    func findCellNodesInList(list: [MyAlbumCN], containing album: AlbumModel) -> [MyAlbumCN] {
         
         return list.filter({ (albumCN: MyAlbumCN) -> Bool in
-            if albumCN.album.id == album.id {
+            if albumCN.album === album {
                 return true
             }
             return false
@@ -126,212 +201,389 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     }
     
     
+    func findCellNodesContaining(album: AlbumModel) -> [MyAlbumCN] {
+        
+        var cellNodes = findCellNodesInList(oldAlbumsCellNodesList, containing: album)
+        let newCellNodes = findCellNodesInList(newAlbumsCellNodesList, containing: album)
+        
+        cellNodes.appendContentsOf(newCellNodes)
+        return cellNodes
+    }
+    
     
     
     
     
     //MARK: - ASTableDataSource methods
+    /*
+     *  New albums section and original albums section
+     */
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if didCreateNewAlbum {
-            return 2
-        }
-        return 1
+        return albums.bothFilled() ? 2 : 1
     }
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if didCreateNewAlbum && section == 0 {
-            return profileModel.newAlbumCount()
+        if section == 0 {
+            if !albums.newEmpty() {
+                return albums.newCount()
+            } else {
+                return !albums.oldEmpty() ? albums.oldCount() : 1
+            }
+        } else  {
+            return albums.oldCount()
         }
-        return profileModel.albumCount()
     }
     
     
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if didCreateNewAlbum && section == 0 {
-            return "Just Created"
-        } else if didCreateNewAlbum {
-            return "Albums"
+        
+        if albums.bothFilled() {
+            if section == 0 {
+                return "Just Made"
+            } else {
+                return "Albums"
+            }
         }
         return nil
     }
     
+   
     
-  
-    
-    
-    var selectedAlbumsCellNodesList = [AlbumModel]()
-//    var albumsCellNodesNewList = [MyAlbumCN]()
-    var albumsCellNodesList = [MyAlbumCN]()
-    
-
-    func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
-        // If albums exist
-        
+    func tableView(tableView: ASTableView, nodeBlockForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
         
         print("nodeForRowAtIndexPath")
-        let album: AlbumModel
-        let albumCellNode: MyAlbumCN
         
-        if didCreateNewAlbum && indexPath.section == 0 {
-            album = profileModel.newAlbumAtIndex(indexPath.row)
-            albumCellNode = MyAlbumCN(withAlbumObject: album, atIndexPath: indexPath)
-        } else {
-            album = profileModel.albumAtIndex(indexPath.row)
-            albumCellNode = MyAlbumCN(withAlbumObject: album, atIndexPath: indexPath)
+        func loadingCellNode() -> ASCellNodeBlock {
+            return {() -> ASCellNode in
+                let cellNode = HALargeLoadingCN()
+                cellNode.selectionStyle = .None
+                return cellNode
+            }
         }
         
-        albumsCellNodesList.append(albumCellNode)
-        albumCellNode.selectionStyle = .None
-        albumCellNode.delegate = self
-        
-        return albumCellNode
-        
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        let album: AlbumModel
-        
-        if didCreateNewAlbum && indexPath.section == 0 {
-            album = profileModel.newAlbumAtIndex(indexPath.row)
-        } else {
-            album = profileModel.albumAtIndex(indexPath.row)
+        func newCellNode() -> ASCellNodeBlock {
+
+            let album = albums.newAlbumAtIndex(indexPath.row)
+            
+            return {() -> ASCellNode in
+                let albumCellNode = MyAlbumCN(withAlbumObject: album,
+                                              isSelectable: true,
+                                              hasTopDivider: indexPath.row  == 0 ? false : true )
+                albumCellNode.selectionStyle = .None
+                albumCellNode.delegate = self
+                self.newAlbumsCellNodesList.append(albumCellNode)
+
+                return albumCellNode
+            }
         }
         
-        let albumsCellNodeList = cellNodesInList(albumsCellNodesList, forAlbum: album)
-        
-        print("number of album cells = \(albumsCellNodeList.count)")
-        for albumsCellNode in albumsCellNodeList {
-            if albumsCellNode.album.isUploading {
-                print("isUploading")
-                showMesage()
-                break
-            } else {
-                print("not Uploading")
-                selectedAlbumsCellNodesList.append(albumsCellNode.album)
-                albumsCellNode.userSelected(!albumsCellNode.isSelected)
-                
+        func oldCellNode() -> ASCellNodeBlock {
+
+            let album = albums.oldAlbumAtIndex(indexPath.row)
+            return {() -> ASCellNode in
+                print("1 nodeForRowAtIndexPath oldCellNode")
+                let albumCellNode = MyAlbumCN(withAlbumObject: album,
+                                              isSelectable   : true,
+                                              hasTopDivider  : indexPath.row  == 0 ? false : true )
+                albumCellNode.selectionStyle = .None
+                albumCellNode.delegate = self
+                self.oldAlbumsCellNodesList.append(albumCellNode)
+                print("2 nodeForRowAtIndexPath oldCellNode added old cellnode")
+                print("3 nodeForRowAtIndexPath oldCellNode AlbumId: \(album.id)")
+
+                return albumCellNode
             }
         }
 
         
+        if albums.bothFilled() {
+            
+            if indexPath.section == 0 {
+                
+               return newCellNode()
+                
+            } else { // Section 1
+                
+                if indexPath.row < albums.oldCount() {
+                    
+                    return oldCellNode()
+                    
+                } else { // Geting more albums from server
+                    
+                    return loadingCellNode()
+                }
+            }
+        } else { // Only 1 section
+            if !albums.newEmpty() {
+                
+                return newCellNode()
+                
+            } else if !albums.oldEmpty() {
+
+                if indexPath.row < albums.oldCount() {
+                
+                    return oldCellNode()
+
+                } else { // Geting more albums from server
+                    
+                    return loadingCellNode()
+                }
+            } else if isLoadingAlbums {
+                
+                return loadingCellNode()
+                
+            } else {
+                return {() -> ASCellNode in
+                    let albumCellNode = SimpleCellNode(withMessage: "You have no albums")
+                    albumCellNode.selectionStyle = .None
+                    albumCellNode.userInteractionEnabled = false
+                    return albumCellNode
+                }
+            }
+        }
+    }
+    
+    
+    func printAlbums(list: [MyAlbumCN]) {
+    
+        print("==================================")
+        print("==================================")
+        print("==================================")
+      
+        for cellNode in list {
+            print("CellNode \(cellNode.album.title)")
+            print("CellNode \(cellNode.album.id)")
+        }
+    }
+    
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         
-//        if didCreateNewAlbum && indexPath.section == 0 {
-//            print("section 1 ============================")
-//            
-//            let album = profileModel.newAlbumAtIndex(indexPath.row)
-//            
-//            let albumsCellNodeArray = cellNodesInList(albumsCellNodesNewList, forAlbum: album)
-//            
-//            print("number of album cells = \(albumsCellNodeArray.count)")
-//            for albumsCellNode in albumsCellNodeArray {
-//                if albumsCellNode.album.isUploading {
-//                    print("isUploading")
-//                    // do nothing
-//                    showMesage()
-//                } else {
-//                    print("not Uploading")
-//                    // select
-//                    selectedAlbumsCellNodesList.append(albumsCellNode.album)
-//                    albumsCellNode.userSelected(!albumsCellNode.isSelected)
-//                }
-//            }
-//        } else {
-//            print("section 2 =============================")
-//            
-//            
-//            let album = profileModel.albumAtIndex(indexPath.row)
-//            
-//            let albumsCellNodeArray = cellNodesInList(albumsCellNodesList, forAlbum: album)
-//            
-//            print("number of album cells = \(albumsCellNodeArray.count)")
-//            for albumsCellNode in albumsCellNodeArray {
-//                if albumsCellNode.album.isUploading {
-//                    print("isUploading")
-//                    showMesage()
-//                    break
-//                } else {
-//                    print("not Uploading")
-//                    albumsCellNode.userSelected(!albumsCellNode.isSelected)
-//
-//                }
-//            }
-//        }
+        print("AWWWW didSelectRowAtIndexPath: \(indexPath.section), row: \(indexPath.row)")
+        let album: AlbumModel
+        
+        let listType: [MyAlbumCN]
+
+        if albums.bothFilled() {
+            
+            if indexPath.section == 0 {
+                
+                album = albums.newAlbumAtIndex(indexPath.row)
+                listType = newAlbumsCellNodesList
+
+            } else { // Section 1
+                
+                if indexPath.row < albums.oldCount() {
+                    
+                    album = albums.oldAlbumAtIndex(indexPath.row)
+                    listType = oldAlbumsCellNodesList
+
+                } else { // Geting more albums from server, This should be done automatically
+                    
+                    return
+                }
+            }
+        } else { // Only 1 section
+            if !albums.newEmpty() {
+                
+                album = albums.newAlbumAtIndex(indexPath.row)
+                listType = newAlbumsCellNodesList
+
+            } else if !albums.oldEmpty() {
+                
+                if indexPath.row < albums.oldCount() {
+                    
+                    album = albums.oldAlbumAtIndex(indexPath.row)
+                    listType = oldAlbumsCellNodesList
+
+                } else { // Geting more albums from server
+                    
+                    return
+                }
+            } else if isLoadingAlbums {
+                
+                return
+                
+            } else {
+                
+                return
+            }
+        }
+        
+        
+        if let _ = album.id {
+            
+            let albumsCellNodeList = findCellNodesInList(listType, containing: album)
+            print("number of album cells = \(albumsCellNodeList.count)")
+            
+            printAlbums(listType)
+            for albumCN in albumsCellNodeList {
+                if albumCN.album.isUploading {
+                    print("isUploading")
+                    
+                    Drop.down("Creating album in process",
+                              state: .Warning ,
+                              duration: 3.0,
+                              action: nil)
+                     break
+                } else {
+                    print("not Uploading")
+                    albumCN.userSelected(!albumCN.isUserSelected)
+                    if albumCN.isUserSelected {
+                        addNewAlbum(albumCN.album)
+                    } else {
+                        removeAlbum(albumCN.album)
+                    }
+                    break
+                }
+            }
+            
+            if selectedAlbumModel.count > 0 {
+                albumTableNodeDisplay.buttonsDisplay.enableDoneButton()
+            } else {
+                albumTableNodeDisplay.buttonsDisplay.disableDoneButton()
+            }
+        }
+    }
+    
+    func indexOfSelectedAlbum(album: AlbumModel) -> Int? {
+        
+        return selectedAlbumModel.indexOf { (albumModel) -> Bool in
+            if album === albumModel {
+                return true
+            }
+            return false
+        }
+    }
+    
+    func addNewAlbum(album: AlbumModel) {
+        
+        let index = indexOfSelectedAlbum(album)
+        
+        if index == nil {
+            selectedAlbumModel.append(album)
+        }
+    }
+    
+    func removeAlbum(album: AlbumModel) {
+        
+        if let index = indexOfSelectedAlbum(album) {
+            selectedAlbumModel.removeAtIndex(index)
+        }
     }
 
     
-    func showMesage() {
+    
+    func saveNewTitle(title: String, forAlbum album: AlbumModel) {
         
+//        let indexPath = self.albums.findAlbum(album)  //  self.albums.oldAlbumAtIndex(indexPath.row)
+
+        
+        print("saveNewTitle Is main trhread: \(NSThread.isMainThread())")
+        
+        let cellNodes = self.findCellNodesContaining(album)
+        
+        for cellNode in cellNodes {
+            cellNode.showSpinningWheel()
+        }
+        
+        album.updateTitle(title) { (successful) in
+            
+            if successful {
+                
+//                let cellNodes = self.findCellNodesContaining(album)
+                
+                for cellNode in cellNodes {
+                    cellNode.hideSpinningWheel()
+                    cellNode.replaceTitle()
+                }
+                print("Saved new title")
+                
+            } else {
+                Drop.down("Couldn't album title to \"\(title)\" \(randomUpsetEmoji())",
+                          state: .Error ,
+                          duration: 3.0,
+                          action: nil)
+            }
+        }
     }
     
-//    func tableView(tableView: ASTableView, nodeBlockForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
-//      
-//        // If albums exist
-//        
-//
-//        if didCreateNewAlbum && indexPath.section == 0 {
-//            
-//            let album = profileModel.newAlbumAtIndex(indexPath.row)
-//
-//            return {() -> ASCellNode in
-//                let albumCellNode = MyAlbumCN(withAlbumObject: album, atIndexPath: indexPath)
-//                albumCellNode.userInteractionEnabled = false
-//                albumCellNode.selectionStyle = .None
-//                
-//                albumCellNode.delegate = self
-//                
-//                return albumCellNode
-//            }
-//        } else {
-//            
-//        
-//            
-//            let album = profileModel.albumAtIndex(indexPath.row)
-//
-//            return {() -> ASCellNode in
-//                let albumCellNode = MyAlbumCN(withAlbumObject: album, atIndexPath: indexPath)
-//                albumCellNode.userInteractionEnabled = false
-//                albumCellNode.selectionStyle = .None
-//
-//                albumCellNode.delegate = self
-//                              
-//                return albumCellNode
-//            }
-//        }
-//    }
     
     
-    func showMoreOptionsForObjectAtIndexPath(indexPath: NSIndexPath) {
+    // Allow to Edit users  or title
+    func showOptionsForAlbum(album: AlbumModel) {
+        
         
         print("showMoreOptions")
-        let alertController = UIAlertController(title: "Options", message: nil, preferredStyle: .ActionSheet)
-        let editUsersAction = UIAlertAction(title: "Edit Users", style: .Default) { (defaultAction) in
-            print("editUsersAction pressed")
-            let album = self.profileModel.albumAtIndex(indexPath.row)
-        }
-        alertController.addAction(editUsersAction)
+        let alertActionController = UIAlertController(title: "Options",
+                                                message: nil,
+                                                preferredStyle: .ActionSheet)
         
-        let editMediaContent = UIAlertAction(title: "Edit Content", style: .Default) { (defaultAction) in
-            print("editMediaContent pressed")
-            let album = self.profileModel.albumAtIndex(indexPath.row)
+        // Edit Album Title
+        let editTitleAction = UIAlertAction(title: "Edit Title", style: .Default) { (defaultAction) in
+            print("editTitleAction pressed")
+            
+            
+            // New Alert Controller Pop up
+            let alertController = UIAlertController(title: "Change title",
+                                                    message: nil,
+                                                    preferredStyle: .Alert)
+            
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+            
+            let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action) in
+                
+                print("Saving new title")
+                let newTitleTextField = alertController.textFields![0] as UITextField
+
+                self.saveNewTitle(newTitleTextField.text!, forAlbum: album)
+            })
+            saveAction.enabled = false
+            
+            
+            alertController.addTextFieldWithConfigurationHandler({ (textField) in
+                textField.placeholder = "New Title"
+                textField.keyboardType = .Default
+                
+                
+                NSNotificationCenter.defaultCenter().addObserverForName(UITextFieldTextDidChangeNotification,
+                object: textField,
+                queue: NSOperationQueue.mainQueue()) { (notification) in
+                    saveAction.enabled = textField.text != ""
+                }
+            })
+            
+            alertController.addAction(cancelAction)
+            alertController.addAction(saveAction)
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
         }
-        alertController.addAction(editMediaContent)
+        
+        alertActionController.addAction(editTitleAction)
+        
+        
+        // Edit Friends ACL
+        let editUsersAction = UIAlertAction(title: "Edit Users",
+                                            style: .Default) { (defaultAction) in
+                                                print("editUsersAction pressed")
+                                                
+            let album = self.albums.findAlbum(album)  //  self.albums.oldAlbumAtIndex(indexPath.row)
+                                                
+        }
+        alertActionController.addAction(editUsersAction)
+        
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (canceled) in
             print("Canceled pressed")
         }
-        alertController.addAction(cancelAction)
-        
-        //        showViewController(alertController, sender: self)
-        presentViewController(alertController, animated: true) {
-        }
+        alertActionController.addAction(cancelAction)
+        presentViewController(alertActionController, animated: true, completion: nil)
     }
-    
-    
-   
 }
 
 

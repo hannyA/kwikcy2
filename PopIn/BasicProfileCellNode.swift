@@ -43,7 +43,7 @@ class BasicProfileCellNode: ASCellNode {
     
     
     // Variables
-    let userProfile: ProfileModel
+    let userProfile: UserSearchModel
     let userPic: ASImageNode // change to ASNetworkImageNode
     
     
@@ -87,9 +87,11 @@ class BasicProfileCellNode: ASCellNode {
     }
 
     
-    init(withProfileModel profile: ProfileModel, loggedInUser loggedIn: Bool) {
+    init(withProfileModel profile: UserSearchModel, loggedInUser loggedIn: Bool) {
         
         loggedInUser = loggedIn
+        userProfile = profile
+
         
         // Internal Functions for pre init variabels
         func createLayerBackedTextNodeWithString(attributedString: NSAttributedString) -> ASTextNode {
@@ -106,11 +108,22 @@ class BasicProfileCellNode: ASCellNode {
         func textAttributedString(string: String, withFontSize size: CGFloat) -> NSAttributedString {
             return NSAttributedString(string: string, fontSize: size, color: UIColor.blackColor(), firstWordColor: nil)
         }
+    
         
         
         
-        // Make images round
-        let smallRoundModBlock: asimagenode_modification_block_t = { image in
+        
+        
+        
+
+        //        friendCount.image
+//        friendCount.titleNode.
+        userPic = ASImageNode()
+        userPic.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
+        userPic.preferredFrameSize = CGSizeMake(88, 88)
+        userPic.cornerRadius = 44.0
+        userPic.flexShrink = true
+        userPic.imageModificationBlock = { image in
             var modifiedImage: UIImage
             let rect = CGRectMake(0, 0, image.size.width, image.size.height)
             UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
@@ -123,37 +136,6 @@ class BasicProfileCellNode: ASCellNode {
             UIGraphicsEndImageContext()
             return modifiedImage
         }
-        
-        
-        
-        
-        
-        
-        
-        userProfile = profile
-        
-        
-
-        //        friendCount.image
-//        friendCount.titleNode.
-        userPic = ASImageNode()
-        userPic.image = UIImage(named: profile.user.userTestPic!)
-        userPic.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
-        userPic.preferredFrameSize = CGSizeMake(88, 88)
-        userPic.cornerRadius = 44.0
-        userPic.flexShrink = true
-        userPic.imageModificationBlock = smallRoundModBlock
-        
-        
-        //        #if DEV_PUBLIC_ALBUMS
-        //            print("DEV_PUBLIC_ALBUMS")
-        //        #elseif DEV_FOLLOWERS
-        //            print("DEV_FOLLOWERS")
-        //        #endif
-        //
-        //        #if DEV_FOLLOWERS
-        //            print("DEV_FOLLOWERS 2")
-        //        #endif
         
         
         
@@ -190,7 +172,7 @@ class BasicProfileCellNode: ASCellNode {
         
         // Following Labels and Texts
         
-        let followingsCount = profile.user.followingCount ?? 0
+        let followingsCount = profile.friendsCount ?? 0
         
         // Variable Count
         followingCount = createLayerBackedTextNodeWithString(textAttributedString(String(followingsCount),
@@ -206,7 +188,7 @@ class BasicProfileCellNode: ASCellNode {
         
         // Followers Labels and Texts
         
-        let followCount = profile.user.followersCount ?? 0
+        let followCount = profile.friendsCount ?? 0
         
         followersCount = createLayerBackedTextNodeWithString(textAttributedString(String(followCount),
             withFontSize: topTextSize))
@@ -274,46 +256,87 @@ class BasicProfileCellNode: ASCellNode {
         followButton.cornerRadius = 2.0
         
         
-        fullnameLabel = createLayerBackedTextNodeWithString(textAttributedString(profile.user
-            .fullName!, withFontSize: 16))
+        fullnameLabel = createLayerBackedTextNodeWithString(textAttributedString(profile.fullName , withFontSize: 16))
         fullnameLabel.preferredFrameSize = CGSizeMake(100, 50)
         
         
         
         verificationImage = ASImageNode()
-        verificationImage.image = UIImage(named: "circle-tick-7.png")
+        
+        verificationImage.icon(from: .MaterialIcon,
+                               code: "verified.user",
+                               imageSize: CGSizeMake(12, 12),
+                               ofSize: 12,
+                               color: UIColor.blueColor())
+        
+        
         verificationImage.preferredFrameSize = CGSizeMake(12, 12)
         verificationImage.cornerRadius = 6.0
         verificationImage.backgroundColor =  UIColor.lightBlueColor()
         
         
         
-        
-        
-        shortDescription = createLayerBackedTextNodeWithString(textAttributedString(profile.user.about!, withFontSize: 14))
-        domainWebLink = createLayerBackedTextNodeWithString(textAttributedString(profile.user.domain!, withFontSize: 14))
+        shortDescription = createLayerBackedTextNodeWithString(textAttributedString(profile.about ?? "", withFontSize: 14))
+        domainWebLink = createLayerBackedTextNodeWithString(textAttributedString(profile.domain ?? "", withFontSize: 14))
         
         
         super.init()
         
-        userPic.addTarget(self, action: #selector(showImageOptions), forControlEvents: .TouchUpInside)
+        userPic.contentMode = .ScaleAspectFill
+        
+        userProfile.avatarImageClosure = { image in
+            self.userPic.image = image
+        }
+        
+        if userPic.image == nil {
+            if let downloadedFile = userProfile.downloadFileURL {
+                if let data = NSData(contentsOfURL: downloadedFile) {
+                    self.userPic.image = UIImage(data: data)
+                }
+            }
+        }
+        
+        
 
         
+        addSubnode(userPic)
+        addSubnode(likePoints)
+        addSubnode(likePointsLabel)
+//        addSubnode(publicAlbumsCount)
+//        addSubnode(publicAlbumsCountLabel)
+        addSubnode(followersCount)
+        addSubnode(followersCountLabel)
+        addSubnode(followingCount)
+        addSubnode(followingCountLabel)
+        addSubnode(friendCount)
+//        addSubnode(friendCountLabel)
+        
+        addSubnode(friendsButton)
+        addSubnode(followButton)
+        
+        addSubnode(fullnameLabel)
+        addSubnode(verificationImage)
+        addSubnode(shortDescription)
+        addSubnode(domainWebLink)
+        
+        
+    }
+    
+    
+    override func didLoad() {
+        super.didLoad()
+        
+        
+        userPic.addTarget(self, action: #selector(showImageOptions), forControlEvents: .TouchUpInside)
+        
         friendCount.addTarget(self, action: #selector(openFriendsListVC), forControlEvents: .TouchUpInside)
-
+        
         
         if loggedInUser {
             friendsButton.addTarget(self, action: #selector(editProfile), forControlEvents: .TouchUpInside)
         } else {
             friendsButton.addTarget(self, action: #selector(addFriend), forControlEvents: .TouchUpInside)
         }
-        
-
-        
-        
-        usesImplicitHierarchyManagement = true
-        
-        friendsButton.addTarget(self, action: #selector(addFriend), forControlEvents: .TouchUpInside)
     }
     
     func editProfile() {
@@ -330,9 +353,9 @@ class BasicProfileCellNode: ASCellNode {
     }
     
     func removePhoto() {
-        if userProfile.deleteImage() {
-            userPic.image = nil
-        }
+//        if userProfile.deleteImage() {
+//            userPic.image = nil
+//        }
     }
     
     
@@ -385,18 +408,6 @@ class BasicProfileCellNode: ASCellNode {
         //        let userWebLink: ASTextNode
         
         
-        
-        
-        
-        //        #if DEV_PUBLIC_ALBUMS
-        //            print("DEV_PUBLIC_ALBUMS")
-        //        #elseif DEV_FOLLOWERS
-        //            print("DEV_FOLLOWERS")
-        //        #endif
-        //
-        //        #if DEV_FOLLOWERS
-        //            print("DEV_FOLLOWERS 2")
-        //        #endif
         
         
         
@@ -540,7 +551,7 @@ class BasicProfileCellNode: ASCellNode {
         
         var nameContents: [ASLayoutable] = [fullnameLabel]
         
-        if let verified = userProfile.user.verified {
+        if let verified = userProfile.verified {
             if verified {
                 nameContents.append(verificationImage)
             }
@@ -557,11 +568,11 @@ class BasicProfileCellNode: ASCellNode {
         
         var mainContents: [ASLayoutable] = [topFullstack, nameStack]
         
-        if userProfile.user.about != nil {
+        if let _ = userProfile.about {
             mainContents.append(shortDescription)
         }
         
-        if userProfile.user.domain != nil {
+        if let _ = userProfile.domain {
             mainContents.append(domainWebLink)
         }
         

@@ -21,34 +21,45 @@ class HAEditableProfileCN: ASCellNode {
     
     
     let leftImageNode: ASImageNode
-    let editableTextNode: ASEditableTextNode
+//    let editableTextNode: ASEditableTextNode
     
+    let textField: HATextField
 
-    let hasDivider: Bool
+    let hasTopDivider: Bool
+    let hasBottomDivider: Bool
+    
+    let hasfullTopWidthDivider: Bool
+    let hasfullBottomWidthDivider: Bool
     
     let topDivider: ASDisplayNode
     let bottomDivider: ASDisplayNode
     
     
     
-    init(withTitle title: String, hasDivider _divider: Bool) {
+    init(withLeftImage leftImage: UIImage, text: String, placeHolderText: String,
+                       hasTopDivider top: Bool, fullWidth topWidth: Bool,
+                       hasBottomDivider bottom: Bool, fullWidth bottomWidth: Bool) {
+       
+        hasTopDivider = top
+        hasBottomDivider = bottom
         
-        hasDivider = _divider
+        hasfullTopWidthDivider = topWidth
+        hasfullBottomWidthDivider = bottomWidth
+        
         
         leftImageNode = ASImageNode()
+        leftImageNode.image = leftImage
+
+        textField = HATextField(shouldSetLeftPadding: false)
         
-        editableTextNode = ASEditableTextNode()
-        
-        editableTextNode.typingAttributes = [NSForegroundColorAttributeName: UIColor.blackColor(),
-                                     NSFontAttributeName: UIFont(name: kAppMainFont, size: kTextSizeSmall)!]
-        
-        editableTextNode.attributedText = HAGlobal.titlesAttributedString(title, color: UIColor.blackColor(), textSize: kTextSizeSmall)
-        
+        textField.textField.text = text
+        textField.textField.placeholder = placeHolderText
         
         // Hairline cell separator
         topDivider = ASDisplayNode()
         topDivider.layerBacked = true
         topDivider.backgroundColor = UIColor.lightGrayColor()
+        
         // Hairline cell separator
         bottomDivider = ASDisplayNode()
         bottomDivider.layerBacked = true
@@ -59,29 +70,44 @@ class HAEditableProfileCN: ASCellNode {
         super.init()
         
         addSubnode(leftImageNode)
-        addSubnode(editableTextNode)
+        addSubnode(textField)
         
         addSubnode(topDivider)
         addSubnode(bottomDivider)
     }
     
     
-    
-    
     override func layout() {
         super.layout()
+       
+        // Manually layout the divider.
+        let pixelHeight:CGFloat = 1.0 / UIScreen.mainScreen().scale// [[UIScreen mainScreen] scale];
         
-        if hasDivider {
-            
-            // Manually layout the divider.
-            let pixelHeight:CGFloat = 1.0 / UIScreen.mainScreen().scale// [[UIScreen mainScreen] scale];
-            
-            let widthParts = calculatedSize.width/10
-            let width = widthParts * 8
-            //        let leftInset = widthParts*1.5
-            topDivider.frame = CGRectMake(leftInset, 0, width, pixelHeight)
-        }
+        
+        let width = calculatedSize.width * (4.0/5)
+        let originX = (calculatedSize.width - width) / 2
+        
+        let fullWidth = calculatedSize.width
+        let fullOriginX: CGFloat = 0
 
+        
+        if hasTopDivider {
+            if hasfullTopWidthDivider {
+                topDivider.frame = CGRectMake(fullOriginX, 0, fullWidth, pixelHeight)
+            } else  {
+                topDivider.frame = CGRectMake(originX, 0, width, pixelHeight)
+            }
+        }
+        
+        if hasBottomDivider {
+            if hasfullBottomWidthDivider {
+                
+                bottomDivider.frame = CGRectMake(fullOriginX, calculatedSize.height-1, fullWidth, pixelHeight)
+            } else {
+                
+                bottomDivider.frame = CGRectMake(originX, calculatedSize.height-1, width, pixelHeight)
+            }
+        }
     }
     
     
@@ -92,17 +118,14 @@ class HAEditableProfileCN: ASCellNode {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         
+        textField.preferredFrameSize = CGSizeMake(constrainedSize.max.width - 30, 30)
+        let staticTextNode = ASStaticLayoutSpec(children: [textField])
         
-        editableTextNode.preferredFrameSize = CGSizeMake(constrainedSize.max.width, 30)
-        let staticTextNode = ASStaticLayoutSpec(children: [editableTextNode])
-        
-            
         let nodeStack = ASStackLayoutSpec(direction: .Horizontal,
-                                          spacing: 0,
+                                          spacing: 10,
                                           justifyContent: .Start,
                                           alignItems: .Center,
                                           children: [leftImageNode, staticTextNode])
-        
         
         let insets = UIEdgeInsetsMake(topCellInset, leftInset, bottomInset, rightInset)
         
@@ -110,8 +133,6 @@ class HAEditableProfileCN: ASCellNode {
         
         return textWrapper
     }
-    
-    
     
     
 }

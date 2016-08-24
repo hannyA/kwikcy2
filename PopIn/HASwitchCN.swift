@@ -36,15 +36,14 @@ class HASwitchCN: ASCellNode {
         
         switchView = UISwitch()
         
-        switchView.onTintColor = UIColor.greenColor()
-        isHeader = header
-        hasDivider = _divider
+        switchView.onTintColor = UIColor.flatRedColor()
+        
+        isHeader    = header
+        hasDivider  = _divider
         
         
         textNode = ASTextNode()
         textNode.layerBacked = true
-        
-        
         
         if isHeader {
             textNode.attributedString = HAGlobal.titlesAttributedString(title,

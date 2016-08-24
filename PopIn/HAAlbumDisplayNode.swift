@@ -19,28 +19,34 @@ protocol HAAlbumDisplayNodeDelegate {
 class HAAlbumDisplayNode: ASDisplayNode {
     
     var delegate: HAAlbumDisplayNodeDelegate?
+   
     // Controls
     let showButtonsOutline: Bool
     
+    let closeButton: ASButtonNode
+    var timeViewNode: ASTextNode
+
     let previousItemButton: ASButtonNode
     let nextItemButton: ASButtonNode
-    let pauseButton: ASButtonNode
-    let closeButton: ASButtonNode
+
     
     let imageNode: ASImageNode
     let videoNode: ASVideoNode
     
-    let mediaContent: MediaModel
     
     
-    init(withMediaContent content: MediaModel) {
+    override init() {
+        
+        timeViewNode = ASTextNode()
+        timeViewNode.attributedText = HAGlobal.titlesAttributedString("10", color: UIColor.blackColor(), textSize: kTextSizeRegular)
+        timeViewNode.backgroundColor = UIColor.blueColor()
+        timeViewNode.layerBacked = true
         
         showButtonsOutline = true
-        mediaContent = content
         
         imageNode = ASImageNode()
-        imageNode.image = UIImage(named: (mediaContent.media)!)
-       
+        imageNode.backgroundColor = UIColor.whiteColor()
+
         videoNode = ASVideoNode()
         
         previousItemButton = ASButtonNode()
@@ -48,27 +54,22 @@ class HAAlbumDisplayNode: ASDisplayNode {
         previousItemButton.backgroundColor = UIColor(red: 1.0, green: 0, blue: 0, alpha: 0.3)
 
         nextItemButton = ASButtonNode()
-        
         nextItemButton.setTitle("next", withFont: UIFont.boldSystemFontOfSize(20), withColor: UIColor.blackColor(), forState: .Normal)
         nextItemButton.backgroundColor = UIColor(red: 0.0, green: 0, blue: 1.0, alpha: 0.3)
 
-        pauseButton = ASButtonNode()
+        
+
+        
         
         closeButton = ASButtonNode()
         closeButton.setTitle("Close", withFont: UIFont.boldSystemFontOfSize(20), withColor: UIColor.blackColor(), forState: .Normal)
+        closeButton.backgroundColor = UIColor.redColor()
         
         
         startLocation = CGPointZero
         
         super.init()
         
-        closeButton.addTarget(self, action: #selector(closeAlbumView), forControlEvents: .TouchUpInside)
-        previousItemButton.addTarget(self, action: #selector(showPreviousItem), forControlEvents: .TouchUpInside)
-        nextItemButton.addTarget(self, action: #selector(showNextItem), forControlEvents: .TouchUpInside)
-
-        closeButton.backgroundColor = UIColor.redColor()
-
-        imageNode.backgroundColor = UIColor.whiteColor()
         
         
         addSubnode(imageNode)
@@ -76,8 +77,9 @@ class HAAlbumDisplayNode: ASDisplayNode {
         
         addSubnode(previousItemButton)
         addSubnode(nextItemButton)
-        addSubnode(pauseButton)
+
         addSubnode(closeButton)
+        addSubnode(timeViewNode)
         
         
     }
@@ -85,6 +87,13 @@ class HAAlbumDisplayNode: ASDisplayNode {
     
     override func didLoad() {
         super.didLoad()
+        
+        
+        closeButton.addTarget(self, action: #selector(closeAlbumView), forControlEvents: .TouchUpInside)
+        previousItemButton.addTarget(self, action: #selector(showPreviousItem), forControlEvents: .TouchUpInside)
+        nextItemButton.addTarget(self, action: #selector(showNextItem), forControlEvents: .TouchUpInside)
+        
+
         
         imageNode.contentMode = .ScaleAspectFill
         
@@ -185,22 +194,61 @@ class HAAlbumDisplayNode: ASDisplayNode {
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
+        let maxWidth:CGFloat = constrainedSize.max.width
+        let maxHeight:CGFloat = constrainedSize.max.height
+        
         
         let imageRatio: CGFloat = imageRatioFromSize(constrainedSize.max)
         let imagePlace = ASRatioLayoutSpec(ratio: imageRatio, child: imageNode)
         
+        imageNode.preferredFrameSize = CGSizeMake(maxWidth, maxHeight)
+        let imageNodeStatic = ASStaticLayoutSpec(children: [imageNode])
+
         
-        let closeButtonWidth:CGFloat  = constrainedSize.max.width/5
-        let closeButtonsHeight:CGFloat = constrainedSize.max.height/9
+        
+        
+        let timeViewWidth:CGFloat  = maxWidth / 5
+        let timeViewHeight:CGFloat = maxHeight / 9
+        timeViewNode.preferredFrameSize = CGSizeMake(timeViewWidth, timeViewHeight)
+        
+//        timeViewNode.layoutPosition = CGPointMake(100, 100)
+        let timeViewNodePosition = ASStaticLayoutSpec(children: [timeViewNode])
+        
+        
+        
+//        let timeViewNodeOverImage = ASOverlayLayoutSpec(child: imageNodeStatic, overlay: timeViewNodePosition)
+//        timeViewNodeOverImage.flexGrow = true
+        
+        
+        let closeButtonWidth:CGFloat  = maxWidth / 5
+        let closeButtonsHeight:CGFloat = maxHeight / 9
         closeButton.preferredFrameSize = CGSizeMake(closeButtonWidth, closeButtonsHeight )
-        closeButton.layoutPosition = CGPointMake(0, 0)
+//        closeButton.layoutPosition = CGPointMake(0, 0)
         let closebuttonPosition = ASStaticLayoutSpec(children: [closeButton])
-    
+        
+//        let closeButtonOverImage = ASOverlayLayoutSpec(child: timeViewNodeOverImage, overlay: closebuttonPosition)
+//        closeButtonOverImage.flexGrow = true
         
         
-        let closeButtonOverImage = ASOverlayLayoutSpec(child: imagePlace, overlay: closebuttonPosition)
-        closeButtonOverImage.flexGrow = true
         
+        let topSpacer = ASLayoutSpec()
+        topSpacer.flexGrow = true
+
+        
+        let topControlStack = ASStackLayoutSpec(direction: .Horizontal,
+                                             spacing: 0,
+                                             justifyContent: .Start,
+                                             alignItems: .Start,
+                                             children: [closebuttonPosition, topSpacer, timeViewNodePosition])
+        
+        topControlStack.flexGrow = true
+        
+        
+        
+        
+        let topOverlayOverImage = ASOverlayLayoutSpec(child: imageNodeStatic, overlay: topControlStack)
+        
+
         
         
         
@@ -230,7 +278,7 @@ class HAAlbumDisplayNode: ASDisplayNode {
         
         
         
-        let displayStack = ASOverlayLayoutSpec(child: closeButtonOverImage, overlay: controlStack)
+        let displayStack = ASOverlayLayoutSpec(child: topOverlayOverImage, overlay: controlStack)
         displayStack.flexGrow = true
         
         return displayStack

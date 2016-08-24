@@ -15,7 +15,7 @@ protocol HAFullCameraDelegate {
     func moveToNextVC()
 }
 
-class HAFullCameraNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectionDelegate {
+class HAFullCameraNode: ASDisplayNode, ASCollectionDelegate, ASPagerDataSource { // ASPagerNodeDataSource
     
     
     let CameraTitle = "Camera"
@@ -136,7 +136,8 @@ class HAFullCameraNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectionDelega
         // Camera controls - reocrd, flash, etc
         pagerNode.setDataSource(self)
         pagerNode.backgroundColor = UIColor.darkGrayColor()
-        pagerNode.delegate = self
+//        pagerNode.dele
+//        pagerNode.delegate = self
         
         
         // Page controls - Camera/Photo Roll

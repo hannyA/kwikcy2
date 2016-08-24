@@ -21,6 +21,9 @@
  
  4) Did you set delegate and datasources?
  
+ 5) UIView.animateWithDuration returns to fast.
+    Is the view layerBacked? That will use layers instead of views
+    Are you using "alpha" instead of "hidden" propperty?
  
  
  

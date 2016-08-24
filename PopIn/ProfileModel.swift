@@ -59,7 +59,7 @@ class ProfileModel {
     
     
     func deleteImage() -> Bool {
-        user.deleteUserPic()
+//        user.deleteUserPic()
         if user.userPic == nil {
             return true
         }

@@ -76,6 +76,7 @@ class HABasicUserDetailsCN: ASCellNode {
         
         // Friends Labels and Texts
         
+        print("finsihed coffee")
         
         friendsButton = ASButtonNode()
         
@@ -92,7 +93,9 @@ class HABasicUserDetailsCN: ASCellNode {
         friendsButton.flexGrow = true
         
         
-        let fullnameLabelText = HAGlobalNode.attributedString(profile.user.fullName!, font: kTextSizeXS, text: .BlackLabel)
+        let fullnameLabelText = HAGlobalNode.attributedString(profile.user.fullName,
+                                                              font: kTextSizeXS,
+                                                              text: .BlackLabel)
 
         fullnameLabel = HAGlobalNode.createLayerBackedTextNodeWithString( fullnameLabelText )
         fullnameLabel.preferredFrameSize = CGSizeMake(100, 50)

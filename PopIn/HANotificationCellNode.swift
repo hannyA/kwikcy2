@@ -8,13 +8,20 @@
 
 
 import AsyncDisplayKit
+import pop
+import SwiftyDrop
+import ChameleonFramework
+
+
 
 protocol HANotificationCellNodeDelegate {
-    func showUserProfile(userModel: UserModel)
+    func showUserProfile(userModel: UserSearchModel)
+    func deleteRowForNotification(notif: HANotificationModel)
+    func showErrorMessage(messsage: String)
 }
 
 
-class HANotificationCellNode: ASCellNode {
+class HANotificationCellNode: ASCellNode, UserSearchModelDelegate {
     
     var delegate: HANotificationCellNodeDelegate?
 
@@ -24,96 +31,59 @@ class HANotificationCellNode: ASCellNode {
     let kInsetTitleBottom:  CGFloat = 10.0
     let kInsetTitleSides:   CGFloat = 7.0
     
+    let actionButtonBorder: CGFloat = 1.0
+
     
-    let userAvatarImageView: ASImageNode// ASNetworkImageNode
+    let userAvatarImageView: ASImageNode
     let messageLabel: ASTextNode
-    let acceptButton: ASButtonNode
+
+    let actionButton: ASButtonNode
     let _divider: ASDisplayNode
     
     
-    let notificationModel: NotificationModel
+    let notificationModel: HANotificationModel
     var acceptButtonHighlighted = false
-    var friendshipStatus: NotificationModel.FriendshipStatus
-    var notificationType: NotificationModel.NotificationType
-
     
+    let activityIndicatorView: UIActivityIndicatorView
     
-    init(withNotificationObject notificationModel: NotificationModel) {
-        
+    init(withNotificationObject notificationModel: HANotificationModel) {
         
         self.notificationModel = notificationModel
-        friendshipStatus = notificationModel.friendshipStatus
-        notificationType = notificationModel.notificationType
-        
-        
-        // Make images round
-        let smallRoundModBlock: asimagenode_modification_block_t = { image in
-            var modifiedImage: UIImage
-            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
-            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
-            
-            
-            UIBezierPath(roundedRect: rect, cornerRadius: 44.0).addClip()
-            
-            image.drawInRect(rect)
-            modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            return modifiedImage
-        }
-        
-        
 
-        userAvatarImageView = ASImageNode() //ASNetworkImageNode()
-        userAvatarImageView.image = UIImage(named: notificationModel.user.userTestPic! )
+        userAvatarImageView = ASImageNode()
         userAvatarImageView.backgroundColor = UIColor.whiteColor()
-        userAvatarImageView.preferredFrameSize = CGSizeMake(44, 44)
-        userAvatarImageView.imageModificationBlock = smallRoundModBlock
-
         
         
         
-        let attributedMessage = HAGlobal.titlesAttributedString(notificationModel.message,
-                                                          color: UIColor.blackColor(),
-                                                          textSize: kTextSizeXXS)
+        let attributedMessage = notificationModel.attributedMessageString()
             
-        
-        
-        let attributedTimestamp = HAGlobal.titlesAttributedString(notificationModel.timeStamp,
-                                                            color: UIColor.lightGrayColor(),
-                                                            textSize: kTextSizeXXS)
-        
-        let result = NSMutableAttributedString()
-        result.appendAttributedString(attributedMessage)
-        result.appendAttributedString(attributedTimestamp)
-        
-        
-        
-        
-        messageLabel = HAGlobalNode.createLayerBackedTextNodeWithString(result)
-        messageLabel.maximumNumberOfLines = 3
-      
-
-//
-//        let timestampAttr = HAGlobal.titlesAttributedString(notificationModel.timeStamp,
-//                                                            color: UIColor.lightGrayColor(),
-//                                                            textSize: kTextSizeXXS)
+//        maybe try imageNode = "block" image
+//            backgroundImageNode = "person"
 //        
-//        timeIntervalSinceRequestLabel = HAGlobalNode.createLayerBackedTextNodeWithString(timestampAttr)
+        // winner is block
+        // report problem, error, warning, cancel, do not disturn, do not disturn on\
+        // thumb down
         
+        // person add
         
+        messageLabel = HAGlobalNode.createLayerBackedTextNodeWithString(attributedMessage)
+        messageLabel.maximumNumberOfLines = 2
+      
         
-        acceptButton = ASButtonNode()
-        acceptButton.contentEdgeInsets = UIEdgeInsetsMake(3, 10, 3, 10)
-        acceptButton.cornerRadius = 4.0
-        acceptButton.clipsToBounds = true
+        actionButton = ASButtonNode()
+        actionButton.cornerRadius = 4.0
+        actionButton.clipsToBounds = true
 
-        let normalTitle = HAGlobal.titlesAttributedString("Accept",
-                                                          color: UIColor.blackColor(),
-                                                          textSize: kTextSizeXS)
-        acceptButton.borderColor = UIColor.blackColor().CGColor
-        acceptButton.borderWidth = 1.0
-        acceptButton.setAttributedTitle(normalTitle, forState: .Normal)
-
+        let actionButtonInfo = notificationModel.imageForNotificationType()
+        
+        actionButton.contentSpacing = 0.0
+        actionButton.setAttributedTitle(actionButtonInfo.title, forState: .Normal)
+        actionButton.setImage(actionButtonInfo.image, forState: .Normal)
+        actionButton.setBackgroundImage(actionButtonInfo.backgroundImage, forState: .Normal)
+        
+        actionButton.borderColor = actionButtonInfo.borderColor.CGColor
+        actionButton.backgroundColor = actionButtonInfo.backgroundColor
+        actionButton.borderWidth = 1.0
 
         
         // Hairline cell separator
@@ -121,220 +91,393 @@ class HANotificationCellNode: ASCellNode {
         _divider.backgroundColor = UIColor.lightGrayColor()
         
         
+        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+        activityIndicatorView.color = UIColor.blackColor()
+        
+        
+        
         super.init()
+        
+
+        self.notificationModel.otherUser.delegate = self
+
+        
+        notificationModel.otherUser.avatarImageClosure = { image in
+            self.userAvatarImageView.image = image
+        }
+                
+        if userAvatarImageView.image == nil {
+            print("userAvatarImageView.image")
+            
+            if let downloadedFile = notificationModel.otherUser.downloadFileURL {
+                if let data = NSData(contentsOfURL: downloadedFile) {
+                    userAvatarImageView.image = UIImage(data: data)
+                }
+            }
+        }
         
         addSubnode(userAvatarImageView)
         addSubnode(messageLabel)
-        addSubnode(acceptButton)
-
+        addSubnode(actionButton)
         addSubnode(_divider)
     }
     
+    
+    
+    
     override func didLoad() {
         super.didLoad()
-
+        
         userAvatarImageView.addTarget(self, action: #selector(showUserProfile), forControlEvents: .TouchUpInside)
+        actionButton.addTarget(self, action: #selector(actionButtonPressed), forControlEvents: .TouchUpInside)
         
-        acceptButton.addTarget(self, action: #selector(acceptButtonPressed), forControlEvents: .TouchUpInside)
+        view.addSubview(activityIndicatorView)
+    
     }
-    
-    func showUserProfile() {
-        delegate?.showUserProfile(notificationModel.user)
-    }
-    
-    
-//    func shouldShowButton() {
-//
-//        if notificationType == .FriendRequest {
-//            
-//            if friendshipStatus == .Nil {
-//                
-//                let normalTitle = HAGlobal.titlesAttributedString("Accept",
-//                                                                  color: UIColor.blackColor(),
-//                                                                  textSize: kTextSizeXS)
-//                acceptButton.borderColor = UIColor.blackColor().CGColor
-//                acceptButton.borderWidth = 1.0
-//                acceptButton.setAttributedTitle(normalTitle, forState: .Normal)
-//
-//            } else if friendshipStatus == .Friends {
-//                acceptButton.hidden = true
-//            }
-//        
-//        }
-//        
-    
-    
-//        if notificationType == .Nil {
-//            
-//            let normalTitle = HAGlobal.titlesAttributedString("+ Friend", color: fontColor, textSize: kTextSizeXS)
-//            acceptButton.backgroundColor = UIColor.whiteColor()
-//            
-//            acceptButton.borderColor = UIColor.blackColor().CGColor
-//            acceptButton.borderWidth = borderWidth
-//            acceptButton.setAttributedTitle(normalTitle, forState: .Normal)
-//
-//        } else if notificationModel.friendshipStatus == .Pending {
-//            
-//            let normalTitle = HAGlobal.titlesAttributedString("Pending", color: fontColor, textSize: kTextSizeXS)
-//            
-//            acceptButton.backgroundColor = UIColor.yellowColor()
-//            acceptButton.borderWidth = 0.0
-//            acceptButton.setAttributedTitle(normalTitle, forState: .Normal)
-//
-//        } else if notificationModel.friendshipStatus == .Friends {
-//            
-//            let normalTitle = HAGlobal.titlesAttributedString("Friends", color: fontColor, textSize: kTextSizeXS)
-//            
-//            acceptButton.backgroundColor = UIColor.greenColor()
-//            acceptButton.borderWidth = 0.0
-//            acceptButton.setAttributedTitle(normalTitle, forState: .Normal)
-//
-//            
-//        } else { // Unfriended
-//            
-//            let normalTitle = HAGlobal.titlesAttributedString("+ Friend", color: fontColor, textSize: kTextSizeXS)
-//            
-//            acceptButton.backgroundColor = UIColor.redColor()
-//            acceptButton.borderWidth = 0.0
-//            acceptButton.setAttributedTitle(normalTitle, forState: .Normal)
-//        }
-//    }
-    
-    
-    func acceptButtonPressed() {
-        
-
-        if notificationType == .FriendRequest {
-
-            if friendshipStatus == .Nil {
-               
-                friendshipStatus = .Friends
-                
-                UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
-                    
-                    let normalTitle = HAGlobal.titlesAttributedString("FRIENDS",
-                        color: UIColor.blackColor(),
-                        textSize: kTextSizeXS)
-                    
-                    self.acceptButton.backgroundColor = UIColor.greenColor()
-                    self.acceptButton.borderColor = UIColor.whiteColor().CGColor
-                    self.acceptButton.borderWidth = 1.0
-                    self.acceptButton.setAttributedTitle(normalTitle, forState: .Normal)
-                    
-                }, completion: nil)
-                
-            } else if friendshipStatus == .Friends {
-//                friendshipStatus = .Nil
-//                UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
-//                    
-//
-//                    let normalTitle = HAGlobal.titlesAttributedString("Accept",
-//                                                                      color: UIColor.blackColor(),
-//                                                                      textSize: kTextSizeXS)
-//                    self.acceptButton.borderColor = UIColor.blackColor().CGColor
-//                    self.acceptButton.borderWidth = 1.0
-//                    self.acceptButton.setAttributedTitle(normalTitle, forState: .Normal)
-//                    
-//                }, completion: nil)
-
-
-            }
-            
-        }
-        
-        
-    }
-    
-    
-    
-    
-    
     
     override func layout() {
         super.layout()
-    
+        
         // Manually layout the divider.
-        let pixelHeight:CGFloat = 1.0 / UIScreen.mainScreen().scale// [[UIScreen mainScreen] scale];
+        let pixelHeight:CGFloat = 1.0 / UIScreen.mainScreen().scale
         
-        let widthParts = calculatedSize.width/5
-        let width = widthParts * 4
-        let halfSide = widthParts/2
+        let width = calculatedSize.width * (4.0/5)
+        let origin = (calculatedSize.width - width ) / 2
         
-        _divider.frame = CGRectMake(halfSide, 0, width, pixelHeight)
+        _divider.frame = CGRectMake(origin, 0, width, pixelHeight)
+        
+        activityIndicatorView.center = actionButton.view.center
     }
+    
+    
 
+    
+    func didUpdateFriendStatus() {
+        changeButtonForSuccessfulFriendStatusUpdate()
+    }
+    
+    func showUserProfile() {
+        delegate?.showUserProfile(notificationModel.otherUser)
+    }
+    
+    
+    func delay(delay:Double, closure:()->()) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(delay * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(), closure)
+    }
+    
+    
+    func disableCellNode() {
+        userInteractionEnabled = false
+        view.alpha = 0.5
+
+    }
+    
+    func enableCellNode() {
+        userInteractionEnabled = true
+        view.alpha = 1.0
+    }
+    
+    func showSpinningWheel() {
+        
+        activityIndicatorView.startAnimating()
+    }
+    
+    func hideSpinningWheel() {
+        activityIndicatorView.stopAnimating()
+    }
+    
+    
+    
+    
+    func actionButtonPressed() {
+        
+        print("action button pressed")
+        
+        switch notificationModel.type {
+
+        case .SentFriendRequest: // We canceled
+            
+            disableCellNode()
+            showSpinningWheel()
+            
+            let action = HANotificationModel.NotificationResponseActionType.Cancel.rawValue
+            let id = notificationModel.id
+            
+            print("SentFriendRequest action: \(action), id: \(id)")
+
+            notificationModel.otherUser.lambdaNotificationAction(action, notificationId: id, completionClosure: { (successful, errorMessage, friendStatus) in
+                
+                self.hideSpinningWheel()
+
+                if successful { // We canceled and will delete row
+                    
+                    UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
+                       
+                        self.changeButtonForSuccessfulFriendStatusUpdate()
+                        
+                        }, completion: { (success) in
+                            self.delay(0.2, closure: {
+                                self.delegate?.deleteRowForNotification(self.notificationModel)
+                            })
+                        }
+                    )
+                } else {
+                    self.enableCellNode()
+                    self.delegate?.showErrorMessage("Couldn't cancel request at this time. Try again shortyly")
+                }
+            })
+            
+
+        case .ReceivedFriendRequest: // We accept
+            
+            if notificationModel.otherUser.friendStatus == .ReceivedFriendRequest ||
+                notificationModel.otherUser.friendStatus == .Blocking {
+                
+                print("notificationModel.otherUser.friendStatus: \(notificationModel.otherUser.friendStatus)")
+
+                // Change button from checkmark to Friends or + Friends to Friends
+                // Do we delete? Or let user option to block?
+                
+                self.disableCellNode()
+                self.showSpinningWheel()
+                
+                let action = HANotificationModel.NotificationResponseActionType.AcceptFriendRequest.rawValue
+                let id = notificationModel.id
+                
+                notificationModel.otherUser.lambdaNotificationAction(action, notificationId: id, completionClosure: { (successful, errorMessage, friendStatus) in
+                    
+                    self.enableCellNode()
+                    self.hideSpinningWheel()
+                    
+                    if successful {
+                        UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
+                            
+                            self.changeButtonForSuccessfulFriendStatusUpdate()
+
+                            
+                        }, completion: nil)
+                    }
+                    else {
+                        //TODO: Report an error to the user
+                        self.delegate?.showErrorMessage("Unable to accept \(self.notificationModel.otherUser.userName)'s friend request. Try again shortly")
+                    }
+                })
+            } else {
+                print("notificationModel.otherUser.friendStatus: \(notificationModel.otherUser.friendStatus)")
+
+                return ;
+                
+                print("Blocked user")
+                
+                self.disableCellNode()
+                self.showSpinningWheel()
+                
+                let action = HANotificationModel.NotificationResponseActionType.BlockUser.rawValue
+                let id = notificationModel.id
+                
+                notificationModel.otherUser.lambdaNotificationAction(action, notificationId: id, completionClosure: { (successful, errorMessage, friendStatus) in
+                    
+                    self.enableCellNode()
+                    self.hideSpinningWheel()
+                    
+                    if successful {
+                        UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
+                            
+                            self.changeButtonForSuccessfulFriendStatusUpdate()
+                            
+                            }, completion: nil)
+                    }
+                    else {
+                        self.delegate?.showErrorMessage("You've blocked \(self.notificationModel.otherUser.userName)")
+                    }
+                })
+            }
+
+            
+        case .FriendAcceptedRequest: // We do nothing... Maybe later we let users to unfriend or block
+            
+            return // for now, later we can let user block from here
+                
+            print("FriendAcceptedRequest button pressed")
+
+            // Should allow user the option to open camera there? Maybe not
+            // Let user press OK and clear out message
+            
+            
+            self.disableCellNode()
+            self.showSpinningWheel()
+            
+            let action = HANotificationModel.NotificationResponseActionType.BlockUser.rawValue
+            let id = notificationModel.id
+            
+            
+            notificationModel.otherUser.lambdaNotificationAction(action, notificationId: id, completionClosure: { (successful, errorMessage, friendStatus) in
+
+                
+                self.enableCellNode()
+                self.hideSpinningWheel()
+                
+                
+                if successful {
+                    
+                    UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
+                        
+                        self.changeButtonForSuccessfulFriendStatusUpdate()
+
+                    }, completion: nil)
+                    
+                } else {
+                    
+                    //TODO: Report an error to the user
+                    print("Somehow report an error")
+                }
+            })
+        }
+    }
+    
+    
+    
+    func changeButtonForSuccessfulFriendStatusUpdate() {
+        
+        switch notificationModel.type {
+        case .SentFriendRequest:
+            
+            let newColor = UIColor.flatRedColorDark()
+            
+            self.actionButton.imageNodeIcon(from: .MaterialIcon,
+                                            code: "do.not.disturb.on",
+                                            imageSize: CGSizeMake(30, 30),
+                                            ofSize: 30,
+                                            color: newColor,
+                                            forState: .Normal)
+            
+            self.actionButton.borderColor = newColor.CGColor
+            
+            self.actionButton.borderWidth = self.actionButtonBorder
+            
+        case .ReceivedFriendRequest:
+            
+            self.actionButton.contentSpacing = 0.0
+
+            if notificationModel.otherUser.friendStatus == .Friends {
+                self.actionButton.contentSpacing = 0.0
+                
+                self.actionButton.titleNodeIcon(from: .MaterialIcon,
+                                                code: "person",
+                                                ofSize: 35,
+                                                color: UIColor.flatWhiteColor(),
+                                                forState: .Normal)
+                
+                self.actionButton.imageNodeIcon(from: .MaterialIcon,
+                                                code: "check",
+                                                imageSize: CGSizeMake(10, 10),
+                                                ofSize: 10,
+                                                color: UIColor.flatWhiteColor(),
+                                                forState: .Normal)
+                
+                self.actionButton.setBackgroundImage(nil, forState: .Normal)
+                
+                self.actionButton.backgroundColor = UIColor.flatGreenColor()
+                self.actionButton.borderColor = UIColor.clearColor().CGColor
+          
+            } else {
+            
+                self.actionButton.titleNodeIcon(from: .MaterialIcon,
+                                                code: "block",
+                                                ofSize: 30,
+                                                color: UIColor.flatRedColor(),
+                                                forState: .Normal)
+                
+                self.actionButton.backgroundImageNodeIcon(from: .MaterialIcon,
+                                                          code: "person",
+                                                          imageSize: CGSizeMake(30, 30),
+                                                          ofSize: 30,
+                                                          color: UIColor.flatBlackColor())
+                
+                self.actionButton.backgroundImageNode.contentMode = .ScaleAspectFit
+                self.actionButton.setImage(nil, forState: .Normal)
+                
+                
+                self.actionButton.backgroundColor = UIColor.whiteColor()
+                self.actionButton.borderColor = UIColor.clearColor().CGColor
+            }
+            
+        case .FriendAcceptedRequest:
+            
+            break
+        }
+        
+    }
+    
+
+    
+    
+    
+    
+    
     
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
 
+        let maxWidth = constrainedSize.max.width
         
-        let buttonWidth = constrainedSize.max.width/6
-        
-        userAvatarImageView.spacingAfter = 8.0
+        let avatarWidth = maxWidth / 7
+        let buttonWidth = maxWidth / 7
 
         
-        acceptButton.preferredFrameSize = CGSizeMake(buttonWidth, 28)
-        acceptButton.alignSelf = .End
+        // Make images round
+        userAvatarImageView.imageModificationBlock =  { image in
+            var modifiedImage: UIImage
+            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
+            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
+            
+            
+            UIBezierPath(roundedRect: rect, cornerRadius: avatarWidth).addClip()
+            
+            image.drawInRect(rect)
+            modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return modifiedImage
+        }
+
         
         
+        let spaceAfterViews: CGFloat = 8.0
         
-        let messageNodeWidth = constrainedSize.max.width - buttonWidth - 44 - 40
         
+        userAvatarImageView.preferredFrameSize = CGSizeMake(avatarWidth, avatarWidth)
+        userAvatarImageView.spacingAfter = spaceAfterViews
+        
+        
+        let extraSpace: CGFloat = avatarWidth + buttonWidth + (2 * spaceAfterViews) + (2 * kInsetTitleSides) + (2 * actionButtonBorder)
+
+        
+        let messageNodeWidth:CGFloat = maxWidth - extraSpace //40
+
         messageLabel.preferredFrameSize = CGSizeMake(messageNodeWidth, 40)
-        messageLabel.spacingAfter = 8.0
+        messageLabel.spacingAfter = spaceAfterViews
         messageLabel.flexShrink = true
         
-
-//        let staticMessageLabelSpec = ASStaticLayoutSpec(children: [messageLabel])
-
         
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         
-            
         
-        var contents:[ASLayoutable] = [userAvatarImageView, messageLabel ]
-
+        actionButton.preferredFrameSize = CGSizeMake(buttonWidth, buttonWidth * (3/5))  // was 40
+        actionButton.alignSelf = .End
         
-        if notificationType == .FriendRequest {
-
-            if friendshipStatus == .Nil {
-                contents.append(spacer)
-                contents.append(acceptButton)
-
-            }
-        }
-
+        
         let fullStack = ASStackLayoutSpec(direction: .Horizontal,
                                               spacing: 0,
                                               justifyContent: .Start,
                                               alignItems: .Center,
-                                              children: contents)
-        
+                                              children: [userAvatarImageView, messageLabel, spacer, actionButton ])
         
         return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(kInsetTitleTop, kInsetTitleSides, kInsetTitleBottom, kInsetTitleSides), child: fullStack)
-        
-    
-    }
-    
-}
-extension UIImage {
-    func imageWithColor(tintColor: UIColor) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
-        
-        let context = UIGraphicsGetCurrentContext()! as CGContextRef
-        CGContextTranslateCTM(context, 0, self.size.height)
-        CGContextScaleCTM(context, 1.0, -1.0);
-        CGContextSetBlendMode(context, .Normal)
-        
-        let rect = CGRectMake(0, 0, self.size.width, self.size.height) as CGRect
-        CGContextClipToMask(context, rect, self.CGImage)
-        tintColor.setFill()
-        CGContextFillRect(context, rect)
-        
-        let newImage = UIGraphicsGetImageFromCurrentImageContext() as UIImage
-        UIGraphicsEndImageContext()
-        
-        return newImage
     }
 }

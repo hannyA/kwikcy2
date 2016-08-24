@@ -9,7 +9,7 @@
 import Foundation
 
 struct Constants {
-    static let TestMode = true
+    static let TestMode = false
     
     
 //    struct Titles: String {
@@ -18,8 +18,19 @@ struct Constants {
 }
 
 
+let AppName = "Popin"
+
+// Profile Photo
+let kHDVersion:CGFloat = 1080.0
+let kSDVersion:CGFloat = 540.0
+
+
+
+
 let kDictionaryRepresentation = "dictionaryRepresentation"
-let kUserId     = "userId"
+let kGuid       = "guid"
+
+let kAcctId     = "acctId"
 let kGender     = "gender"
 let kUserName   = "userName"
 let kFirstName  = "firstName"
@@ -30,7 +41,10 @@ let kState      = "state"
 let kCountry    = "country"
 let kAbout      = "about"
 let kDomain     = "domain"
+let kEmail      = "email"
+let kMobile     = "mobile"
 
+let kUserPhoto      = "userPhoto"
 let kUserTestPic    = "userTestPic"
 let kUserPic        = "userPic"
 let kUserPicURL     = "userPicURL"
@@ -38,20 +52,37 @@ let kUserPicURL     = "userPicURL"
 let kPhotoCount     = "photoCount"
 let kAlbumCount     = "albumCount"
 let kAffection      = "affection"
-let kFriendsCount   = "friendsCount"
+let kFriendCount    = "friendCount"
 let kFollowersCount = "followersCount"
 let kFollowingCount = "followingCount"
 let kFollowing      = "following"
 let kFriends        = "friends"
 let kVerified       = "verified"
 
+let kNotificationId = "id"
+let kAlbumId        = "albumId"
+let kType           = "type"
+
+let kTimestamp      = "timestamp"
+let kDate           = "date"
+
+let kTitle           = "title"
+let kCreateDate      = "createDate"
+let kNewestMediaTime = "newestTime"
+let kNewestMediaUrl  = "newestUrl"
+
+
+let kBlocked        = "blocked"
 
 
 
-// Images
+let kDidUpdate      = "DidUpdate"
+let kFriendStatus   = "FriendStatus"
+let kProfile        = "Profile"
+let kProfileExists  = "ProfileExt"
 
-let kRightArrowHead = "connect-arrow-right-7"
 
+let kErrorMessage   = "ErrorMessage"
 
 
 
@@ -61,9 +92,8 @@ enum AvatarImageCornerRadius:CGFloat {
     case Large = 64.0
 }
 
-let AppName = "Popin"
 
-let kAvatarCornerRadius: CGFloat = 44.0
+//let kAvatarCornerRadius: CGFloat = 44.0
 
 let kTextSizeXXS: CGFloat     = 15.0
 let kTextSizeXS: CGFloat      = 16.0
@@ -114,6 +144,14 @@ func pageTitlesAttributedString(string: String, forState state: UIControlState) 
     }
 }
 
+
+
+
+let randomUpsetEmojis = ["😤","😰","😢","😭","😡","😩","😫","😔"]
+
+func randomUpsetEmoji() -> String {
+    return randomUpsetEmojis[Int(arc4random_uniform(UInt32(randomUpsetEmojis.count)))]
+}
 
 
 //class Constants{

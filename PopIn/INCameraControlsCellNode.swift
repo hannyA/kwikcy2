@@ -19,16 +19,13 @@ import AsyncDisplayKit
 
 
 protocol INCameraControlsCellNodeDisplayDelegate {
-    
-    func cameraHasFlipCamera() -> Bool
-    func cameraHasFlash() -> Bool
-    func shouldSetupFlash() -> Bool
-    func switchFlashConfig() -> AVCaptureFlashMode?
-    func flipCamera() -> (flipped: Bool, position: AVCaptureDevicePosition?)
+
+    func toggleFlashMode()
+    func changeCamera()
 }
 
-
-
+//
+//AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo).count > 1
 
 class INCameraControlsCellNode: ASCellNode {
     
@@ -91,8 +88,8 @@ class INCameraControlsCellNode: ASCellNode {
 
         closeButton.addTarget(self, action: #selector(closeCamera), forControlEvents: .TouchUpInside)
         captureButton.addTarget(self, action: #selector(nothing), forControlEvents: .TouchUpInside)
-        flashButton.addTarget(self, action: #selector(switchFlashConfig), forControlEvents: .TouchUpInside)
-        flipButton.addTarget(self, action: #selector(flipCamera), forControlEvents: .TouchUpInside)
+        flashButton.addTarget(self, action: #selector(toggleFlashMode), forControlEvents: .TouchUpInside)
+        flipButton.addTarget(self, action: #selector(changeCamera), forControlEvents: .TouchUpInside)
         
         
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
@@ -106,28 +103,10 @@ class INCameraControlsCellNode: ASCellNode {
         tapGestureRecognizer.numberOfTapsRequired = 1
         captureButton.view.addGestureRecognizer(tapGestureRecognizer)
         
-        
-        setupControls()
     }
     
     
     
-//    
-//    class func createButtonWithAllStatesSetWithText(text: String) ->ASButtonNode {
-//        
-//        let button = ASButtonNode()
-//        button.contentEdgeInsets = UIEdgeInsetsMake(10, 0, 10, 0)
-//        button.flexGrow = true
-//        
-//        let normal = HAGlobal.titlesAttributedString(text, color: UIColor.whiteColor(), textSize: kTextSizeRegular)
-//        let highlighted = HAGlobal.titlesAttributedString(text, color: UIColor.darkGrayColor(), textSize: kTextSizeRegular)
-//        
-//        button.setAttributedTitle(normal, forState: .Normal)
-//        button.setAttributedTitle(highlighted, forState: .Highlighted)
-//        button.setAttributedTitle(highlighted, forState: .Selected)
-//        return button
-//    }
-//    
     
     
     
@@ -158,7 +137,6 @@ class INCameraControlsCellNode: ASCellNode {
             print("Took photo")
             viewControllerDelegate?.photoWillBeTaken()
         }
-        
     }
     
     
@@ -166,81 +144,24 @@ class INCameraControlsCellNode: ASCellNode {
         viewControllerDelegate?.dismissCamera()
     }
     
-
-    
-    
-
-    
-    func setupControls() {
-        cameraHasFlash()
-        cameraHasFrontCamera()
+    func changeCamera() {
+        displayDelegate?.changeCamera()
     }
     
-    func cameraHasFrontCamera() {
-        if let canFlip = displayDelegate?.cameraHasFlipCamera() {
-            if canFlip {
-                enableFlipButton(true)
-            } else {
-                enableFlipButton(false)
-            }
-        } else {
-            enableFlipButton(false)
-        }
-    }
-    
-    func cameraHasFlash() {
-        if let hasFlash = displayDelegate?.cameraHasFlash() {
-            if hasFlash {
-                enableFlashButton(true)
-            } else {
-                enableFlashButton(false)
-            }
-        } else {
-            enableFlashButton(false)
-        }
+    func toggleFlashMode() {
+        displayDelegate?.toggleFlashMode()
     }
     
     
-    func flipCamera() {
-        disableAllButtons()
-        let didFlip = displayDelegate?.flipCamera()
-        
-        let cameraPosition = didFlip?.position
-        
-        if let position = cameraPosition {
-            if position == .Front {
-                enableFlashButton(false)
-            } else {
-                enableFlashButton(true)
-            }
-        }
-        enableFlipButton(true)
-        enableCaptureButton(true)
-    }
     
-    func switchFlashConfig() {
-        if let flashMode = displayDelegate?.switchFlashConfig() { // return AVCaptureFlashMode
-
-            enableFlashButton(true)
-
-            if flashMode == .On {
-                setFlashButtonOn(true)
-            } else {
-                setFlashButtonOn(false)
-            }
-        } else {
-            enableFlashButton(false)
-        }
-    }
-    
-    
-    private func setFlashButtonOn(on: Bool) {
+    func setFlashButtonOn(on: Bool) {
         if on {
             flashButton.setImage(UIImage(named: "ic_flash_on"), forState: .Normal)
         } else {
             flashButton.setImage(UIImage(named: "ic_flash_off"), forState: .Normal)
         }
     }
+    
     
     
 

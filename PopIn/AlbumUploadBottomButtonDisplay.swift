@@ -12,32 +12,95 @@ import AsyncDisplayKit
 class AlbumUploadBottomButtonDisplay : ASDisplayNode {
     
     
-    let bottomButton1: ASButtonNode
-    let bottomButton2: ASButtonNode
+    let createNewAlbumButton: ASButtonNode
+    let doneButton: RTLButtonNode
     
     
     override init() {
         
-        bottomButton1 = ASButtonNode()
-        bottomButton2 = ASButtonNode()
+        createNewAlbumButton = ASButtonNode()
+        doneButton = RTLButtonNode()
         
         super.init()
         
         backgroundColor = UIColor.whiteColor()
         
-        let attributedStringCreate = HAGlobal.titlesAttributedString("+ Album", color: UIColor.blackColor(), textSize: kTextSizeRegular)
         
-        let attributedStringDone = HAGlobal.titlesAttributedString("Done >", color: UIColor.lightGrayColor(), textSize: kTextSizeRegular)
         
-        bottomButton1.setAttributedTitle(attributedStringCreate, forState: .Normal)
-        bottomButton1.backgroundColor = UIColor.greenColor()
+        let attributedStringCreate = HAGlobal.titlesAttributedString("Album",
+                                                                     color: UIColor.blackColor(),
+                                                                     textSize: kTextSizeRegular)
+        createNewAlbumButton.setAttributedTitle(attributedStringCreate, forState: .Normal)
         
-        bottomButton2.setAttributedTitle(attributedStringDone, forState: .Normal)
-        bottomButton2.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.3)
+        createNewAlbumButton.imageNodeIcon(from: .MaterialIcon,
+                                           code: "add.circle",
+                                           imageSize: CGSizeMake(40, 40),
+                                           ofSize: 40,
+                                           color: UIColor.blackColor(),
+                                           forState: .Normal)
         
-        addSubnode(bottomButton1)
-        addSubnode(bottomButton2)
+        createNewAlbumButton.backgroundColor = UIColor.greenColor()
+        
+        
+        
+        
+        // Enabled Done button
+        
+        doneButton.imageNodeIcon(from: .MaterialIcon,
+                                 code: "send",
+                                 imageSize: CGSizeMake(40, 40),
+                                 ofSize: 40,
+                                 color: UIColor.blackColor(),
+                                 forState: .Normal)
+        
+        
+        let attributedStringDone = HAGlobal.titlesAttributedString("Done",
+                                                                   color: UIColor.blackColor(),
+                                                                   textSize: kTextSizeRegular)
+        doneButton.setAttributedTitle(attributedStringDone,
+                                      forState: .Normal)
+        
+        // Disabled Done button
+        
+        doneButton.imageNodeIcon(from: .MaterialIcon,
+                                 code: "send",
+                                 imageSize: CGSizeMake(40, 40),
+                                 ofSize: 40,
+                                 color: UIColor.lightGrayColor(),
+                                 forState: .Disabled)
+        
+        let disabledAttributedStringDone = HAGlobal.titlesAttributedString("Done",
+                                                                   color: UIColor.lightGrayColor(),
+                                                                   textSize: kTextSizeRegular)
+        doneButton.setAttributedTitle(disabledAttributedStringDone,
+                                      forState: .Disabled)
+        
+        addSubnode(createNewAlbumButton)
+        addSubnode(doneButton)
     }
+    
+    
+    override func didLoad() {
+        super.didLoad()
+        
+        disableDoneButton()
+    }
+    
+    
+    func enableDoneButton() {
+        doneButton.enabled = true
+        
+        doneButton.backgroundColor = UIColor.redColor()
+    }
+    
+    
+    func disableDoneButton() {
+        doneButton.enabled = false
+        doneButton.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.3)
+    }
+    
+    
+    
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
@@ -45,12 +108,12 @@ class AlbumUploadBottomButtonDisplay : ASDisplayNode {
         
         let preferredSize =  CGSizeMake(constrainedSize.max.width / 2, buttonHeight)
         
-        bottomButton1.preferredFrameSize = preferredSize
-        bottomButton2.preferredFrameSize = preferredSize
+        createNewAlbumButton.preferredFrameSize = preferredSize
+        doneButton.preferredFrameSize = preferredSize
         
         
-        let staticLeftButtonSpec = ASStaticLayoutSpec(children: [bottomButton1])
-        let staticRightButtonSpec = ASStaticLayoutSpec(children: [ bottomButton2])
+        let staticLeftButtonSpec = ASStaticLayoutSpec(children: [createNewAlbumButton])
+        let staticRightButtonSpec = ASStaticLayoutSpec(children: [ doneButton])
         
         let buttonStack = ASStackLayoutSpec(direction: .Horizontal,
                                             spacing: 0,

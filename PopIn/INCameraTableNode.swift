@@ -10,14 +10,6 @@
 import AsyncDisplayKit
 
 
-//@objc protocol INCameraTableNodeDelegate {
-//    optional func cameraShotFinished(image: UIImage)
-//    optional func takePhotoButtonPressed()
-//    optional func flashButtonPressed()
-//    optional func flipButtonPressed()
-//}
-
-
 class INCameraTableNode: ASCellNode, ASTableViewDelegate, ASTableViewDataSource {
 
     let _tableNode: ASTableNode

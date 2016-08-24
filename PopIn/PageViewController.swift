@@ -9,7 +9,7 @@
 import UIKit
 import AsyncDisplayKit
 
-class PageViewController: ASViewController, ASPagerNodeDataSource  {
+class PageViewController: ASViewController, ASPagerDataSource  {
     
     let pagerNode: ASPagerNode
     

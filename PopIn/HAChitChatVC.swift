@@ -9,7 +9,7 @@
 import UIKit
 import AsyncDisplayKit
 
-class HAChitChatVC: ASViewController, ASCollectionDelegate {
+class HAChitChatVC: ASViewController, ASCollectionDelegate, ASPagerDelegate {
 
     let pageNavigator: PageNavigation
     let pageViewController: PageViewController

@@ -6,110 +6,102 @@
 //  Copyright © 2016 Aly LLC. All rights reserved.
 //
 
-import Foundation
+import AWSS3
+import AWSMobileHubHelper
 import AsyncDisplayKit
+import SwiftyDrop
 
-class UserProfilePageVC: ASViewController, ASTableDelegate, ASTableDataSource {
+class UserProfilePageVC: ASViewController, ASTableDelegate, ASTableDataSource, HASearchBasicProfileCNDelegate {
     
     enum SectionType:String {
-        case BasicDetails  // Photo, real name
-        case SocialStatus // Friends, following
-        case About // Text Description, username
+        case PhotoOnly  // Photo, real name
+        case PhotoAndDetails  // Photo, real name
+        case DetailsOnly = "Details" // Friends, following
         case PublicAlbumCount
     }
     
     
-
+    var fetchingUserData = true
+    var serverError = false
     
     
     let tableNode: ASTableNode
-    var profileSectionHeader:[String] = [ SectionType.BasicDetails.rawValue]
-//        ,SectionType.SocialStatus.rawValue]
-//    var profileSections:[String: AnyObject]
-    var profileModel: ProfileModel
+    var profileSectionHeader = [ SectionType.PhotoOnly, SectionType.DetailsOnly ]
 
     
+    var userProfileModel: UserSearchModel
     
     
-  
-    init(withUserModel model: UserModel) {
+    init(withUserSearchModel model: UserSearchModel) {
         
         print("init:withUserModel")
+        
         tableNode = ASTableNode(style: .Plain)
-        
-//        profileSectionHeader = [String]()
-//        profileSections = [String: AnyObject]()
-        
-    
-        
-        
-        
-        profileModel = ProfileModel(withUser: model)
-        
-        
-        
+        userProfileModel = model
         super.init(node: tableNode)
         
         tableNode.delegate = self
         tableNode.dataSource = self
-        
-
-//        let moreUserDetails = moreDetailsforUserWithId(model.userId!)
-//        
-//        profileSectionHeader.append("picture")  // Includes fullname
-//        profileSectionHeader.append("about")
-//        profileSectionHeader.append("albumCount")
-      
-//        
-//        profileSections["Userpic"] =  moreUserDetails.userTestPic
-//        profileSections["Username"] =  moreUserDetails.username
-//
-//        profileSections["about"] =  moreUserDetails.about
-//        profileSections["albumCount"] =  moreUserDetails.albumCount
-//        profileSections["fullName"] =  moreUserDetails.fullName
-
     }
+    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableNode.view.allowsSelection = true
         tableNode.view.separatorStyle = .None
         
-        navigationItem.title = profileModel.user.userName?.uppercaseString
+        
+//        let bar:UINavigationBar! =  self.navigationController?.navigationBar
+//        bar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+//        bar.shadowImage = UIImage()
+//        bar.backgroundColor = UIColor(red: 0.0, green: 0.3, blue: 0.5, alpha: 0.3)
+//        navigationController?.navigationBar.translucent = true
+        
+        navigationController?.hidesNavigationBarHairline = true
+        
+        
+        navigationItem.title = userProfileModel.userName.uppercaseString
+        
+        
+                
+        userProfileModel.queryLambdaUserInfo { (success) in
+            
+            self.fetchingUserData = false
+            
+            self.serverError = !success
+            
+            self.reloadTable()
+        }
+    }
+    
+    func reloadTable() {
+        
+        var token: dispatch_once_t = 0
+        dispatch_once(&token) { () -> Void in
+            print("reload once")
+            
+            self.tableNode.view.reloadSections(NSIndexSet(index: 1),
+                                               withRowAnimation: .None)
+        }
     }
     
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        navigationController?.hidesBarsOnTap = true
-        navigationController?.hidesBarsOnSwipe = true
+//        navigationController?.hidesBarsOnSwipe = true
     }
+    
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        navigationController?.hidesBarsOnTap = false
-        navigationController?.hidesBarsOnSwipe = false
+//        navigationController?.hidesBarsOnSwipe = false
     }
-    
-    
-    func moreDetailsforUserWithId(userid: String) -> UserModel {
-        
-        let dict = ["about": 1, "albumCount": 2, "fullName": "John Dog"]
-        let newUserModel = UserModel(withUser: dict)
-        
-        return newUserModel
-    }
-    
-    
     
     //MARK: - ASTableDataSource methods
     
@@ -117,77 +109,74 @@ class UserProfilePageVC: ASViewController, ASTableDelegate, ASTableDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return profileSectionHeader.count
     }
-    
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 { return nil }
-        return profileSectionHeader[section]
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
     }
+    
+    
+//    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        if section == 0 {
+//            return nil
+//        }
+//        return profileSectionHeader[section].rawValue
+//    }
     
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 
+        
         let headerView = view as! UITableViewHeaderFooterView
         headerView.backgroundView?.backgroundColor = UIColor.whiteColor()
         
         headerView.textLabel?.textAlignment = .Center
-        
     }
     
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-        
-//        let sectionHeadTitle = profileSectionHeader[section]
-//        
-//        switch sectionHeadTitle {
-//        case "picture":
-//            return 1
-//        case "fullname":
-//            return 1
-////        case "albumCount":
-////            return profileSections["albumCount"] as! Int
-//        default:
-//            return 1
-//        }
-    }
     
-    
+
     func tableView(tableView: ASTableView, nodeBlockForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
         
-        return {() -> ASCellNode in
-            let cellNode = HASimpleUserDetailCN(withProfileModel: self.profileModel)
-            cellNode.selectionStyle = .None
-            return cellNode
+        if indexPath.section == 0 {
+            return {() -> ASCellNode in
+                
+                let cellNode = HAProfilePhotoCN(withProfileModel: self.userProfileModel)
+                cellNode.selectionStyle = .None
+                return cellNode
+            }
+        } else if indexPath.section == 1 && fetchingUserData {
+            print("Fetching fetchingUserData")
+            return {() -> ASCellNode in
+                let cellNode = HALargeLoadingCN()
+                cellNode.selectionStyle = .None
+                return cellNode
+            }
+        } else if indexPath.section == 1 && !serverError {
+            
+            return {() -> ASCellNode in
+                let cellNode = HASearchBasicProfileCN(withProfileModel: self.userProfileModel)
+                cellNode.delegate = self
+                cellNode.selectionStyle = .None
+                return cellNode
+            }
+            
+        } else {
+            print("Fetching else")
+            return {() -> ASCellNode in
+                let cellNode = HASearchBasicProfileCN(withProfileModel: self.userProfileModel)
+                cellNode.delegate = self
+                cellNode.selectionStyle = .None
+                return cellNode
+            }
         }
-        
-        
-
-//        let album: AlbumModel
-//        
-//        if feedModel.hasNewAlbums() {
-//            if indexPath.section == NewAlbumSection {
-//                album = feedModel.newAlbumIdAtIndex(indexPath.row)
-//            } else {
-//                album = feedModel.albumAtIndex(indexPath.row)!
-//            }
-//            //Only seen albums
-//        } else {//feedModel.totalNumberOfAlbums() > 0 {
-//            album = feedModel.albumAtIndex(indexPath.row)!
-//        }
-//        
-//        // this may be executed on a background thread - it is important to make sure it is thread safe
-//        return {() -> ASCellNode in
-//            return AlbumCellNode(withAlbumObject: album)
-//        }
-//        
-        
-//        if indexPath.row == 0 {
-//            
-//        }
-        
     }
-
     
+    func showErrorMessage(messsage: String) {
+        
+        Drop.down(messsage,
+                  state: .Error ,
+                  duration: 3.0,
+                  action: nil)
+    }
 }
 
 

@@ -31,7 +31,7 @@ public enum ContainerMode {
 
 
 
-class CameraNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectionDelegate {
+class CameraNode: ASDisplayNode, ASPagerDataSource, ASPagerDelegate,  ASCollectionDelegate {
     
     var mode: ContainerMode?
     

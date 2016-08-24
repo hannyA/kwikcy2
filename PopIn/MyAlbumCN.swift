@@ -8,12 +8,14 @@
 
 
 import AsyncDisplayKit
+import SwiftIconFont
 
 protocol MyAlbumCNDelegate {
-    func showMoreOptionsForObjectAtIndexPath(indexPath: NSIndexPath)
+    func showOptionsForAlbum(album: AlbumModel)
+    func uploadAlbum(album: AlbumModel)
 }
 
-class MyAlbumCN: ASCellNode {
+class MyAlbumCN: HAAlbumCN {
     
     
     let DEBUG_PHOTOCELL_LAYOUT = 0
@@ -32,67 +34,47 @@ class MyAlbumCN: ASCellNode {
     
     let album: AlbumModel
     var delegate:MyAlbumCNDelegate?
-    let indexPath: NSIndexPath
     
-    let albumImageView: ASImageNode //SNetworkImageNode
+    let albumImageView: ASButtonNode
     let photoTimeIntervalSincePostLabel: ASTextNode
     let photoTitleLabel: ASTextNode
     
     let checkImage: ASImageNode
-    var isSelected = false
+    var isUserSelected = false
     
     let moreOptionButton: ASButtonNode
     let _divider: ASDisplayNode
 
     let activityIndicatorView: UIActivityIndicatorView
+    let albumWidth:CGFloat = 66.0
 
-    var uploadError: Bool?
     
     
-    init(withAlbumObject albumModel: AlbumModel, atIndexPath indexPath: NSIndexPath) {
+    init(withAlbumObject albumModel: AlbumModel, isSelectable selectionEnabled: Bool, hasTopDivider: Bool) {
         
+        print("MyAlbumCN didLoad init ")
+ 
         album = albumModel
         
-        self.indexPath = indexPath
+        albumImageView = ASButtonNode()
+        
+        albumImageView.backgroundImageNode.image = UIImage(named: "DefaultProfileImage")
 
-        // Make images round
-        let largeRoundModBlock: asimagenode_modification_block_t = { image in
-            var modifiedImage: UIImage
-            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
-            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
-            
-            
-            UIBezierPath(roundedRect: rect, cornerRadius: 66.0).addClip()
-            
-            image.drawInRect(rect)
-            modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            return modifiedImage
-        }
-
-        
-        
-        albumImageView = ASImageNode()
-        
         if let coverImage = album.coverPhotoImage {
-            albumImageView.image = coverImage // album.coverPhotoURL
-
-        } else {
-            albumImageView.image = UIImage(named: album.coverPhoto!) // album.coverPhotoURL
+            albumImageView.backgroundImageNode.image = coverImage
         }
+        
+        
         
         albumImageView.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
-        albumImageView.preferredFrameSize = CGSizeMake(66, 66)
-        albumImageView.cornerRadius = 33.0
+        albumImageView.preferredFrameSize = CGSizeMake(albumWidth, albumWidth)
+        albumImageView.cornerRadius = albumWidth/2
         
         albumImageView.flexShrink = false
         
-        albumImageView.imageModificationBlock = largeRoundModBlock
         
         
         photoTimeIntervalSincePostLabel = HAGlobalNode.createLayerBackedTextNodeWithString(album.timeAttributedStringWithFontSize(AlbumTimeFontSize))
-        
-        
         
         
         photoTitleLabel = HAGlobalNode.createLayerBackedTextNodeWithString(album.titleAttributedStringWithFontSize(AlbumTitleFontSize))
@@ -106,21 +88,25 @@ class MyAlbumCN: ASCellNode {
         
         checkImage = ASImageNode()
         checkImage.layerBacked = true
-        
-        
-        checkImage.preferredFrameSize = CGSizeMake(30, 30)
+        checkImage.preferredFrameSize = CGSizeMake(40, 40)
         checkImage.cornerRadius = 15.0
         
         
-        
         moreOptionButton = ASButtonNode()
-        moreOptionButton.setImage(UIImage(named: "dot-more-7.png"), forState: .Normal)
-        
-        moreOptionButton.borderWidth = 2.0
-        moreOptionButton.borderColor = UIColor.blackColor().CGColor
-        moreOptionButton.cornerRadius = 16
         
         
+        
+        moreOptionButton.imageNodeIcon(from: .MaterialIcon,
+                                       code: "more.vert",
+                                       imageSize: CGSizeMake(40, 40),
+                                       ofSize: 40, color: UIColor.redColor(),
+                                       forState: .Normal)
+        
+        moreOptionButton.imageNodeIcon(from: .MaterialIcon,
+                                       code: "more.vert",
+                                       imageSize: CGSizeMake(40, 40),
+                                       ofSize: 40, color:UIColor(red: 1.0, green: 0.1, blue: 3.0, alpha: 1.0),
+                                       forState: .Highlighted)
         
         
         // Hairline cell separator
@@ -132,51 +118,64 @@ class MyAlbumCN: ASCellNode {
         activityIndicatorView.color = UIColor.blackColor()
 
        
-        
         super.init()
         
-
         
+        albumImageView.backgroundImageNode.imageModificationBlock = { image in
+            var modifiedImage: UIImage
+            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
+            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
+            
+            UIBezierPath(roundedRect: rect, cornerRadius: self.albumWidth).addClip()
+            
+            image.drawInRect(rect)
+            modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return modifiedImage
+        }
+
         addSubnode(albumImageView)
         addSubnode(photoTimeIntervalSincePostLabel)
         addSubnode(photoTitleLabel)
-        addSubnode(checkImage)
+        if selectionEnabled {
+            addSubnode(checkImage)
+        }
         addSubnode(moreOptionButton)
-        addSubnode(_divider)
+        if hasTopDivider {
+            addSubnode(_divider)
+        }
     }
-    
-    
-    
-//    override var highlighted: Bool
-    
-//    override var selected: Bool {
-//        
-//        willSet {
-//            print("changing from \(selected) to \(newValue)")
-//        }
-//        didSet {
-//            print("changed from \(oldValue) to \(selected)")
-//        }
-//    }
-    
-    
     
     override func didLoad() {
         super.didLoad()
+        print(" MyAlbumCN didLoad")
         
+        
+        albumImageView.backgroundImageNode.hidden = true
+        albumImageView.titleNode.hidden = true
+    
+        albumImageView.titleNodeIcon(from: .FontAwesome,
+                            code: "repeat",
+                            ofSize: albumWidth*(4/5),
+                            color: UIColor.redColor(),
+                            forState: .Normal)
+        
+        
+        albumImageView.addTarget(self, action: #selector(retryCreatingAlbum), forControlEvents: .TouchUpInside)
         moreOptionButton.addTarget(self, action: #selector(showMoreOptionsMenu), forControlEvents: .TouchUpInside)
-        userSelected(isSelected)
-
-//        albumImageView.view.addSubview(activityIndicatorView)
-        view.addSubview(activityIndicatorView)
-       
         
-        hideSpinningWheel()
-        if album.isUploading {
-            
-            NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(uploadSuccessful), name:"kAlbumUploadNotification", object: album)
-            
+        userSelected(false)
 
+        view.addSubview(activityIndicatorView)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector:#selector(uploadSuccessful), name:"kAlbumUploadNotification",
+                                                         object: album)
+        hideSpinningWheel()
+        hideRetryButton()
+
+        if album.isUploading {
+            print(" MyAlbumCN didLoad isUploading")
             showSpinningWheel()
         }
     }
@@ -193,66 +192,116 @@ class MyAlbumCN: ASCellNode {
         let leftInset = widthParts*1.5
         _divider.frame = CGRectMake(leftInset, 0, width, pixelHeight)
         
-        
-        
-        // ActivityIndicatorView setup
-//        let boundSize = albumImageView.bounds.size
-//        
-//        activityIndicatorView.sizeToFit()
-//        var refreshRect = activityIndicatorView.frame
-//        
-//        refreshRect.origin = CGPointMake((boundSize.width - activityIndicatorView.frame.size.width)/2.0, (boundSize.height - activityIndicatorView.frame.size.height) / 2.0)
-//        
-//        activityIndicatorView.frame = refreshRect
-        
-                activityIndicatorView.center = albumImageView.view.center
+        activityIndicatorView.center = albumImageView.view.center
     }
+    
+    
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "kAlbumUploadNotification", object: album)
+    }
+    
+    
+    func replaceTitle() {
+        photoTitleLabel.attributedText =  album.titleAttributedStringWithFontSize(AlbumTitleFontSize)
+        setNeedsLayout()
+    }
+
     
     
     
     
     func userSelected(selected:Bool) {
-        
-        isSelected = selected
-        if isSelected {
-            checkImage.borderColor = UIColor.clearColor().CGColor
-            checkImage.image = UIImage(named: "circle-tick-7.png")
-            checkImage.backgroundColor =  UIColor.greenColor()
+                
+        isUserSelected = selected
+        if isUserSelected {
+//            checkImage.borderColor = UIColor.clearColor().CGColor
+//            checkImage.backgroundColor =  UIColor.greenColor()
+            
+            
+            checkImage.icon(from: .Ionicon,
+                            code: "ios-checkmark-outline",
+                            imageSize: CGSizeMake(40, 40),
+                            ofSize: 40,
+                            color: UIColor.greenColor())
         } else {
-            checkImage.borderColor = UIColor.lightGrayColor().CGColor
+            
             checkImage.image = nil
-            checkImage.backgroundColor =  UIColor.whiteColor()
+//            checkImage.icon(from: .Ionicon,
+//                            code: "ios-circle-outline",
+//                            imageSize: CGSizeMake(40, 40),
+//                            ofSize: 40,
+//                            color: UIColor.lightBlueColor())
+            
         }
     }
     
     
 
     
+    
+    
+    
     func showMoreOptionsMenu() {
-        print("showMoreOptionsMenu")
-        delegate?.showMoreOptionsForObjectAtIndexPath(indexPath)
+        delegate?.showOptionsForAlbum(album)
     }
 
     
     
-    func uploadSuccessful(successful: Bool) {
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "kAlbumUploadNotification", object: album)
+    func uploadSuccessful(notification : NSNotification) {
         
         hideSpinningWheel()
 
-        if !successful {
-            uploadError = true // = "Could not make album at this time"
+        if let userInfo = notification.userInfo {
+            
+            if let successful = userInfo["success"] as? Bool {
+                if successful {
+                    NSNotificationCenter.defaultCenter().removeObserver(self, name: "kAlbumUploadNotification", object: album)
+                } else {
+                    print("MyAlbumCN showRetryButton")
+                    showRetryButton()
+                }
+            }
         }
     }
     
+    func showRetryButton() {
+        albumImageView.titleNode.alpha = 1.0
+        albumImageView.userInteractionEnabled = true
+    }
+    
+    func hideRetryButton() {
+        albumImageView.userInteractionEnabled = false
+        albumImageView.titleNode.alpha = 0.0
+
+    }
+    
+    
+    func retryCreatingAlbum() {
+        print("retryCreatingAlbum")
+        print("albumImageView.titleNode.alpha: \(albumImageView.titleNode.alpha )")
+        print("albumImageView.titleNode.hidden: \(albumImageView.titleNode.hidden )")
+        
+        
+//        if !album.isUploading && (albumImageView.titleNode.alpha == 1.0 || albumImageView.titleNode.hidden == false) {
+//        
+//            showSpinningWheel()
+//            delegate?.uploadAlbum(album)
+//        }
+    }
+    
+
     func showSpinningWheel() {
+        
         userInteractionEnabled = false
+        
         activityIndicatorView.startAnimating()
         changeCellNodeAlpha(0.3)
     }
     
     func hideSpinningWheel() {
+        print(" uploadAlbum hideSpinningWheel")
+
         userInteractionEnabled = true
         activityIndicatorView.stopAnimating()
         changeCellNodeAlpha(1.0)
@@ -269,7 +318,6 @@ class MyAlbumCN: ASCellNode {
             self.moreOptionButton.alpha = alpha
             
         }, completion: nil)
-        
     }
     
     
@@ -297,6 +345,12 @@ class MyAlbumCN: ASCellNode {
         
         
         moreOptionButton.preferredFrameSize = CGSizeMake(40, 40)
+        
+        moreOptionButton.borderWidth = 1.0
+        moreOptionButton.borderColor = UIColor.redColor().CGColor
+        moreOptionButton.cornerRadius = 20
+        
+        
         
         
         let albumStack = ASStackLayoutSpec(direction: .Horizontal,

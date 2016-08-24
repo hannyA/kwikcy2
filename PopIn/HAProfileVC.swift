@@ -8,6 +8,8 @@
 
 
 import AsyncDisplayKit
+import SwiftyDrop
+
 
 class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, ProfilePagerControlCellNodeDelegate, MyAlbumCNDelegate, BasicProfileCNDelegate {
 
@@ -17,21 +19,33 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     }
     
     let tableNode: ASTableNode
-    var profileModel: ProfileModel
-    var notificationCount = 5
-    var currentTableView: TableViewSection
-    var profilePageController: ProfilePagerControlCellNode?
+
+//    var currentTableView: TableViewSection
+//    var profilePageController: ProfilePagerControlCellNode?
+
+//    var basicUserCellNode: BasicProfileCellNode?
     
-    var basicUserCellNode: BasicProfileCellNode?
+//    var profileView: HAProfileDisplayView
     
+    var albums: MyAlbums
+    var isLoadingAlbums = true
+    var userModel: UserSearchModel
+    let downloadManager = HADownloadManager(imageType: .Crop)
+
     init() {
         
-        let userModel = TESTFullAppModel(numberOfUsers: 1).firstUser()
-        profileModel = ProfileModel(withUser: userModel!, withNumberOfAlbums: 6)
-        
         tableNode = ASTableNode(style: .Plain)
-        currentTableView = .Albums
-
+        
+        let userInfo = UserSearchModel.BasicInfo(guid: Me.guid()!,
+                                                 username: Me.username()!,
+                                                 fullname: Me.fullname(),
+                                                 verified: Me.verified(),
+                                                 blocked: false)
+        
+        userModel = UserSearchModel(withBasic: userInfo, imageType: .Crop)
+        
+        albums = MyAlbums()
+        
         super.init(node: tableNode)
         
         tableNode.dataSource = self
@@ -44,19 +58,57 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     }
     
     
+    override func loadView() {
+        super.loadView()
+        
+        tableNode.view.allowsSelection = true
+        tableNode.view.separatorStyle = .None
+        tableNode.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        
+
+    }
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = profileModel.user.userName!
-
-        tableNode.view.allowsSelection = true
-        tableNode.view.separatorStyle = .None
-        tableNode.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-
-        let settingsButton = UIBarButtonItem(title: "Settings", style: .Plain, target: self, action: #selector(openSettingsVC)
-        )
+        
+        navigationItem.title = Me.username()
+        navigationController?.navigationBar.translucent = false
+        
+        
+        let settingsButton = UIBarButtonItem()
+        settingsButton.icon(from: .Ionicon, code: "ios-gear-outline", ofSize: 34)
+        settingsButton.tintColor = UIColor.redColor()
+        settingsButton.target = self
+        settingsButton.action = #selector(openSettingsVC)
+        
         navigationItem.setRightBarButtonItem(settingsButton, animated: false)
+        
+        
+        self.downloadManager.setDownloadProfileImages([self.userModel])
+        
+        self.downloadManager.downloadAllUserThumbImages()
+ 
+        
+        albums.load { (success) in
+            
+            print("albums.load done")
+            
+            self.isLoadingAlbums = false
+            if success {
+                print("success")
+            } else {
+                Drop.down("Couldn't get your albums \(randomUpsetEmoji())",
+                    state: .Error ,
+                    duration: 4.0,
+                    action: nil)
+            }
+            
+            self.tableNode.view.reloadSections(NSIndexSet(index: 1),
+                withRowAnimation: .None)
+        }
     }
 
     
@@ -91,24 +143,23 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     
     
     func switchToPageWithTag(buttonTag: Int) {
-        if buttonTag == 1 {
-            currentTableView = .Albums
-            deleteRowsFromTableViewWithCount(notificationCount, withAnimation: .Fade )
-            insertRowsInTableViewWithCount(profileModel.albumCount(), withAnimation: .Fade )
-            
-        } else {
-            currentTableView = .Notifications
-            deleteRowsFromTableViewWithCount(profileModel.albumCount(), withAnimation: .Fade)
-            insertRowsInTableViewWithCount(notificationCount, withAnimation: .Fade)
-        }
+//        if buttonTag == 1 {
+//            currentTableView = .Albums
+//            deleteRowsFromTableViewWithCount(notificationCount, withAnimation: .Fade )
+//            insertRowsInTableViewWithCount(profileModel.albumCount(), withAnimation: .Fade )
+//            
+//        } else {
+//            currentTableView = .Notifications
+//            deleteRowsFromTableViewWithCount(profileModel.albumCount(), withAnimation: .Fade)
+//            insertRowsInTableViewWithCount(notificationCount, withAnimation: .Fade)
+//        }
     }
 
     func openSettingsVC() {
-        
         let settingsVC = HASettingsRealVC()
-     
+        
         let backItem = UIBarButtonItem()
-        backItem.title = "Back"
+        backItem.title = ""
         navigationItem.backBarButtonItem = backItem
 
         navigationController?.pushViewController(settingsVC, animated: true)
@@ -126,108 +177,80 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     //MARK: - ASTableDataSource methods
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
+        print("titleForHeaderInSection: \(section)")
         if section == 0 {
             return nil
-        } else {
-            return "My Albums"
         }
+        return "My Albums"
     }
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let headerView = view as! UITableViewHeaderFooterView
+        headerView.backgroundView?.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.9)
         
-        if section == 1 {
-            let headerView = view as! UITableViewHeaderFooterView
-            headerView.backgroundView?.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.9)
-            
-            headerView.textLabel?.textAlignment = .Center
-        }
+        headerView.textLabel?.textAlignment = .Center
     }
     
     
     
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-         return 2
+        return 2
     }
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         if section == 0 {
             return 1
-        } else  {
-            if currentTableView == .Albums {
-
-                return profileModel.albumCount()
-            } else  {
-                return notificationCount
-            }
         }
+        
+        return albums.oldCount() > 0 ? albums.oldCount(): 1
     }
     
     
     
-    
+//    
     func tableView(tableView: ASTableView, nodeBlockForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
         
         if indexPath.section == 0 {
             
             return {() -> ASCellNode in
-                self.basicUserCellNode = BasicProfileCellNode(withProfileModel: self.profileModel, loggedInUser: true)
-                self.basicUserCellNode!.delegate = self
-                self.basicUserCellNode!.selectionStyle = .None
-                return self.basicUserCellNode!
+                let profileView = BasicProfileCellNode(withProfileModel: self.userModel, loggedInUser: true)
+
+                profileView.delegate = self
+                profileView.selectionStyle = .None
+                return profileView
             }
-            
-        } else { // Section 2
-            
-            print("profileModel count \(profileModel.albumCount())")
-            // If albums exist
-            let album = profileModel.albumAtIndex(indexPath.row)
+        }
+        
+        if isLoadingAlbums && indexPath.row == albums.oldCount() {
+            return {() -> ASCellNode in
+                let cellNode = HALargeLoadingCN()
+                cellNode.selectionStyle = .None
+                return cellNode
+            }
+        } else if albums.oldCount() == 0 {
             
             return {() -> ASCellNode in
-                let albumCellNode = MyAlbumCN(withAlbumObject: album, atIndexPath: indexPath)
+                let albumCellNode = SimpleCellNode(withMessage: "No Albums")
                 albumCellNode.selectionStyle = .None
-                albumCellNode.delegate = self
+                albumCellNode.userInteractionEnabled = false
                 return albumCellNode
             }
         }
         
-        
-//        if indexPath.section == 0 {
-//            
-//            if indexPath.row == 0 {
-//                return {() -> ASCellNode in
-//                    return BasicProfileCellNode(withProfileModel: self.profileModel, loggedInUser: true)
-//                }
-//            } else {
-//                return {() -> ASCellNode in
-//                    self.profilePageController = ProfilePagerControlCellNode()
-//                    self.profilePageController!.delegate = self
-//                    return self.profilePageController!
-//                }
-//            }
-//        } else { // Section 2
-//            
-//            
-//            if currentTableView == .Albums {
-//             
-//            
-//            
-//                // If albums exist
-//                let album: AlbumModel = profileModel.albumAtIndex(indexPath.row)
-//                
-//                // this may be executed on a background thread - it is important to make sure it is thread safe
-//                return {() -> ASCellNode in
-//                    return AlbumCellNode(withAlbumObject: album)
-//                }
-//
-        
+        let album = albums.oldAlbumAtIndex(indexPath.row)
+        return {() -> ASCellNode in
+            let albumCellNode = MyAlbumCN(withAlbumObject: album,
+                                          isSelectable: false,
+                                          hasTopDivider: indexPath.row == 0 ? false: true )
+            albumCellNode.selectionStyle = .None
+            albumCellNode.delegate = self
+            return albumCellNode
+        }
     }
     
-    
-    func showMoreOptionsForObjectAtIndexPath(indexPath: NSIndexPath) {
+    func showOptionsForAlbum(album: AlbumModel) {
         
         print("showMoreOptions")
         
@@ -268,6 +291,10 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     }
     
     
+    // Delegate method for NewAlbumVC ?
+    func uploadAlbum(album: AlbumModel) { }
+
+    
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -286,7 +313,7 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
         
         
         let removeProfilePhotoAction = UIAlertAction(title: "Remove Current Image", style: .Destructive) { (alertAction) in
-            self.basicUserCellNode?.removePhoto()
+//            self.basicUserCellNode?.removePhoto()
         }
         alertController.addAction(removeProfilePhotoAction)
         

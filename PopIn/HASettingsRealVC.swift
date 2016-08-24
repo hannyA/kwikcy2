@@ -9,26 +9,21 @@
 
 
 import AsyncDisplayKit
+import AWSMobileHubHelper
 
 class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     
     let tableNode: ASTableNode
-    var data: [[String]]
+    var data = [[String]]()
 
     
     init() {
-        
         tableNode = ASTableNode(style: .Plain)
-        
-        data = HASettingsRealVC.setup()
         super.init(node: tableNode)
-        
-        tableNode.view.backgroundColor = UIColor(white: 0.97, alpha: 1.0)
-        
+            
         tableNode.dataSource = self
         tableNode.delegate = self
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -36,10 +31,8 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     }
     
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        title = "Options"
+    override func loadView() {
+        super.loadView()
         
         tableNode.view.allowsSelection = true
         tableNode.view.separatorStyle = .None
@@ -47,14 +40,21 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     }
     
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        title = "Options"
+        tableNode.view.backgroundColor = UIColor(white: 0.97, alpha: 1.0)
+        
+        setup()
+    }
+    
     
     //MARK: - ASTableDataSource methods
     
     
     
-    class func setup() -> [[String]] {
-    
-        var sections = [[String]]()
+    func setup() {
         
         /* Will only include 
             Accounts - change username
@@ -69,15 +69,16 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
         var rows = [String]()
         rows.append("SETTINGS")
 //        rows.append("Accounts")
+        rows.append("Accounts")
         rows.append("Notifications")
         rows.append("Data Usage")
-        sections.append(rows)
+        data.append(rows)
 
         
         rows = [String]()
         rows.append("CONTACT US")
         rows.append("Report a problem")
-        sections.append(rows)
+        data.append(rows)
         
         
         rows = [String]()
@@ -85,13 +86,9 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
 //        rows.append("Privacy Policy")
 //        rows.append("Terms")
         rows.append("Licenses")
-        sections.append(rows)
+        data.append(rows)
 
 
-        
-
-        
-        
         
 //        var rows = [String]()
 //        rows.append("Follow People")
@@ -133,15 +130,13 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
         rows.append("")
         rows.append("Rate the App")
         rows.append("Log Out")
-        sections.append(rows)
+        data.append(rows)
         
         // Footer
         rows = [String]()
         rows.append("")
-        sections.append(rows)
-
+        data.append(rows)
         
-        return sections
     }
     
     
@@ -156,72 +151,47 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     }
     
     
+    let HEADER = 0
     func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         
-        let row = indexPath.row
-        if row == 0 {
+        let textNode: HASettingCN
+        let title = data[indexPath.section][indexPath.row]
+
+        if indexPath.row == HEADER {
+            textNode = HASettingCN(withTitle: title,
+                                   isHeader: true,
+                                   hasTopDivider: indexPath.section == 0 ? false :  true,
+                                   hasBottomDivider: indexPath.section == data.count-1 ? false :  true)
             
-            let headerTitle = data[indexPath.section][indexPath.row]
             
-            let textNode: HASettingCN
-            if indexPath.section == data.count-1 {
-                textNode = HASettingCN(withTitle: headerTitle, isHeader: true, hasDivider: false)
-            } else {
-                textNode = HASettingCN(withTitle: headerTitle, isHeader: true, hasDivider: true)
-            }
+  
+            
+            
             textNode.selectionStyle = .None
             textNode.userInteractionEnabled = false
-            return textNode
+       
         } else {
             
-            let rowTitle = data[indexPath.section][indexPath.row]
-            let textNode: HASettingCN
-            if row == 1 {
-                textNode = HASettingCN(withTitle: rowTitle, isHeader: false, hasDivider: false)
-            } else {
-                textNode = HASettingCN(withTitle: rowTitle, isHeader: false, hasDivider: true)
-            }
-
+            let arrow = UIImage.icon(from: .MaterialIcon,
+                         code: "arrow.forward",
+                         imageSize: CGSizeMake(30, 30),
+                         ofSize: 30,
+                         color: UIColor.blackColor())
+            
+            textNode = HASettingCN(withTitle: title,
+                                   rightImage: arrow,
+                                   isHeader: false,
+                                   hasTopDivider: indexPath.row == 1 ? false :  true,
+                                   hasBottomDivider: false)
 
             textNode.backgroundColor = UIColor.whiteColor()
             textNode.selectionStyle = .Gray
-            
-
-            return textNode
         }
         
-    
-//        let textNode = ASTextCellNode()
-//        textNode.text = data[indexPath.section][indexPath.row]
-//        return textNode
+        return textNode
     }
     
-//    func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
-//
-//        if indexPath.section == 0 {
-//            
-//            return {() -> ASCellNode in
-//                self.basicUserCellNode = BasicProfileCellNode(withProfileModel: self.profileModel, loggedInUser: true)
-//                self.basicUserCellNode!.delegate = self
-//                self.basicUserCellNode!.selectionStyle = .None
-//                return self.basicUserCellNode!
-//            }
-//            
-//        } else { // Section 2
-//            
-//            print("profileModel count \(profileModel.albumCount())")
-//            // If albums exist
-//            let album = profileModel.albumAtIndex(indexPath.row)
-//            
-//            return {() -> ASCellNode in
-//                let albumCellNode = MyAlbumCN(withAlbumObject: album, atIndexPath: indexPath)
-//                albumCellNode.selectionStyle = .None
-//                albumCellNode.delegate = self
-//                return albumCellNode
-//            }
-//        }
-//    }
-//    
+    
     
     
     
@@ -232,23 +202,27 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         let row = indexPath.row
+        
         switch indexPath.section {
         case 0:
             switch row {
             case 1:
+                
+                print("Accounts")
+                let accountsVC = HAAccountsVC()
+                navigationController?.pushViewController(accountsVC, animated: true)
+
+            case 2:
                 print("Notifications")
                 
-                let notificationVC = HANotificationsVC()
+                let notificationVC = HAPushNotificationsVC()
                 navigationController?.pushViewController(notificationVC, animated: true)
                 
-                
-                
-                
-            case 2:
+            case 3:
                 print("Data Usage")
 
             default:
-                print("Shouldn't be here")
+                break
             }
         case 1:
             switch row {
@@ -257,14 +231,14 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
                 reportAproblemOptions()
                 
             default:
-                print("Shouldn't be here")
+                break
             }
         case 2:
             switch row {
             case 1:
                 print("Licenses")
             default:
-                print("Shouldn't be here")
+                break
             }
         case 3:
             switch row {
@@ -272,12 +246,12 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
                 print("Rate the App")
             case 2:
                 print("Log Out")
+                handleLogout()
             default:
-                print("Shouldn't be here")
+                break
             }
         default:
-            print("Shouldn't be here")
-
+            break
         }
     }
     
@@ -340,12 +314,50 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     }
     
     
-    
-    
-    
-    
+    func handleLogout() {
+        if (AWSIdentityManager.defaultIdentityManager().loggedIn) {
+            AWSIdentityManager.defaultIdentityManager().logoutWithCompletionHandler({(result: AnyObject?, error: NSError?) -> Void in
+                self.presentSignInViewController()
+//                self.navigationController!.popToRootViewControllerAnimated(false)
+            })
+            // print("Logout Successful: \(signInProvider.getDisplayName)");
+        } else {
+            assert(false)
+            //Show could not log out...
+        }
+    }
 
     
+    
+    
+    func presentSignInViewController() {
+        print("presentSignInViewController")
+        
+        if !AWSIdentityManager.defaultIdentityManager().loggedIn {
+            
+            tabBarController?.selectedIndex = 1
+            
+//            let appDelegate = UIApplication.sharedApplication().delegate
+//            let a = appDelegate.tabbar
+//            AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate]
+//            UITabBarController *tabBarController = appdelegate.tabBarController;
+            
+//            let vc = SignInVC()
+//            presentViewController(vc, animated: false, completion: nil)
+        } else {
+            showVC()
+        }
+    }
+    
+    func showVC() {
+        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseIn , animations: {
+            self.view.alpha = 1.0
+            
+        }) { (complete) in
+            
+        }
+    }
+
 }
 
 

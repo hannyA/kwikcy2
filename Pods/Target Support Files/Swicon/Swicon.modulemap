@@ -1,0 +1,6 @@
+framework module Swicon {
+  umbrella header "Swicon-umbrella.h"
+
+  export *
+  module * { export * }
+}

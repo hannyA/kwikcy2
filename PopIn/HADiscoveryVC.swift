@@ -9,7 +9,7 @@
 import UIKit
 import AsyncDisplayKit
 
-class HADiscoveryVC: ASViewController, ASPagerNodeDataSource {
+class HADiscoveryVC: ASViewController, ASPagerDataSource {
     
     let pageNode: ASPagerNode
 //    let peopleButtonNode: ASButtonNode

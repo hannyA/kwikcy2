@@ -2,185 +2,142 @@
 //  HAFollowingVC.swift
 //  PopIn
 //
-//  Created by Hanny Aly on 5/4/16.
+//  Created by Hanny Aly on 6/16/16.
 //  Copyright © 2016 Aly LLC. All rights reserved.
 //
 
-//import UIKit
+
 import AsyncDisplayKit
-import MobileCoreServices
+import SwiftIconFont
 
 class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
-UIImagePickerControllerDelegate,
-UINavigationControllerDelegate,
-HAAlbumDisplayVCDelegate {
-    
-    
-   
-    
-    let NewAlbumSection = 0
-    let OldAlbumSection = 1
-    
-    let _tableNode: ASTableNode
-    var feedModel: FollowFeedModel
+    HAAlbumDisplayVCDelegate, HAFollowingTableNodeDelegate {
 
-//    var fetchingInitialData:Bool
+
+    let tableNodeDisplay: HAFollowingTableNode
+    
+    var feedModel = FollowFeedModel(withType: .Friends)
+    
     var fetchingMoreData:Bool
     var refreshingData:Bool
     
-    var lowRightCameraButton: UIButton
-    var imagePicker: UIImagePickerController
-    var _activityIndicatorView: UIActivityIndicatorView
-
+    
+    func tabbarHeight() -> CGFloat {
+        return CGRectGetHeight((tabBarController?.tabBar.frame)!)
+    }
     
     init() {
+    
+        tableNodeDisplay = HAFollowingTableNode()
         
-        _tableNode = ASTableNode(style: .Plain)
-       
-        _activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-        lowRightCameraButton = UIButton()
-        imagePicker = UIImagePickerController()
-        
-        if Constants.TestMode {
-            feedModel = TESTFollowFeedModel(withType: .Friends, forNumberOfAlbums: 10)
-        } else { //TODO: Connect to server data
-            feedModel = TESTFollowFeedModel(withType: .Friends)
-        }
-        
+        print("HAFollowingVC init")
+
+        print("feedModel count \(feedModel.totalNumberOfAlbums())")
         refreshingData = false
-//        fetchingInitialData = true
+        //        fetchingInitialData = true
         fetchingMoreData = false
         
-        super.init(node: _tableNode)
+
+        super.init(node: tableNodeDisplay)
+    
         
-        _tableNode.dataSource = self
-        _tableNode.delegate = self
+        tableNodeDisplay.delegate = self
+        
+        tableNodeDisplay.tableNode.dataSource = self
+        tableNodeDisplay.tableNode.delegate = self
         
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    
-    override func loadView() {
-        super.loadView()
-        
-        let boundSize = view.bounds.size
-        
-        _activityIndicatorView.sizeToFit()
-        var refreshRect = _activityIndicatorView.frame
-        refreshRect.origin = CGPointMake( (boundSize.width - _activityIndicatorView.frame.size.width)/2.0, (boundSize.height - _activityIndicatorView.frame.size.height) / 2.0)
-        
-        _activityIndicatorView.frame = refreshRect
-        _activityIndicatorView.color = UIColor.blackColor()
-
-        view.addSubview(_activityIndicatorView)
-
-        
-        refreshFeed()
-    }
     
     
-    
-
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        title = "Following"
-        _tableNode.view.separatorStyle = .None
-        _tableNode.view.allowsSelection = true
-//        _tableNode.view.leadingScreensForBatching = AUTO_TAIL_LOADING_NUM_SCREENFULS;
-
-        let tableFrame = _tableNode.bounds
-        
-        let rightSpace: CGFloat = 15.0
-        let bottomSpace: CGFloat = 15.0
-        let tabbarHeight:CGFloat =  (tabBarController?.tabBar.frame.height)!
-        let tableWidth = tableFrame.width
-        let tableHeight = tableFrame.height
-        let buttonSize:CGFloat = tableWidth/7
-        let xPositionButton:CGFloat = tableWidth - buttonSize - rightSpace
-        let yPositionButton:CGFloat =  tableHeight - buttonSize - bottomSpace - tabbarHeight
-        tabBarController?.view.frame.height
-        
-        let cameraImageNormal = UIImage(named: "camera")
-        let cameraImageHighlighted = UIImage(named: "earth")
-        
-        let camButton = UIButton(type: .Custom)
-//        camButton.setImage(cameraImageNormal, forState: .Normal)
-//        camButton.setImage(cameraImageHighlighted, forState: .Highlighted)
-        
-        camButton.setBackgroundImage(cameraImageNormal, forState: .Normal)
-        camButton.setBackgroundImage(cameraImageHighlighted, forState: .Highlighted)
-//        camButton.sizeToFit()
-//        camButton.contentEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
-        camButton.contentMode = .ScaleAspectFit
-        camButton.frame = CGRectMake(xPositionButton, yPositionButton, buttonSize , buttonSize)
-
-        if hasCamera() {
-            lowRightCameraButton = camButton
-            lowRightCameraButton.layer.borderWidth = 1
-            lowRightCameraButton.layer.borderColor = UIColor.blackColor().CGColor
-            lowRightCameraButton.addTarget(self, action: #selector(openCamera), forControlEvents: .TouchUpInside)
-            navigationController?.view.addSubview(lowRightCameraButton)
-            let cameraTitleButton = UIBarButtonItem(title: "Camera", style: .Done, target: self, action: #selector(openCamera))
-            
-//            let cameraButton = UIBarButtonItem(image: UIImage(named: "camera"), style: .Plain, target: self, action: #selector(openCamera))
-            navigationItem.setRightBarButtonItem(cameraTitleButton, animated: false)
-        }
-    }
-    
-    //MARK: View appear/disappers
     
     /* ============================================================================
      ============================================================================
      
-     Lifetime cycle
+     Life cycle
      
      ============================================================================
      ============================================================================
      */
     
     
-    
-    func presentClearViewController(viewController: UIViewController) {
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        viewController.view.alpha = 0
-        viewController.hidesBottomBarWhenPushed = true
+        print("HAFollowingVC viewDidLoad")
         
-        viewController.navigationController?.navigationBarHidden = true
-        navigationController?.navigationBarHidden = true
-        navigationController?.pushViewController(viewController, animated: false)
+        
+        title = "Following"
+        tableNodeDisplay.tableNode.view.separatorStyle = .None
+        tableNodeDisplay.tableNode.view.allowsSelection = true
+        
+        if hasCamera() {
+            tableNodeDisplay.cameraButton.hidden = false
+            
+            
+            
+            let cameraTitleButton = UIBarButtonItem()
+//            
+//            
+//            title: "Camera",
+//                                                    style: .Done,
+//                                                    target: self,
+//                                                    action: #selector(openCamera))
+            
+            
+            /*
+ 
+                Fonts that work: 
+                    FontAwesome
+                    Iconic
+                    Ionicon
+                    Octicon
+                    Themify
+             
+                Fonts that don't work:
+                    MaterialIcon
+             
+            */
+            
+            
+            /*
+             Cameras we like: 
+             .Ionicon, code: "android-camera"
+             
+             .Ionicon, code: "ios-camera-outline"
+
+             
+            */
+            
+            
+            
+            cameraTitleButton.icon(from: .MaterialIcon, code: "photo.camera", ofSize: 30)
+            
+            
+            
+            navigationItem.setRightBarButtonItem(cameraTitleButton, animated: false)
+        }
+        refreshFeed()
     }
-    
-    
-    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        print("HAFollowingVC viewWillAppear")
+
         navigationController?.navigationBarHidden = false
-        lowRightCameraButton.hidden = false
+        tabBarController?.tabBar.hidden = false
+
     }
-    
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        lowRightCameraButton.hidden = true
-        
         navigationController?.navigationBarHidden = true
     }
     
-    
-    
-  
-    
 
-    
     
     
     
@@ -195,6 +152,7 @@ HAAlbumDisplayVCDelegate {
     
     
     
+    
     func hasCamera() -> Bool {
         if UIImagePickerController.isSourceTypeAvailable(.Camera) {
             return true
@@ -204,104 +162,51 @@ HAAlbumDisplayVCDelegate {
     
     
     func openCamera() {
-        let cameraVC = INCameraVC()
+        let cameraVC = INCameraVC(withCameraPosition: .Back)
         presentClearViewController(cameraVC)
     }
     
     
     
+    func presentClearViewController(viewController: UIViewController) {
+        
+        viewController.view.alpha = 0
+        navigationController?.pushViewController(viewController, animated: false)
+//        presentViewController(viewController, animated: false, completion: nil)
+        
+    }
+    
+    
+    
     func closeCamera() {
-        parentViewController?.dismissViewControllerAnimated(true, completion: nil)
+        navigationController?.popViewControllerAnimated(false)
+        dismissViewControllerAnimated(true, completion: nil)
+//        parentViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     
-    func saveImage(image: UIImage) {
-       
-        print("saveImage")
-        UIImageWriteToSavedPhotosAlbum(image, self, #selector(HAFollowingVC.image(_:didFinishSavingWithError:contextInfo:)), nil)
-    }
-    
-    
-    // Save image to iPhone library
-    func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafePointer<Void>) {
-        print("didFinishSavingWithError")
-        if error == nil {
-            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .Alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            presentViewController(ac, animated: true, completion: nil)
-        } else {
-            let ac = UIAlertController(title: "Save error", message: error?.localizedDescription, preferredStyle: .Alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            presentViewController(ac, animated: true, completion: nil)
-        }
-    }
-    
-    
-//    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-//        
-//        print("didFinishPickingMediaWithInfo")
-//        
-//        let mediaType = info[UIImagePickerControllerMediaType] as! String
-//        
-////        dismissViewControllerAnimated(true, completion: nil)
-//        
-//        if mediaType == (kUTTypeImage as String) {
-//            
-//            let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-//        
-//            
-//            let albumPhotoShare = HAAlbumMediaShareVC(withImage: image)
-////            albumPhotoShare.navigationItem.title = "Hello"
-////            navigationController?.pushViewController(albumPhotoShare, animated: true)
-//            
-//            imagePicker.navigationBarHidden = false
-//            imagePicker.pushViewController(albumPhotoShare, animated: true)
-//            
-//        } else if mediaType == (kUTTypeVideo as String) {
-//            // Code to support video here
-//
+//    func saveImage(image: UIImage) {
+//        UIImageWriteToSavedPhotosAlbum(image, self, #selector(HAFollowingVC.image(_:didFinishSavingWithError:contextInfo:)), nil)
+//    }
+//    
+//    
+//    // Save image to iPhone library
+//    func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafePointer<Void>) {
+//        print("didFinishSavingWithError")
+//        if error == nil {
+//            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .Alert)
+//            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+//            presentViewController(ac, animated: true, completion: nil)
+//        } else {
+//            let ac = UIAlertController(title: "Save error", message: error?.localizedDescription, preferredStyle: .Alert)
+//            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+//            presentViewController(ac, animated: true, completion: nil)
 //        }
-////        
-//        if mediaType.isEqualToString(kUTTypeImage as! String) {
-//            let image = info[UIImagePickerControllerOriginalImage]
-//                as! UIImage
-//            
-//            imageView.image = image
-//            
-//            if (newMedia == true) {
-//                UIImageWriteToSavedPhotosAlbum(image, self,
-//                                               "image:didFinishSavingWithError:contextInfo:", nil)
-//            } else if mediaType.isEqualToString(kUTTypeMovie as! String) {
-//                // Code to support video here
-//            }
-//    }
-    
-    
-//    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage
-//        image: UIImage, editingInfo: [String : AnyObject]?) {
-//      
-//        print("didFinishPickingImage")
-//    }
-//
-//    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-//        
-//        print("imagePickerControllerDidCancel")
-//        closeCamera()
 //    }
     
     
     
     
-    
-    
-    /* ============================================================================
-     ============================================================================
-     
-                        HAAlbumDisplayVC Delegate METHODS
-     
-     ============================================================================
-     ============================================================================
-     */
     
     
     
@@ -309,14 +214,14 @@ HAAlbumDisplayVCDelegate {
     
     func removeTableBackgroundView() {
         print("removeTableBackgroundView")
-
-        _tableNode.view.backgroundView = nil
+        
+        tableNodeDisplay.tableNode.view.backgroundView = nil
     }
     
     func showTableBackgroundViewForNoAlbums() {
         print("showTableBackgroundViewForNoAlbums")
-
-        let bounds = _tableNode.bounds
+        
+        let bounds = tableNodeDisplay.tableNode.bounds
         let backgroundView = UIView(frame: bounds)
         
         let backgroundImageView = UIImageView(frame: backgroundView.bounds)
@@ -325,28 +230,32 @@ HAAlbumDisplayVCDelegate {
         
         backgroundView.addSubview(backgroundImageView)
         
-        _tableNode.contentMode = .ScaleAspectFill
-        _tableNode.view.backgroundView = backgroundView
+        tableNodeDisplay.tableNode.contentMode = .ScaleAspectFill
+        tableNodeDisplay.tableNode.view.backgroundView = backgroundView
     }
     
+    
+    
+    
+    
     func refreshFeed() {
-
+        
         refreshingData = true
-        _activityIndicatorView.startAnimating()
+        tableNodeDisplay.showSpinningWheel()
         
         feedModel.refreshFeedWithCompletionBlock({ (albumResults) in
             
             self.refreshingData = false
             
-            self._activityIndicatorView.stopAnimating()
-            
-            self._tableNode.view.reloadData()
+            self.tableNodeDisplay.tableNode.view.reloadData()
+            self.tableNodeDisplay.hideSpinningWheel()
+
             //            self.insertNewRowsInTableView(albumResults)
             
             //    // immediately start second larger fetch
             //    [self loadPageWithContext:nil];
             
-        }, numbersOfResultsToReturn: 4)
+            }, numbersOfResultsToReturn: 4)
     }
     
     
@@ -365,7 +274,7 @@ HAAlbumDisplayVCDelegate {
             row += 1
         }
         
-        _tableNode.view.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+        self.tableNodeDisplay.tableNode.view.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
     }
     
     
@@ -384,37 +293,40 @@ HAAlbumDisplayVCDelegate {
             row += 1
         }
         
-        _tableNode.view.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+        self.tableNodeDisplay.tableNode.view.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
     }
     
     
     func removeNewAlbumAtIndexPath(indexPath: NSIndexPath) {
-    
+        
         feedModel.removeNewAlbumAtIndex(indexPath.row)
         
-        _tableNode.view.beginUpdates()
+        self.tableNodeDisplay.tableNode.view.beginUpdates()
         
-        _tableNode.view.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        self.tableNodeDisplay.tableNode.view.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
         
         print("removeNewAlbumAtIndexath count  \(feedModel.numberOfNewAlbums())")
-
+        
         
         
         if !feedModel.hasNewAlbums() {
             print("removeNewAlbumAtIndexPath has no NewAlbums")
             let newAlbumSection  = NSIndexSet(index: 0)
-            _tableNode.view.deleteSections(newAlbumSection, withRowAnimation: .None)
+            self.tableNodeDisplay.tableNode.view.deleteSections(newAlbumSection, withRowAnimation: .None)
         } else {
             print("removeNewAlbumAtIndexPath still has NewAlbums")
-
+            
         }
-        _tableNode.view.endUpdates()
+        self.tableNodeDisplay.tableNode.view.endUpdates()
     }
+    
+    
+    
     
     /* ============================================================================
      ============================================================================
      
-                        TABLEVIEW METHODS
+                    TABLEVIEW METHODS
      
      ============================================================================
      ============================================================================
@@ -422,11 +334,11 @@ HAAlbumDisplayVCDelegate {
     
     
     
-
+    
     //MARK: Header methods
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-
+        
         // Text Sideline constants
         let lineWidth = tableView.frame.width/5
         let lineHeight:CGFloat = 1.0
@@ -434,7 +346,7 @@ HAAlbumDisplayVCDelegate {
         
         
         // Setup header view and text
-        let headerViewRect = _tableNode.view.rectForHeaderInSection(section)
+        let headerViewRect = self.tableNodeDisplay.tableNode.view.rectForHeaderInSection(section)
         
         let headerView = view as! UITableViewHeaderFooterView
         headerView.backgroundView?.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.1)
@@ -449,7 +361,7 @@ HAAlbumDisplayVCDelegate {
         // Get the width of headerview text - Can't seem to get it from the header view
         let headerText = self.tableView(tableView, titleForHeaderInSection: section)
         let headerViewfont = headerView.textLabel?.font
-
+        
         let headerTextWidth = widthOfLabelForText(headerText!, withFont: headerViewfont!)
         let headerTextWidthHalf: CGFloat = headerTextWidth/2
         
@@ -459,32 +371,15 @@ HAAlbumDisplayVCDelegate {
         
         let leftLineFrame  = CGRectMake(xLeftStartPosition, yCenter, lineWidth , lineHeight)
         let rightLineFrame = CGRectMake(xRightStartPosition, yCenter, lineWidth , lineHeight)
-
-
+        
+        
         // backgroundView and contentView both work
         headerView.backgroundView?.addSubview(makeLineView(withFrameRect: leftLineFrame))
         headerView.backgroundView?.addSubview(makeLineView(withFrameRect: rightLineFrame))
         
-//        headerView.contentView.addSubview(leftView)
-//        headerView.contentView.addSubview(rightView)
+        //        headerView.contentView.addSubview(leftView)
+        //        headerView.contentView.addSubview(rightView)
     }
-    
-    func widthOfLabelForText(text: String, withFont font: UIFont) -> CGFloat {
-        
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.sizeToFit()
-        return label.frame.width
-    }
-
-    func makeLineView(withFrameRect frameRect: CGRect) -> UIView {
-       
-        let view = UIView(frame: frameRect)
-        view.backgroundColor = UIColor.blackColor()
-        return view
-    }
-    
     
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -500,6 +395,27 @@ HAAlbumDisplayVCDelegate {
         }
     }
     
+    //MARK: Header helper funcs
+    func widthOfLabelForText(text: String, withFont font: UIFont) -> CGFloat {
+        
+        let label = UILabel()
+        label.text = text
+        label.font = font
+        label.sizeToFit()
+        return label.frame.width
+    }
+    
+    func makeLineView(withFrameRect frameRect: CGRect) -> UIView {
+        
+        let view = UIView(frame: frameRect)
+        view.backgroundColor = UIColor.blackColor()
+        return view
+    }
+    
+    
+    
+    
+    //MARK: - ASTableDataSource methods
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         
@@ -520,22 +436,13 @@ HAAlbumDisplayVCDelegate {
         }
     }
     
-
-    
-
-    
-    
-    
-    //MARK: - ASTableDataSource methods
-    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        print("numberOfRowsInSection \(section)")
-
+        //        print("numberOfRowsInSection \(section)")
+        
         if refreshingData {
             return 0
         }
-        
         
         if feedModel.hasNewAlbums() {
             if section == 0 {
@@ -552,19 +459,19 @@ HAAlbumDisplayVCDelegate {
     
     
     func tableView(tableView: ASTableView, nodeBlockForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
-
+        
         //If no albums
-//        if feedModel.totalNumberOfAlbums() == 0 {
-//            return  {() -> ASCellNode in
-//                return SimpleCellNode(withMessage: "Go find some new friends")
-//            }
-//        }
+        //        if feedModel.totalNumberOfAlbums() == 0 {
+        //            return  {() -> ASCellNode in
+        //                return SimpleCellNode(withMessage: "Go find some new friends")
+        //            }
+        //        }
         
         // If albums exist
         let album: AlbumModel
         
         if feedModel.hasNewAlbums() {
-            if indexPath.section == NewAlbumSection {
+            if indexPath.section == 0 {
                 album = feedModel.newAlbumAtIndex(indexPath.row)!
             } else {
                 album = feedModel.albumAtIndex(indexPath.row)!
@@ -581,7 +488,7 @@ HAAlbumDisplayVCDelegate {
             return cellNode
         }
     }
-
+    
     
     
     
@@ -590,7 +497,7 @@ HAAlbumDisplayVCDelegate {
         print("==================================================")
         print("================   New Selection  ================")
         print("==================================================")
-
+        
         let indexPathRow = indexPath.row
         let album: AlbumModel
         var newAlbumSection = false
@@ -603,17 +510,21 @@ HAAlbumDisplayVCDelegate {
                 print("New album has \(album.mediaCount!) images")
                 print("New newMediaIndex: \(album.newMediaIndex!)")
             } else {
+                print("Old album secton 1")
+
                 album = feedModel.albumAtIndex(indexPathRow)!
             }
         } else { // Old albums
+            print("Old album secton 0")
             album = feedModel.albumAtIndex(indexPathRow)!
         }
         
         
-//        didselect delete items from newalbum, if none left remove from new album section
+        //        didselect delete items from newalbum, if none left remove from new album section
         
         
-        let displayAlbumVC = HAAlbumDisplayVC(album: album, fromNewAlbumSection:newAlbumSection,  atIndexPath: indexPath)
+//        
+        let displayAlbumVC = HAAlbumDisplayVC(album: album, isFromNewAlbumSection:newAlbumSection,  atIndexPath: indexPath)
         displayAlbumVC.delegate = self
         presentClearViewController(displayAlbumVC)
     }
@@ -623,12 +534,10 @@ HAAlbumDisplayVCDelegate {
     //MARK: - ASTableDelegate methods
     
     // Receive a message that the tableView is near the end of its data set and more data should be fetched if necessary.
-//    func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
-//        context.beginBatchFetching()
-////        loadpagew
-//    }
-
-
+    //    func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
+    //        context.beginBatchFetching()
+    ////        loadpagew
+    //    }
     
     
 }

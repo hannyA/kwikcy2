@@ -1,0 +1,6 @@
+framework module BigBrother {
+  umbrella header "BigBrother-umbrella.h"
+
+  export *
+  module * { export * }
+}

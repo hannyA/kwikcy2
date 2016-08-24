@@ -15,17 +15,18 @@ class SimpleCellNode: ASCellNode {
     let messageNode: ASTextNode
     let messageFontSize:CGFloat = 20.0
     
+    
     init(withMessage message: String) {
         
         let attributedMessage =  NSAttributedString(string: message,
                                                     fontSize: messageFontSize,
-                                                    color: UIColor.lightGrayColor(),
+                                                    color: UIColor.darkBlueColor(),
                                                     firstWordColor: nil)
         messageNode = SimpleCellNode.createLayerBackedTextNodeWithString(attributedMessage)
         messageNode.flexGrow = true
+        
         super.init()
         
-        backgroundColor = UIColor.blueColor()
         addSubnode(messageNode)
     }
     
@@ -47,8 +48,9 @@ class SimpleCellNode: ASCellNode {
                                                  alignItems: .Center,
                                                  children: [messageNode])
         mainContentStack.flexGrow = true
-
-        return mainContentStack
+        
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(40, 30, 40, 30), child: mainContentStack)
+        
     }
     
 }

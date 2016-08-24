@@ -12,14 +12,13 @@
 //    func uploadAlbum(album: AlbumModel, completeWithSuccess completed: Bool)
 //}
 
+import AWSMobileHubHelper
 
 class AlbumModel {
     
-//    var delegate: AlbumModelDelegate?
-
     var dictionaryRepresentation: [String: AnyObject]
 
-    var id: String?
+    var id: Int?
     var title: String?
     var ownerProfile: UserModel?
     
@@ -28,24 +27,22 @@ class AlbumModel {
     var coverPhotoImage: UIImage?
     var coverPhotoData: NSData?
     
-    
-    var coverPhotoThumbnail: String?
-    var coverPhotoThumbnailURL: NSURL?
-    var coverPhotoThumbnailImage: UIImage?
-    var coverPhotoThumbnailData: NSData?
-    
+    var createDate: String?
+    var newestMediaUrl: String?
+    var newMediaTime: String?
     
     
     var uploadDateRaw: String?
     var uploadDateString: String?
     var time: String? // last photo update time
    
+    
     var urlString: String?
     var URL: NSURL? // urlString ? [NSURL URLWithString:urlString] : nil;
     
     var mediaCount: Int?
     
-    var mediaContent: [MediaModel] //later urls? or NSData
+    var mediaContent = [MediaModel]()  //later urls? or NSData
     
     var hasNewContent: Bool
     
@@ -54,65 +51,203 @@ class AlbumModel {
     
     var isUploading = false
     
-    init(withTitle title: String) {
+    var acl: [String]?
+    
+    
+    
+    
+    
+    // For creating new albums
+    init(withTitle title: String, usersAccessControlList usersGuids: [String]) {
         
         self.title = title
+        self.acl = usersGuids
         mediaCount = 0
         
         dictionaryRepresentation = [String: AnyObject]()
         dictionaryRepresentation["title"] = self.title
-        mediaContent = [MediaModel]()
+//        mediaContent = [MediaModel]()
         hasNewContent = false
     }
     
+    
+    
+    // Getting a list of albums, either ours or friends
+    init(withAlbum album: AlbumResponse.Album) {
+        
+        
+        title = album.title
+        id = album.albumId
+        createDate  = album.date
+        newestMediaUrl = album.newestUrl
+        newMediaTime = album.newestTime
+        
+        dictionaryRepresentation = [String: AnyObject]()
+        dictionaryRepresentation["title"] = album.title
+        dictionaryRepresentation["id"] = album.albumId
+        dictionaryRepresentation["title"] = album.date
+        dictionaryRepresentation["time"] = album.newestTime
+        dictionaryRepresentation["coverPhoto"] = album.newestUrl
+
+        hasNewContent = false
+        
+//        mediaContent = dictionaryRepresentation["mediaContent"] as? [MediaModel]
+//        hasNewContent = dictionaryRepresentation["hasNewContent"] as! Bool
+//        newMediaIndex = dictionaryRepresentation["newMediaIndex"] as? Int
+    }
+
     init(withAlbumInfo info: [String: AnyObject]) {
        
         dictionaryRepresentation = info
-        
-        mediaContent = dictionaryRepresentation["mediaContent"] as! [MediaModel]
-        hasNewContent = dictionaryRepresentation["hasNewContent"] as! Bool
-        newMediaIndex = dictionaryRepresentation["newMediaIndex"] as? Int
+        hasNewContent = false
+//        mediaContent = dictionaryRepresentation["mediaContent"] as! [MediaModel]
+//        hasNewContent = dictionaryRepresentation["hasNewContent"] as! Bool
+//        newMediaIndex = dictionaryRepresentation["newMediaIndex"] as? Int
     }
     
     
-//    
-//    func createNewAlbumWithCompletionBlock(completionClosure: (albumResults :[AlbumModel]) ->(), newAlbum: AlbumModel, usersAccessControlList: [UserModel] ) {
-    
 
-    func uploadAlbum(newAlbum: AlbumModel) {
+    func uploadAlbum(onCompletion closure: (successful :Bool) ->() ){
         
         isUploading = true
-        // start spinning
         
+        var jsonObj = [String: AnyObject]()
+        if let title = title {
+            jsonObj[ "title"] = title
+        }
         
-        // Server call simulation
-        print("Simulating server call")
-
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelay * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+        jsonObj["friends"] = acl
+        
+        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaCreateAlbum,
+        withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
             
             self.isUploading = false
-            NSNotificationCenter.defaultCenter().postNotificationName("kAlbumUploadNotification", object: self, userInfo: ["success": true])
 
-//            NSNotificationCenter.defaultCenter().postNotificationName("kAlbumUploadNotification", object: nil)
-
-//            self.delegate?.uploadAlbum(newAlbum, completeWithSuccess: true)
+            if let result = result {
+                dispatch_async(dispatch_get_main_queue(), {
+                   
+                    print("CloudLogicViewController: Result: \(result)")
+                    
+                    if let objectAsDictionary = result as? [String: AnyObject] {
+                        
+                        let success = objectAsDictionary["Success"] as! Bool
+                        let albumId = objectAsDictionary[kAlbumId] as? Int
+                        
+                        if success {
+                            self.id = albumId
+                            closure(successful: true)
+                        } else {
+                            closure(successful: false)
+                        }
+                    } else {
+                        closure(successful: false)
+                    }
+                })
+            }
+                
+            if let _ = AWSConstants.errorMessage(error) {
+                dispatch_async(dispatch_get_main_queue(), {
+                    closure(successful: false)
+                })
+            }
         }
     }
     
     
-//    func uploadComplete(completed: Bool, completionBlock completionClosure: (albumResults :[AlbumModel]) ->()){
-//       
-//        // Server call Imitation
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelay * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-//            
-//            
-//            print("done here")
-//            
-//            
-//        }
+    func updateACL(acl: [String], onCompletion closure: (successful :Bool) ->() ){
     
-//        
-//    }
+        isUploading = true
+        
+        var jsonObj = [String: AnyObject]()
+        
+        jsonObj[kGuid]    = Me.guid()
+        jsonObj["friends"] = acl
+        jsonObj[ "id"]    = id
+        
+        
+        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUpdateAlbum,
+         withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
+            
+            self.isUploading = false
+            
+            if let result = result {
+                dispatch_async(dispatch_get_main_queue(), {
+                    
+                    print("CloudLogicViewController: Result: \(result)")
+                    
+                    if let objectAsDictionary = result as? [String: AnyObject] {
+                        
+                        let success = objectAsDictionary["Success"] as! Bool
+                        let albumId = objectAsDictionary["AlbumId"] as? Int
+                        
+                        if success {
+                            self.id = albumId
+                            closure(successful: true)
+                        } else {
+                            closure(successful: false)
+                        }
+                    } else {
+                        closure(successful: false)
+                    }
+                })
+            }
+            
+            if let _ = AWSConstants.errorMessage(error) {
+                dispatch_async(dispatch_get_main_queue(), {
+                    closure(successful: false)
+                })
+            }
+        }
+
+    }
+    
+    
+    
+    func updateTitle(title: String, onCompletion closure: (successful :Bool) ->() ){
+        
+        isUploading = true
+        
+        var jsonObj = [String: AnyObject]()
+
+        jsonObj[kGuid]     = Me.guid()
+        jsonObj["action"] = "Title"
+        jsonObj["albumId"] = id
+        jsonObj["title"] = title
+        
+        
+        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUpdateAlbum,
+         withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
+            
+            self.isUploading = false
+            
+            if let result = result {
+                dispatch_async(dispatch_get_main_queue(), {
+                    
+                    if let objectAsDictionary = result as? [String: AnyObject] {
+                        
+                        let success = objectAsDictionary["Success"] as! Bool
+                        
+                        if success {
+                            self.title = title
+                            closure(successful: true)
+                        } else {
+                            closure(successful: false)
+                        }
+                    } else {
+                        closure(successful: false)
+                    }
+                })
+            }
+            
+            if let _ = AWSConstants.errorMessage(error) {
+                dispatch_async(dispatch_get_main_queue(), {
+                    closure(successful: false)
+                })
+            }
+        }
+    }
+    
+    
     
     
     
@@ -122,7 +257,7 @@ class AlbumModel {
         let newMedia = MediaModel(withPhoto: photo)
         mediaContent.append(newMedia)
         
-        if var count = mediaCount{
+        if var count = mediaCount {
             count += 1
             mediaCount = count
         }
@@ -130,6 +265,7 @@ class AlbumModel {
     
     
     func insertRepresentationString(title: String, forObject:AnyObject){
+        
     }
     
     
@@ -210,11 +346,11 @@ class AlbumModel {
     
     
     func titleAttributedStringWithFontSize(size: CGFloat) -> NSAttributedString {
-        return NSAttributedString(string: title, fontSize: size, color: UIColor.lightGrayColor(), firstWordColor: nil)
+        return NSAttributedString(string: title, fontSize: size, color: UIColor.blackColor(), firstWordColor: nil)
     }
     
     func uploadDateAttributedStringWithFontSize(size: CGFloat) -> NSAttributedString {
-        return NSAttributedString(string: uploadDateString, fontSize: size, color: UIColor.lightGrayColor(), firstWordColor: nil)
+        return NSAttributedString(string: uploadDateString, fontSize: size, color: UIColor.blackColor(), firstWordColor: nil)
     }
     
     

@@ -16,17 +16,13 @@ class FollowFeedModel {
         case Groups
         case Events
     }
-//    var newAlbumIds:[String]
-
+    
     var newAlbums:[AlbumModel]
     var albums:[AlbumModel]
 
     
-    
-    
     init(withType model: ModelType) {
         
-//        newAlbumIds = [String]()
         
         switch model {
         case .Friends:
@@ -47,8 +43,21 @@ class FollowFeedModel {
     
     func refreshFeedWithCompletionBlock(completionClosure: (albumResults :[AlbumModel]) ->(), numbersOfResultsToReturn numResults: Int ) {
         
-    
+        print("refreshFeedWithCompletionBlock")
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            sleep(2)
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                
+
+                
+                completionClosure(albumResults: self.albums)
+                
+            }
+        }
     }
+
 
     func clearData() {
         albums.removeAll()
@@ -114,10 +123,10 @@ class FollowFeedModel {
     
 
     
-    func IdsOfNewAlbums() -> [String] {
+    func IdsOfNewAlbums() -> [Int] {
         //["1111", "2222"]
         
-        var dict = [String]()
+        var dict = [Int]()
         for album in albums {
             dict.append(album.id!)
         }

@@ -8,6 +8,7 @@
 
 import AsyncDisplayKit
 
+import SwiftIconFont
 
 protocol HAFollowingTableNodeDelegate {
     func tabbarHeight() -> CGFloat
@@ -23,27 +24,17 @@ class HAFollowingTableNode: ASDisplayNode {
     let cameraButton: ASButtonNode
     var activityIndicatorView: UIActivityIndicatorView
 
-    
     override init() {
-        
-        print("initing this")
-        
+
         screenView = ASDisplayNode()
-//        screenView.sizeRange = ASRelativeSizeRangeMake( ASRelativeSizeMake(ASRelativeDimensionMakeWithPercent(1), ASRelativeDimensionMakeWithPoints(kSoldOutGBHeight)),
-//        ASRelativeSizeMake(ASRelativeDimensionMakeWithPercent(1), ASRelativeDimensionMakeWithPoints(kSoldOutGBHeight)));
         screenView.backgroundColor = UIColor.greenColor()
         screenView.flexGrow = true
         screenView.layerBacked = true
         screenView.hidden = true
   
-        
-        
         tableNode = ASTableNode(style: .Plain)
+  
         cameraButton = ASButtonNode()
-        cameraButton.setImage(UIImage(named: "camera"), forState: .Normal)
-        cameraButton.setImage(UIImage(named: "earth"), forState: .Selected)
-        cameraButton.setImage(UIImage(named: "earth"), forState: .Highlighted)
-        cameraButton.contentMode = .ScaleAspectFit
         cameraButton.hidden = true
         
         activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
@@ -138,14 +129,29 @@ class HAFollowingTableNode: ASDisplayNode {
 //        child:soldOutBG];
 //        
         
-        
-        cameraButton.borderColor = UIColor.greenColor().CGColor
-        cameraButton.borderWidth = 2.0
-  
+
         let tabarHeight = getTabbarHeight()
         let buttonWidth = constrainedSize.max.width/7
         
         let cameraButtonYPosition = constrainedSize.max.height - tabarHeight - buttonWidth  - 10
+        
+        
+        cameraButton.titleNodeIcon(from: .Ionicon,
+                                   code: "android-camera",
+                                   ofSize: buttonWidth - 10,
+                                   color: UIColor.redColor(),
+                                   forState: .Normal)
+        
+        cameraButton.titleNodeIcon(from: .Ionicon,
+                                   code: "android-camera",
+                                   ofSize: buttonWidth - 10,
+                                   color: UIColor(red: 1.0, green: 0.3, blue: 0.3, alpha: 1.0),
+                                   forState: .Highlighted)
+        
+        
+        cameraButton.borderColor = UIColor.greenColor().CGColor
+        cameraButton.borderWidth = 2.0
+        cameraButton.cornerRadius = buttonWidth/2
         
         
         cameraButton.preferredFrameSize = CGSizeMake(buttonWidth, buttonWidth)

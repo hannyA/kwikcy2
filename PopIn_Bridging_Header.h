@@ -10,9 +10,10 @@
 #ifndef PopIn_Bridging_Header_h
 #define PopIn_Bridging_Header_h
 
-#import "AsyncDisplayKit/AsyncDisplayKit.h"
-//#import <AsyncDisplayKit/AsyncDisplayKit.h>
-#import <AsyncDisplayKit.h>
+#import <AsyncDisplayKit/AsyncDisplayKit.h>
+//
+//#import "AsyncDisplayKit/AsyncDisplayKit.h"
+//#import <AsyncDisplayKit.h>
 
 #import <pop/POP.h>
 
@@ -29,15 +30,6 @@
 //#import "UserModel.h"
 //#import "LocationModel.h"
 #import "Utilities.h"
-
-
-
-//#import "ViewController.h"
-//#import "GradientTableNode.h"
-
-
-//#import "RandomCoreGraphicsNode.h"
-
 
 
 

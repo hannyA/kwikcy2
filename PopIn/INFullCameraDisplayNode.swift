@@ -22,7 +22,8 @@ public enum INContainerMode {
 
 
 
-class INFullCameraDisplayNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectionDelegate,
+class INFullCameraDisplayNode: ASDisplayNode, ASPagerDataSource, ASPagerDelegate,
+    ASCollectionDelegate,
     INCameraControlsCellNodeDisplayDelegate, INCameraContainerViewDisplayDelegate {
     
     var mode: INContainerMode?
@@ -249,10 +250,12 @@ class INFullCameraDisplayNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectio
         view.addSubview(activityIndicatorView)
     }
     
-    
-    func initializeCamera(withFrame frame: CGRect) {
-        print("initializeCamera withFrame: \(frame)")
-        cameraContainerView = INCameraContainerView(withFullFrame: CGRectMake(0,0, frame.width, frame.height))
+    func initializeCamera(withFrame frame: CGRect, side position: AVCaptureDevicePosition, allowVideoRecording capability:Bool) {
+        
+        cameraContainerView = INCameraContainerView(withFrame: CGRectMake(0,0, frame.width, frame.height),
+                                                    side: position,
+                                                    allowVideoRecording: capability)
+        
         cameraContainerView?.displayDelegate = self
         cameraContainerView!.layoutIfNeeded()
         cameraContainer.view.addSubview(cameraContainerView!)
@@ -282,33 +285,26 @@ class INFullCameraDisplayNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectio
         
     }
     
-    func showSuccessfulSaveMessage(success: Bool) {
+    func showMessageForSuccessfulSave(success: Bool) {
        
-        print("showSuccessfulSaveMessage")
+        let duration: NSTimeInterval = 0.6
+        let delay: NSTimeInterval = 0.1
+        
         if success {
-            print("saveImageMessage not hidden")
-
             saveImageMessage.hidden = false
-            UIView.animateWithDuration(1.0, delay: 0.2, options: .CurveEaseIn, animations: {
+            UIView.animateWithDuration(duration, delay: delay, options: .CurveEaseIn, animations: {
                 self.saveImageMessage.alpha = 0.0
                 }, completion: { (finished) in
                     self.saveImageMessage.hidden = true
                     self.saveImageMessage.alpha = 1.0
             })
 
-
         } else {
-            print("failSaveImageMessage not hidden")
-
             failSaveImageMessage.hidden = false
             
-            UIView.animateWithDuration(1.0, delay: 0.2, options: .CurveEaseIn, animations: {
-                print("failSaveImageMessage alpha")
-
+            UIView.animateWithDuration(duration, delay: delay, options: .CurveEaseIn, animations: {
                 self.failSaveImageMessage.alpha = 0.0
                 }, completion: { (finished) in
-                    print("failSaveImageMessage finished")
-
                     self.failSaveImageMessage.hidden = true
                     self.failSaveImageMessage.alpha = 1.0
             })
@@ -325,31 +321,13 @@ class INFullCameraDisplayNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectio
      */
     
     
-    func  cameraHasFlipCamera() -> Bool {
-        return (cameraContainerView?.cameraHasFrontCamera())!
+    func changeCamera() {
+        cameraContainerView?.changeCamera()
     }
     
-    
-    func flipCamera() -> (flipped: Bool, position: AVCaptureDevicePosition?) {
-        print("flipCamera")
-        return (cameraContainerView?.flipButtonPressed())!
+    func toggleFlashMode() {
+        cameraContainerView?.toggleFlashMode()
     }
-    
-    
-    func cameraHasFlash() -> Bool {
-        return (cameraContainerView?.cameraHasFlash())!
-    }
-    
-    func shouldSetupFlash() -> Bool {
-    
-        return (cameraContainerView?.setFlashMode(.On))!
-//        return cameraContainerView?.flashConfigurationOn()
-    }
-    
-    func switchFlashConfig() -> AVCaptureFlashMode? {
-        return cameraContainerView?.flashButtonPressed()
-    }
-    
     
     
     /* ================================================================================
@@ -362,17 +340,20 @@ class INFullCameraDisplayNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectio
      */
     
     
-    func captureButtonEnabled(enabled: Bool)
-    {
+    func captureButtonEnabled(enabled: Bool) {
         controlsCellNode.enableCaptureButton(enabled)
     }
 
+    func flipButtonEnabled(enabled: Bool) {
+        controlsCellNode.enableFlipButton(enabled)
+    }
+    
     func flashButtonEnabled(enabled: Bool) {
         controlsCellNode.enableFlashButton(enabled)
     }
     
-    func flipButtonEnabled(enabled: Bool) {
-        controlsCellNode.enableFlipButton(enabled)
+    func setFlashButtonOn(on: Bool) {
+        controlsCellNode.setFlashButtonOn(on)
     }
     
     
@@ -393,9 +374,6 @@ class INFullCameraDisplayNode: ASDisplayNode, ASPagerNodeDataSource, ASCollectio
     func moveToNextViewController() {
         delegate?.moveToNextVC()
     }
-    
-    
-    
     
     
     // Select Page Controls

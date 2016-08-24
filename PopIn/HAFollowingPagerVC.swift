@@ -10,7 +10,7 @@ import UIKit
 import AsyncDisplayKit
 
 
-class HAFollowingPagerVC: ASViewController, ASPagerNodeDataSource  {
+class HAFollowingPagerVC: ASViewController, ASPagerDataSource  {
     
     let pagerNode: ASPagerNode
     

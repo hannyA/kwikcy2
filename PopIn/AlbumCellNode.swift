@@ -43,9 +43,16 @@ class AlbumCellNode: ASCellNode {
         
         album = albumModel
         
+        userAvatarImageView = ASImageNode() //ASNetworkImageNode()
+//        userAvatarImageView.URL = album.ownerProfile!.userPicURL
+        userAvatarImageView.layerBacked = true
+        userAvatarImageView.image = UIImage(named: (album.ownerProfile?.userTestPic)!)
         
-        // Make images round
-        let smallRoundModBlock: asimagenode_modification_block_t = { image in
+        userAvatarImageView.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
+        userAvatarImageView.preferredFrameSize = CGSizeMake(34, 34)
+        userAvatarImageView.cornerRadius = 17.0
+        
+        userAvatarImageView.imageModificationBlock = { image in
             var modifiedImage: UIImage
             let rect = CGRectMake(0, 0, image.size.width, image.size.height)
             UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
@@ -58,38 +65,6 @@ class AlbumCellNode: ASCellNode {
             UIGraphicsEndImageContext()
             return modifiedImage
         }
-        
-        
-        
-        let largeRoundModBlock: asimagenode_modification_block_t = { image in
-            var modifiedImage: UIImage
-            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
-            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
-            
-            
-            UIBezierPath(roundedRect: rect, cornerRadius: 66.0).addClip()
-            
-            image.drawInRect(rect)
-            modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            return modifiedImage
-        }
-        
-        
-        
-        
-        
-        userAvatarImageView = ASImageNode() //ASNetworkImageNode()
-//        userAvatarImageView.URL = album.ownerProfile!.userPicURL
-        userAvatarImageView.layerBacked = true
-        userAvatarImageView.image = UIImage(named: (album.ownerProfile?.userTestPic)!)
-        
-        userAvatarImageView.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
-        userAvatarImageView.preferredFrameSize = CGSizeMake(34, 34)
-        userAvatarImageView.cornerRadius = 17.0
-        
-        userAvatarImageView.imageModificationBlock = smallRoundModBlock
-        
         
         
         // userAvatarImageView: make round
@@ -111,7 +86,20 @@ class AlbumCellNode: ASCellNode {
         
         albumImageView.flexShrink = false
 
-        albumImageView.imageModificationBlock = largeRoundModBlock
+        albumImageView.imageModificationBlock = { image in
+            var modifiedImage: UIImage
+            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
+            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
+            
+            
+            UIBezierPath(roundedRect: rect, cornerRadius: 66.0).addClip()
+            
+            image.drawInRect(rect)
+            modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return modifiedImage
+        }
+
         
         
         
@@ -145,13 +133,21 @@ class AlbumCellNode: ASCellNode {
         
         
         userNameLabel = ASTextNode()
-        userNameLabel.attributedString = album.ownerProfile?.usernameAttributedStringWithFontSize(FONT_SIZE)
+        
+        userNameLabel.attributedText = HAGlobal.titlesAttributedString((albumModel.ownerProfile?.userName)!,
+                                                                       color: UIColor.blackColor(),
+                                                                       textSize: kTextSizeRegular)
+        
+        
         userNameLabel.flexShrink = true
         userNameLabel.layerBacked = true
 
 
         userRealNameLabel = ASTextNode()
-        userRealNameLabel.attributedString = album.ownerProfile?.fullNameAttributedStringWithFontSize(FONT_SIZE)
+        
+        userRealNameLabel.attributedText = HAGlobal.titlesAttributedString((albumModel.ownerProfile?.fullName)!,
+                                                                       color: UIColor.blackColor(),
+                                                                       textSize: kTextSizeRegular)
         userRealNameLabel.layerBacked = true
         
         

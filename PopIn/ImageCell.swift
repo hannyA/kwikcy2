@@ -22,7 +22,7 @@ class ImageCell: ASCellNode {
     let elementSize: CGSize
     let panGesture: UIPanGestureRecognizer
     
-    init(withImage image: UIImage, size: CGSize, gesture: UIPanGestureRecognizer) {
+    init(withImage image: UIImage?, size: CGSize, gesture: UIPanGestureRecognizer, forUser model: UserUploadFriendModel) {
         
         elementSize = size
         userAvatarImageView = ASImageNode()
@@ -30,8 +30,12 @@ class ImageCell: ASCellNode {
     
         super.init()
 
-        // Make images round
-        let smallRoundModBlock: asimagenode_modification_block_t = { image in
+        
+        userAvatarImageView.image = image
+        userAvatarImageView.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
+        userAvatarImageView.preferredFrameSize = elementSize
+        userAvatarImageView.cornerRadius = 25.0
+        userAvatarImageView.imageModificationBlock = { image in
             var modifiedImage: UIImage
             let rect = CGRectMake(0, 0, image.size.width, image.size.height)
             UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
@@ -44,11 +48,26 @@ class ImageCell: ASCellNode {
             return modifiedImage
         }
         
-        userAvatarImageView.image = image
-        userAvatarImageView.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
-        userAvatarImageView.preferredFrameSize = elementSize
-        userAvatarImageView.cornerRadius = 25.0
-        userAvatarImageView.imageModificationBlock = smallRoundModBlock
+        
+        print("ImageCell For horizontal ImageNode 1")
+        model.albumHorizontalImageClosure = { image in
+            print("ImageCell For horizontal ImageNode 2")
+            self.userAvatarImageView.image = image
+        }
+
+        
+        if userAvatarImageView.image == nil {
+            print("ImageCell For horizontal ImageNode 3")
+            
+            if let downloadedFile = model.downloadFileURL {
+                print("ImageCell For horizontal ImageNode 4")
+                
+                if let data = NSData(contentsOfURL: downloadedFile) {
+                    userAvatarImageView.image = UIImage(data: data)
+                }
+            }
+        }
+
         
         addSubnode(userAvatarImageView)
 

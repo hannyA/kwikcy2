@@ -60,7 +60,8 @@ class HASimpleUserDetailCN: ASCellNode {
 //
         // userPic.imageModificationBlock = smallRoundModBlock
         
-        
+        print("finsihed coffee 3")
+
         
         // let friendsCountLabelText = HAGlobalNode.attributedString("289", textSize: kTextSizeXS)
         
@@ -80,7 +81,9 @@ class HASimpleUserDetailCN: ASCellNode {
         friendsButton.flexGrow = true
         
         
-        let fullnameLabelText = HAGlobalNode.attributedString(profile.user.fullName!, font: kTextSizeRegular, text: .BlackLabel)
+        let fullnameLabelText = HAGlobalNode.attributedString(profile.user.fullName,
+                                                              font: kTextSizeRegular,
+                                                              text: .BlackLabel)
         
         fullnameLabel = HAGlobalNode.createLayerBackedTextNodeWithString( fullnameLabelText )
         fullnameLabel.preferredFrameSize = CGSizeMake(100, 50)

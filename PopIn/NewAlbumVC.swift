@@ -11,30 +11,27 @@ import AsyncDisplayKit
 
 protocol NewAlbumVCDelegate {
     func dismissVC()
-    func createNewAlbum( newAlbum: AlbumModel, usersAccessControlList: [UserModel] )
+    func createNewAlbum(album: AlbumModel )
 
 }
 
 class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFieldDelegate, HorizontalScrollCellDelegate, UISearchBarDelegate {
     
     var delegate: NewAlbumVCDelegate?
-    let testAppModel: TESTFullAppModel
     let newAlbumDisplayView: NewAlbumDisplayView
     var horizontalCollectionUsersCN: HorizontalScrollCell?
     
-    
+    var friendsModel = FriendsModel()
     var albumTitle: String = ""
     
-
-//    var collectionAppearedOnce = false
     
+    let rowsCountInTopSection = 1 // When we include search functionality, change this to 3
+
     typealias IndexRow = Int
     
     init() {
-    
         print("NewAlbumVC init")
-        testAppModel = TESTFullAppModel(indexPathSection: 1)
-        testAppModel.resetSearchResults()
+
         newAlbumDisplayView = NewAlbumDisplayView()
         
         super.init(node: newAlbumDisplayView)
@@ -42,7 +39,27 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
         newAlbumDisplayView.tableNode.dataSource = self
         newAlbumDisplayView.tableNode.delegate = self
       
-        title = "New Album"
+        navigationItem.title = "New Album"
+        
+        let cancelButton = UIBarButtonItem(title: "Cancel",
+                                           style: .Plain,
+                                           target: self,
+                                           action: #selector(dismissVC))
+        
+        
+        navigationItem.setLeftBarButtonItem(cancelButton, animated: false)
+
+        do {
+            try NSFileManager.defaultManager().createDirectoryAtURL(
+                NSURL(fileURLWithPath: NSTemporaryDirectory())
+                    .URLByAppendingPathComponent("download"),
+//                    .URLByAppendingPathComponent(UserUploadFriendModel.ProfileImageType.Crop.rawValue),
+                withIntermediateDirectories: true,
+                attributes: nil)
+            
+        } catch {
+            print("Creating 'download' directory failed. Error: \(error)")
+        }
     }
     
     
@@ -54,6 +71,7 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = UIColor.whiteColor()
         newAlbumDisplayView.tableNode.view.allowsSelection = true
         newAlbumDisplayView.tableNode.view.separatorStyle = .None
@@ -61,8 +79,27 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
         newAlbumDisplayView.buttonDisplay.button.addTarget(self,
                                                            action: #selector(createNewAlbum),
                                                            forControlEvents: .TouchUpInside)
+        
+        
+        friendsModel.load({ (success) in
+            
+            print("friendsModel.load")
+            
+            if success {
+                
+            } else {
+                
+            }
+            
+            self.reloadFriends()
+        })
     }
     
+    
+    func reloadFriends() {
+        newAlbumDisplayView.tableNode.view.reloadSections(NSIndexSet(index: 1),
+                                                          withRowAnimation: .None)
+    }
     
     
     
@@ -70,27 +107,27 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
     // show spinning wheel over album image, and gray out the whole row
     // pass along a completion block
     
+//    AWSLambdaCreateAlbum
     
     func createNewAlbum() {
        
-        var friendList = [UserModel]()
+        var friendsGuidList = [String]()
         
-        for i in 0..<selectedFriendsModel.count {
-            let user = selectedFriendsModel[i]
-            friendList.append(user)
+        for selectedUser in selectedFriendsModel {
+            friendsGuidList.append(selectedUser.guid)
         }
         
-        let newAlbum = AlbumModel(withTitle: albumTitle)
-        
-        delegate?.createNewAlbum(newAlbum, usersAccessControlList: friendList)
-        
+        let newAlbum = AlbumModel(withTitle: albumTitle, usersAccessControlList: friendsGuidList)
+
+        delegate?.createNewAlbum(newAlbum)
         dismissVC()
+        
     }
+    
     
     func dismissVC() {
         delegate?.dismissVC()
     }
-    
     
 
     
@@ -108,77 +145,30 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             if selectedFriendsModel.count > 0 {
-                return 3
+                return rowsCountInTopSection + 1 // Add 1 for the user photos row
             } else {
-                return 2
+                return rowsCountInTopSection
             }
+        } else if friendsModel.isLoading {
+            return friendsModel.userCount() + 1
         } else {
-            return testAppModel.searchResultsCount()
+            return friendsModel.userCount() > 0 ? friendsModel.userCount() : 1
         }
     }
-        
-    
-    
-//    
-//    func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
-//        
-//        let section = indexPath.section
-//        let row = indexPath.row
-//        
-//        if section == 0 {
-//            
-//            if row == 0 {
-//                let titleCN = HATitleCN()
-//                titleCN.selectionStyle = .None
-//                titleCN.textFieldNode.textField.delegate = self
-//                return titleCN
-//            } else if selectedFriendsModel.count > 0 {
-//                return horizontalCollectionUsersCN
-//            } else {
-//                let searchTextVC = HASearchCN()
-//                searchTextVC.selectionStyle = .None
-//                searchTextVC.searchBarNode.searchBar.delegate = self
-//                return searchTextVC
-//            }
-//        } else {
-//            
-//        let friendModel = testAppModel.searchResultAtIndex(row) // .userAtIndex(modelRow)
-//        
-////        print("friendModel.userName \(friendModel.userName)")
-//        
-//            var shouldHaveDivider = true
-//            if row == 0 {
-//                shouldHaveDivider = false
-//            }
-//            let friendCN = HASearchFriendCN(withUserModel: friendModel, hasDivider: shouldHaveDivider)
-//            
-////            print("friendCN username \(friendCN.userModel.userName)")
-//            
-//            if self.selectedFriendsModel.contains(friendModel) {
-//                friendCN.userSelected(true)
-//            } else {
-//                friendCN.userSelected(false)
-//            }
-//            friendCN.selectionStyle = .None
-//            showingFriendsCells.append(friendCN)
-//            return friendCN
-//        }
-//    }
     
     func tableView(tableView: ASTableView, nodeBlockForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
-        let section = indexPath.section
-        let row = indexPath.row
         
-        if section == 0 {
+        
+        if indexPath.section == 0 {
             
-            if row == 0 {
+            if indexPath.row == 0 {
                 return {() -> ASCellNode in
                     let titleCN = HATitleCN()
                     titleCN.selectionStyle = .None
                     titleCN.textFieldNode.textField.delegate = self
                     return titleCN
                 }
-            } else if selectedFriendsModel.count > 0 {
+            } else { // if selectedFriendsModel.count > 0 {
                 return {() -> ASCellNode in
                     
                     let elementSize:CGFloat = 50
@@ -190,35 +180,46 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
                     
                     return self.horizontalCollectionUsersCN!
                 }
-            } else {
+            }
+//            else {
+//                return {() -> ASCellNode in
+//                    let searchTextVC = HASearchCN()
+//                    searchTextVC.selectionStyle = .None
+//                    searchTextVC.searchBarNode.searchBar.delegate = self
+//                    return searchTextVC
+//                }
+//            }
+        } else { // section 1
+            
+            if friendsModel.isLoading && indexPath.row == friendsModel.userCount() {
                 return {() -> ASCellNode in
-                    let searchTextVC = HASearchCN()
-                    searchTextVC.selectionStyle = .None
-                    searchTextVC.searchBarNode.searchBar.delegate = self
-                    return searchTextVC
+                    let cellNode = HALargeLoadingCN()
+                    cellNode.selectionStyle = .None
+                    return cellNode
+                }
+            } else if friendsModel.userCount() == 0 {
+                
+                return {() -> ASCellNode in
+                    let albumCellNode = SimpleCellNode(withMessage: "Find friends before you make an album")
+                    albumCellNode.selectionStyle = .None
+                    albumCellNode.userInteractionEnabled = false
+                    return albumCellNode
                 }
             }
-        } else {
+            // else friends row
+            
 
-            print("nodeBlockForRowAtIndexPath friendModel =================================")
-
-            let friendModel = testAppModel.searchResultAtIndex(row) // .userAtIndex(modelRow)
-            print("nodeBlockForRowAtIndexPath friendModel =================================")
+            let friendModel = friendsModel.userAtIndex(indexPath.row)
 
             var shouldHaveDivider = true
-            if row == 0 {
+            if indexPath.row == 0 {
                 shouldHaveDivider = false
             }
             
             let friendCN = HASearchFriendCN(withUserModel: friendModel, hasDivider: shouldHaveDivider)
             self.showingFriendsCells.append(friendCN)
 
-            print("friendModel.userName ============================================= \(friendModel.userName)")
             let cellNode = {() -> ASCellNode in
-                
-//                let friendCN = HASearchFriendCN(withUserModel: friendModel, hasDivider: shouldHaveDivider)
-                
-                print("friendCN username ===================================\(friendCN.userModel.userName)")
 
                 if self.selectedFriendsModel.contains(friendModel) {
                     friendCN.userSelected(true)
@@ -226,8 +227,6 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
                     friendCN.userSelected(false)
                 }
                 
-                print("friendCN username  ====================================\(friendCN.userModel.userName) End 2")
-
                 friendCN.selectionStyle = .None
 
                 return friendCN
@@ -247,7 +246,14 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
         
         if indexPath.section == 1 {
             
-            let userModel = testAppModel.searchResultAtIndex(indexPath.row)
+            if friendsModel.isLoading && indexPath.row == friendsModel.userCount() {
+
+                return
+            }
+            
+            let userModel = friendsModel.userAtIndex(indexPath.row)
+            
+//            let userModel = testAppModel.searchResultAtIndex(indexPath.row)
             
             // print("userModelname \(userModel.userName)")
           
@@ -264,10 +270,10 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
             // print("showingFriendsCells: \(showingFriendsCells.count)")
             
             let cellNode = showingFriendsCells[cellNodeIndex!]
-            cellNode.userSelected(!cellNode.isSelected)
+            cellNode.userSelected(!cellNode.isUserSelected)
             
-            if !cellNode.isSelected {
-                let selectedIndex = selectedFriendsModel.indexOf({ (selectedUser: UserModel) -> Bool in
+            if !cellNode.isUserSelected {
+                let selectedIndex = selectedFriendsModel.indexOf({ (selectedUser: UserUploadFriendModel) -> Bool in
                     if userModel.userName == selectedUser.userName {
                         return true
                     }
@@ -294,18 +300,6 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
                     insertRowsAtIndexPaths([NSIndexPath(forRow: 1,inSection:0)], animation: .Top)
                     
                     newAlbumDisplayView.tableNode.view.endUpdates()
-                    
-//                    collectionAppearedOnce = true
-//                    if !collectionAppearedOnce {
-//                        newAlbumDisplayView.tableNode.view.endUpdates()
-//                        collectionAppearedOnce = true
-//                    } else  {
-//                        
-//                        newAlbumDisplayView.tableNode.view.endUpdatesAnimated(true, completion: { (completed) in
-//                            print("selectedFriendsModel count once")
-//                            self.horizontalCollectionUsersCN!.insertItemAtIndexPathRow(self.selectedFriendsModel.endIndex-1)
-//                        })
-//                    }
                 
                 } else {
                     print("selectedFriendsModel count != 1")
@@ -350,7 +344,7 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
     
     
     
-    func itemAtIndexPathRow(index: Int) -> UserModel {
+    func itemAtIndexPathRow(index: Int) -> UserUploadFriendModel {
         print("itemAtIndexPathRow")
         let userModel = selectedFriendsModel[index]
         print("itemAtIndexPathRow row \(index)")
@@ -362,12 +356,12 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
     
     
     var showingFriendsCells = [HASearchFriendCN]()  // not sorted
-    var selectedFriendsModel = [UserModel]() // change to userIds/usernames not sorted
+    var selectedFriendsModel = [UserUploadFriendModel]() // change to userIds/usernames not sorted
 
     
     
 //    var showingFriends = [IndexRow: HASearchFriendCN]()
-//    //    var selectedFriendsDict = [IndexRow: UserModel]()
+//    //    var selectedFriendsDict = [IndexRow: UserUploadFriendModel]()
 //    var selectedFriends = [IndexRow]()
     
     
@@ -428,10 +422,10 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
     
         beginTableUpdates()
         
-        if let filterResults = testAppModel.fetchDeletedSearchResults(searchText) {
+        if let filterResults = friendsModel.fetchDeletedSearchResults(searchText) {
             newAlbumDisplayView.tableNode.view.deleteRowsAtIndexPaths(filterResults, withRowAnimation: .Top)
         }
-        if let filterResults = testAppModel.fetchInsertSearchResults(searchText) {
+        if let filterResults = friendsModel.fetchInsertSearchResults(searchText) {
             newAlbumDisplayView.tableNode.view.insertRowsAtIndexPaths(filterResults, withRowAnimation: .Top)
         }
         endTableUpdates()
