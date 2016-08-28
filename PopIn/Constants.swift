@@ -18,13 +18,18 @@ struct Constants {
 }
 
 
-let AppName = "Popin"
+let AppName = "Chap Chat"
+let iTunesLink = "https://itunes.apple.com/us/app/tinder/id547702041?mt=8"
+// "itms-apps://itunes.apple.com/app/id547702041"
 
 // Profile Photo
 let kHDVersion:CGFloat = 1080.0
 let kSDVersion:CGFloat = 540.0
 
 
+//NSUserDefaults Keys and Types
+
+let uDataUse = "DataUse" // Bool
 
 
 let kDictionaryRepresentation = "dictionaryRepresentation"
@@ -63,10 +68,25 @@ let kNotificationId = "id"
 let kAlbumId        = "albumId"
 let kType           = "type"
 
+
+
+let kTitle             = "title";
+let kFriendsListAdd    = "friendsToAdd";
+let kFriendsListRemove = "friendsToRemove";
+let kAction            = "action";
+
+
+let kMedia      = "media";
+let kMediaURL   = "mediaUrl";
+
+let kTimelimit  = "timelimit";
+let kAlbumIds   = "albumIds";
+
+
+
 let kTimestamp      = "timestamp"
 let kDate           = "date"
 
-let kTitle           = "title"
 let kCreateDate      = "createDate"
 let kNewestMediaTime = "newestTime"
 let kNewestMediaUrl  = "newestUrl"
@@ -82,6 +102,7 @@ let kProfile        = "Profile"
 let kProfileExists  = "ProfileExt"
 
 
+let kSuccess        = "Success"
 let kErrorMessage   = "ErrorMessage"
 
 

@@ -22,8 +22,6 @@ PODS:
   - AsyncDisplayKit/PINRemoteImage (1.9.90):
     - AsyncDisplayKit/Core
     - PINRemoteImage/iOS (>= 3.0.0-beta.3)
-  - AWSAutoScaling (2.4.7):
-    - AWSCore (= 2.4.7)
   - AWSCloudWatch (2.4.7):
     - AWSCore (= 2.4.7)
   - AWSCognito (2.4.7):
@@ -31,11 +29,7 @@ PODS:
   - AWSCognitoIdentityProvider (2.4.7):
     - AWSCore (= 2.4.7)
   - AWSCore (2.4.7)
-  - AWSDynamoDB (2.4.7):
-    - AWSCore (= 2.4.7)
   - AWSLambda (2.4.7):
-    - AWSCore (= 2.4.7)
-  - AWSMachineLearning (2.4.7):
     - AWSCore (= 2.4.7)
   - AWSMobileAnalytics (2.4.7):
     - AWSCore (= 2.4.7)
@@ -44,8 +38,6 @@ PODS:
   - AWSSES (2.4.7):
     - AWSCore (= 2.4.7)
   - AWSSNS (2.4.7):
-    - AWSCore (= 2.4.7)
-  - AWSSQS (2.4.7):
     - AWSCore (= 2.4.7)
   - BigBrother (0.4.0)
   - Bolts (1.8.4):
@@ -57,11 +49,11 @@ PODS:
   - ChameleonFramework/Default (2.1.0)
   - ChameleonFramework/Swift (2.1.0):
     - ChameleonFramework/Default
-  - FBSDKCoreKit (4.14.0):
+  - FBSDKCoreKit (4.15.0):
     - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.14.0):
+  - FBSDKLoginKit (4.15.0):
     - FBSDKCoreKit
-  - FBSDKShareKit (4.14.0):
+  - FBSDKShareKit (4.15.0):
     - FBSDKCoreKit
   - FontAwesome.swift (0.8.0)
   - GSMessages (1.2.3)
@@ -72,14 +64,16 @@ PODS:
     - PINCache (>= 3.0.0-beta)
   - PINRemoteImage/iOS (3.0.0-beta.3):
     - PINRemoteImage/Core
+  - PKHUD (3.2.1)
   - pop (1.0.9)
   - ReachabilitySwift (2.3.3)
   - RSKImageCropper (1.5.1)
-  - SKPhotoBrowser (2.0.2)
+  - SKPhotoBrowser (2.0.3)
   - Swicon (0.93)
   - SwiftFontName (2.0.0)
   - SwiftIconFont (2.5.6)
   - SwiftyDrop (2.4.2)
+  - SwiftyUserDefaults (2.2.1)
   - TOCropViewController (2.0.7)
   - Toucan (0.5.0)
   - VBFPopFlatButton (0.0.7):
@@ -90,18 +84,14 @@ DEPENDENCIES:
   - AFDateHelper
   - AFNetworkActivityLogger
   - AsyncDisplayKit
-  - AWSAutoScaling
   - AWSCloudWatch
   - AWSCognito
   - AWSCognitoIdentityProvider
-  - AWSDynamoDB
   - AWSLambda
-  - AWSMachineLearning
   - AWSMobileAnalytics
   - AWSS3
   - AWSSES
   - AWSSNS
-  - AWSSQS
   - BigBrother
   - ChameleonFramework/Swift
   - FBSDKCoreKit
@@ -111,6 +101,7 @@ DEPENDENCIES:
   - GSMessages
   - KeychainAccess
   - NVActivityIndicatorView
+  - PKHUD
   - pop (~> 1.0)
   - ReachabilitySwift
   - RSKImageCropper
@@ -119,6 +110,7 @@ DEPENDENCIES:
   - SwiftFontName (~> 2.0.0)
   - SwiftIconFont
   - SwiftyDrop (~> 2.0)
+  - SwiftyUserDefaults
   - TOCropViewController
   - Toucan (~> 0.5.0)
   - VBFPopFlatButton
@@ -129,39 +121,37 @@ SPEC CHECKSUMS:
   AFNetworkActivityLogger: 121486778117d53b3ab1c61d264b88081d0c3eee
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   AsyncDisplayKit: 926ded3ca3fb7026565e0e81f0e132fea4d3a6eb
-  AWSAutoScaling: 757c8078f3e78d136362ab7ccbfd6b6ee577544d
   AWSCloudWatch: f56798cf33237b5de594df5e4450c93a59a72e60
   AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
   AWSCognitoIdentityProvider: 2afc07e3e7b89738921845d7fe3369246a4358b9
   AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
-  AWSDynamoDB: 95c8d325fad2bea4d4ca70576876d9893d9dedd3
   AWSLambda: 10800dea35f48dc51164730b1c3d6b1a92a17487
-  AWSMachineLearning: a3536fbf944c517a5c69a0c0785b1bb176e22a3f
   AWSMobileAnalytics: b372e8ca4bc0292a6937058dc3af2d0b5dba6c9f
   AWSS3: 0f3c8ed11e04cd78cf86ed396c06330ab142db7a
   AWSSES: 3fec9f9e3a310f0291347d91f9c9511dab00bdee
   AWSSNS: 45b3a02693808251ed388afcab0e90ec05b53f72
-  AWSSQS: 46f51dfa009c89dcca2898dd0e97de1922e826b7
   BigBrother: 50274213cffbf9582c38d673ee1787f24510c55c
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
-  FBSDKCoreKit: 6e020b5db0b5bd1e01f5fb0902131befd129a502
-  FBSDKLoginKit: da563567a108050ef83739c8c8c001ee9e25fa13
-  FBSDKShareKit: e8e5d4ccef69b41132fe33acda26db1e33143e33
+  FBSDKCoreKit: 6680cbd33a4243d80700f182d0af36b3fa7f3118
+  FBSDKLoginKit: 96d9b70b5784490f02ab86119e542a1f182017a8
+  FBSDKShareKit: 06ef20cb2f16828ca4b20055333313dd445de362
   FontAwesome.swift: f8c6cc5c42cbe93bdc04371363bc7b371fb3d3a1
   GSMessages: 6c92295aaac87b96d746c1838e72ed0a2b51ac9a
   KeychainAccess: 7f10e2ef998ddf954a64d5d608be08677774684d
   NVActivityIndicatorView: 5568608c3511690a42c4dd02f7a1de4361d670ae
   PINCache: 6911fe422a633e18b3d3ddf2bd4f0e55e36e2892
   PINRemoteImage: 308731aa6534500e58fc211b9cc2bb7252df25ba
+  PKHUD: 001c11518f125a273ddf026bcc64918423744ea2
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
   RSKImageCropper: edd65fedb3734332818deb139906d6b7f54b8a44
-  SKPhotoBrowser: a23a4125deca7451d298248c7eafc8332fb909df
+  SKPhotoBrowser: 3ee2530d06c27b52e079d8524c4bd586a198ad40
   Swicon: ab0f8031618e4ba81e4a7c3b785d4e6a2080b94e
   SwiftFontName: 7c3fdb6fc334cd4a8f2953c450a7b40c8d1400e4
   SwiftIconFont: b3621d42b91b48c3bf8874cfc881c0c6be2e303c
   SwiftyDrop: e65d61c9f416fd5daa80b53cf89ccce572756336
+  SwiftyUserDefaults: 7abdba50a50ea0c18ee8903af3c88e4c1cb8448d
   TOCropViewController: cec24e4385929683b217d08bfdc8791975cddc04
   Toucan: 0519c341148252ae114c5a657d2a85bb9ada9e40
   VBFPopFlatButton: 39e48ab56277f3d056734a9b5ec5d0cc60d69778

@@ -9,15 +9,21 @@
 import AWSMobileHubHelper
 import AsyncDisplayKit
 import KeychainAccess
+import NVActivityIndicatorView
+
+import AWSCognitoIdentityProvider
 
 
 class SignInVC: ASViewController  {
+    
+    
     
     var signInDisplayNode: SignInDisplayNode
     var didSignInObserver: AnyObject!
 
     
     init() {
+        print("SigninVC Inited")
         signInDisplayNode = SignInDisplayNode()
         super.init(node: signInDisplayNode)
     }
@@ -31,14 +37,19 @@ class SignInVC: ASViewController  {
         super.viewDidLoad()
         print("Sign In Loading.")
 
-        didSignInObserver =  NSNotificationCenter.defaultCenter().addObserverForName(AWSIdentityManagerDidSignInNotification, object: AWSIdentityManager.defaultIdentityManager(),
-                                                    queue: NSOperationQueue.mainQueue(),
-                                                    usingBlock: {(note: NSNotification) -> Void in
+        didSignInObserver =  NSNotificationCenter.defaultCenter().addObserverForName( AWSIdentityManagerDidSignInNotification,
+                                                        object: AWSIdentityManager.defaultIdentityManager(),
+                                                        queue: NSOperationQueue.mainQueue(),
+                                                        usingBlock: {(note: NSNotification) -> Void in
                                                         
             // perform successful login actions here
             
             print("SignInVC didSignInObserver")
         })
+        
+        
+        AWSFacebookSignInProvider.sharedInstance().setPermissions(["public_profile"]);
+
         
         signInDisplayNode.signinButton.addTarget(self, action: #selector(handleFacebookLogin), forControlEvents: .TouchUpInside)
         
@@ -48,10 +59,14 @@ class SignInVC: ASViewController  {
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(didSignInObserver)
-
+        print("SignInVC deinited")
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        print("SignInVC viewWillDisappear")
+        super.viewWillDisappear(animated)
+    }
     
     
     /*  
@@ -78,22 +93,36 @@ class SignInVC: ASViewController  {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        print("View did appear")
         var token: dispatch_once_t = 0
         dispatch_once(&token) { () -> Void in
+            
+            print("View did appear: dispatch_once")
+
             UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseIn, animations: {
+            
                 self.view.alpha = 1.0
-                }, completion: nil)
+                
+            }, completion: { (done) in
+                
+                print("tabBarController?.selectedIndex = 0")
+
+//                self.tabBarController?.selectedIndex = 0
+            })
         }
     }
     
     
     
     func dismissVC() {
+        print("SignInVC dismissVC")
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+
         UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveEaseIn, animations: {
             self.view.alpha = 0.0
         }) { (completed) in
-            self.navigationController?.popViewControllerAnimated(false)
-//            self.dismissViewControllerAnimated(false, completion: nil)
+            self.dismissViewControllerAnimated(false, completion: nil)
+//            self.navigationController?.popViewControllerAnimated(false)
         }
     }
     
@@ -116,18 +145,17 @@ class SignInVC: ASViewController  {
     func handleLoginWithSignInProvider(signInProvider: AWSSignInProvider) {
         
         print("Logging into facebook through AWS")
-        print("1) Is Main Thread: \(NSThread.isMainThread()), ASSERT to true")
 
         AWSIdentityManager.defaultIdentityManager().loginWithSignInProvider(signInProvider, completionHandler: {(result: AnyObject?, error: NSError?) -> Void in
             
             // If no error reported by SignInProvider
             print("Logged into facebook through AWS")
-            print("2) Is Main Thread: \(NSThread.isMainThread()), ASSERT to true")
+            print("result = \(result), error = \(error)")
 
             
             if error == nil {
                 
-                print("Logging into \(AppName)")
+                print("Logging into: \(AppName)")
                 
                 self.signInDisplayNode.signinButton.userInteractionEnabled = false
                 self.signInDisplayNode.showSpinningWheel()
@@ -170,6 +198,7 @@ class SignInVC: ASViewController  {
                                 } else {
                                     // User does not exist
                                     let vc = RegisterUserVC()
+                                    
                                     self.navigationController?.pushViewController(vc, animated: false)
                                 }
                             } else {

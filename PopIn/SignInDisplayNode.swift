@@ -9,7 +9,7 @@
 import Foundation
 import AsyncDisplayKit
 import ChameleonFramework
-
+import NVActivityIndicatorView
 
 class SignInDisplayNode: ASDisplayNode {
     
@@ -20,14 +20,23 @@ class SignInDisplayNode: ASDisplayNode {
     let signinButton: LTRButtonNode
 
     let screenView: ASDisplayNode
-    let activityIndicatorView: UIActivityIndicatorView
+//    let activityIndicatorView: UIActivityIndicatorView
+    
+    let spinningWheel: NVActivityIndicatorView
     
     
     
     override init() {
+        spinningWheel = NVActivityIndicatorView(frame: CGRectMake(0, 0, 65, 65),
+                                    type: .BallSpinFadeLoader,
+                                    color: UIColor.flatWhiteColor(),
+                                    padding: 10.0)
+        spinningWheel.hidesWhenStopped = true
         
-        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-        activityIndicatorView.color = UIColor.blackColor()
+    
+        
+//        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+//        activityIndicatorView.color = UIColor.blackColor()
         
         screenView = ASDisplayNode()
         screenView.backgroundColor = UIColor(white: 0.5, alpha: 0.4)
@@ -86,7 +95,7 @@ class SignInDisplayNode: ASDisplayNode {
         
         appTitleLabel = ASTextNode()
         appTitleLabel.layerBacked = true
-        appTitleLabel.attributedString = NSAttributedString(string: "Clique Glass",
+        appTitleLabel.attributedString = NSAttributedString(string: AppName,
                                                             fontSize: 50,
                                                             color: UIColor.blackColor(),
                                                             firstWordColor: UIColor.redColor())
@@ -103,13 +112,16 @@ class SignInDisplayNode: ASDisplayNode {
     
     
     func showSpinningWheel() {
-        activityIndicatorView.startAnimating()
+//        activityIndicatorView.startAnimating()
         screenView.hidden = false
+        
+        spinningWheel.startAnimation()
     }
     
     func hideSpinningWheel() {
-        activityIndicatorView.stopAnimating()
+//        activityIndicatorView.stopAnimating()
         screenView.hidden = true
+        spinningWheel.stopAnimation()
         
     }
 
@@ -119,7 +131,8 @@ class SignInDisplayNode: ASDisplayNode {
         hideSpinningWheel()
         
 
-        view.addSubview(activityIndicatorView)
+        view.addSubview(spinningWheel)
+//        view.addSubview(activityIndicatorView)
     }
     
     
@@ -133,8 +146,9 @@ class SignInDisplayNode: ASDisplayNode {
                                             UIColor.flatWhiteColor()])
         
         
+        spinningWheel.center = view.center
         
-        activityIndicatorView.center = view.center
+//        activityIndicatorView.center = view.center
     
     
 //        let backgroundImageView = UIImageView(image: UIImage(named: "mad-men-1.png"))

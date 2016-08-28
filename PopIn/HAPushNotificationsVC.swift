@@ -12,6 +12,11 @@ import AsyncDisplayKit
 class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     
+    let newFriendTitle  = "New Friend Requests"
+    let acceptedFriends = "Accepted Friend Requests"
+    let newContent      = "New Media Content"
+   
+    
     struct NotifUpdate {
         var newFriends: Bool
         var acceptedFriends: Bool
@@ -22,10 +27,23 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
     var data = [[String]]()
     
     // Get this data from users AWS cloud settings
-    var notifUpdates = NotifUpdate(newFriends: false, acceptedFriends: false, newMedia: false)
+    var notifUpdates:NotifUpdate
     
     
     init() {
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        let newFriends              = defaults.boolForKey(newFriendTitle)
+        let acceptedFriendsRequests = defaults.boolForKey(acceptedFriends)
+        let newMediaContent         = defaults.boolForKey(newContent)
+        
+        
+        notifUpdates = NotifUpdate(newFriends: newFriends,
+                                   acceptedFriends: acceptedFriendsRequests,
+                                   newMedia: newMediaContent)
+        
+        
         
         tableNode = ASTableNode(style: .Plain)
         
@@ -62,16 +80,14 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
     
     
     
+    
+    
     func saveSettings() {
         
     }
     //MARK: - ASTableDataSource methods
     
     
-    let newFriendTitle  = "New Friend Requests"
-    let acceptedFriends = "Accepted Friend Requests"
-    let newContent      = "New Media Content"
-   
     func setup() {
         
         var rows = [String]()
@@ -215,9 +231,15 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
                     
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelayFast * NSEC_PER_SEC)), dispatch_get_main_queue()) {
                         
+                        // if savedSettings {
+                        //     save in defaults
+                        // }
+                        
                         self.notifUpdates.newFriends = !self.notifUpdates.newFriends
 
-                        print("Returned from call")
+                        NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates.newFriends,
+                                                                      forKey: self.newFriendTitle)
+                        
                         cellNode.returnedNetworkCall()
                         
                         UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
@@ -239,18 +261,19 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
                 
                 
                 if cellNode.userInteractionEnabled {
-                    print("userInteractionEnabled")
                     
                     cellNode.makingNetworkCall()
                     
-                    print("Dispatch netowrk call")
-                    
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelayFast * NSEC_PER_SEC)), dispatch_get_main_queue()) {
                         
+                        // if savedSettings {
+                        //     save in defaults
+                        // }
+                    
                         self.notifUpdates.acceptedFriends = !self.notifUpdates.acceptedFriends
-
                         
-                        print("Returned from call")
+                        NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates.acceptedFriends,
+                                                                      forKey: self.acceptedFriends)
                         cellNode.returnedNetworkCall()
                         
                         UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
@@ -276,19 +299,20 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
                 
                 
                 if cellNode.userInteractionEnabled {
-                    print("userInteractionEnabled")
-                    
                     
                     cellNode.makingNetworkCall()
                     
-                    print("Dispatch netowrk call")
-                    
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelayFast * NSEC_PER_SEC)), dispatch_get_main_queue()) {
                         
-                        self.notifUpdates.newMedia = !self.notifUpdates.newMedia
-
+                        // if savedSettings {
+                        //     save in defaults
+                        // }
                         
-                        print("Returned from call")
+                        self.notifUpdates.newMedia = !self.notifUpdates.newMedia
+                        
+                        NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates.newMedia,
+                                                                      forKey: self.newContent)
+                        
                         cellNode.returnedNetworkCall()
                         
                         UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
@@ -309,7 +333,6 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
         default:
             break
         }
-        
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
 

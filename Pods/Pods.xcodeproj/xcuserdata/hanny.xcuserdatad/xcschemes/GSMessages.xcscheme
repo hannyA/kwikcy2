@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '2E5CC9993FA55B41D628775F'
+               BlueprintIdentifier = '8C8483BFA7402B341E176117'
                BlueprintName = 'GSMessages'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'GSMessages.framework'>

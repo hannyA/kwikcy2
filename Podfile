@@ -6,22 +6,47 @@ use_frameworks!
 target 'PopIn' do
     
     
+    # Major software (Key players)
+    pod 'AsyncDisplayKit'
+    
+    # Facebook
+    pod 'FBSDKCoreKit'
+    pod 'FBSDKLoginKit'
+    pod 'FBSDKShareKit'
+    
+    # AWS
+#    pod 'AWSAutoScaling'
+    pod 'AWSCloudWatch'
+    pod 'AWSCognito'
+    pod 'AWSCognitoIdentityProvider'
+#    pod 'AWSDynamoDB'
+    pod 'AWSLambda'
+#    pod 'AWSMachineLearning'
+    pod 'AWSMobileAnalytics'
+    pod 'AWSS3'
+    pod 'AWSSES'
+    pod 'AWSSNS'
+#    pod 'AWSSQS'
+
+
+
+    # Storage
+#    pod 'RealmSwift'
+    pod 'SwiftyUserDefaults'
+    
     # Secure storage
     pod 'KeychainAccess'
     
     # Networking
     
-        # Network Activity Indicator
-        pod 'BigBrother'
-        pod 'AFNetworkActivityLogger'
-        
-        # Reachability
-        pod 'ReachabilitySwift'
-
-
-    #
-    pod 'AsyncDisplayKit'
+    # Network Activity Indicator
+    pod 'BigBrother'
+    pod 'AFNetworkActivityLogger'
     
+    # Reachability
+    pod 'ReachabilitySwift'
+
+
     
     # Animation
     pod 'pop', '~> 1.0'
@@ -48,8 +73,9 @@ target 'PopIn' do
     # Beauty colors
     pod 'ChameleonFramework/Swift'
     
-    #Spinning wheel
+    # Spinning wheel
     pod 'NVActivityIndicatorView'
+    pod 'PKHUD'
     
     #Drop down notifications/messages
     pod 'GSMessages'
@@ -58,24 +84,5 @@ target 'PopIn' do
     
     # Photo expander
     pod 'SKPhotoBrowser'
-    
-    # Facebook
-    pod 'FBSDKCoreKit'
-    pod 'FBSDKLoginKit'
-    pod 'FBSDKShareKit'
-    
-    # AWS
-    pod 'AWSAutoScaling'
-    pod 'AWSCloudWatch'
-    pod 'AWSCognito'
-    pod 'AWSCognitoIdentityProvider'
-    pod 'AWSDynamoDB'
-    pod 'AWSLambda'
-    pod 'AWSMachineLearning'
-    pod 'AWSMobileAnalytics'
-    pod 'AWSS3'
-    pod 'AWSSES'
-    pod 'AWSSNS'
-    pod 'AWSSQS'
 end
 

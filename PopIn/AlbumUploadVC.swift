@@ -110,6 +110,14 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+
+    
+    enum MediaType: String {
+        case Video = "video"
+        case Photo = "photo"
+        case Gif   = "gif"
+    }
+    
     
     
     func uploadMediaToSelectedAlbums() {
@@ -121,7 +129,39 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         }
         
         
+        let imageRep = UIImageJPEGRepresentation(newPhoto, kCompression.Worst.rawValue)
+        
+        let imageSize = CGFloat( imageRep!.length)
+        print("imageSize: \(imageSize / 1024) KB")
+        
+        
+        let imageBase64 = imageRep?.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+        
+        
+        
+        albums.uploadMedia(imageBase64!,
+                           type: MediaType.Photo.rawValue,
+                           timelimit: 5,
+                           to: selectedAlbumModel) { (successful, errorMessage) in
+                         
+                            if !successful {
+                                
+                                Drop.down(errorMessage!,
+                                          state: .Error ,
+                                          duration: 4.0,
+                                          action: nil)
+                            }
+        }
+        
+        
+        
+        navigationController?.popToRootViewControllerAnimated(false)
+        tabBarController?.selectedIndex = 4
+
     }
+    
+    
+    
     
     func createNewAlbum(newAlbum: AlbumModel) {
         

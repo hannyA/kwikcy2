@@ -9,7 +9,7 @@
 
 import AsyncDisplayKit
 import SwiftyDrop
-
+import RealmSwift
 
 class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, ProfilePagerControlCellNodeDelegate, MyAlbumCNDelegate, BasicProfileCNDelegate {
 
@@ -155,24 +155,6 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
 //        }
     }
 
-    func openSettingsVC() {
-        let settingsVC = HASettingsRealVC()
-        
-        let backItem = UIBarButtonItem()
-        backItem.title = ""
-        navigationItem.backBarButtonItem = backItem
-
-        navigationController?.pushViewController(settingsVC, animated: true)
-    }
-    
-    
-    func editProfile() {
-        let editProfileVC = HAEditProfileVC()
-        let navCon = UINavigationController(rootViewController: editProfileVC)
-        presentViewController(navCon, animated: true, completion: nil)
-    }
-    
-    
     
     //MARK: - ASTableDataSource methods
     
@@ -219,6 +201,7 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
 
                 profileView.delegate = self
                 profileView.selectionStyle = .None
+                profileView.friendCount
                 return profileView
             }
         }
@@ -249,6 +232,45 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
             return albumCellNode
         }
     }
+    
+    
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        print("didSelectRowAtIndexPath section: \(indexPath.section)")
+        print("didSelectRowAtIndexPath row    : \(indexPath.row)")
+        
+    }
+    
+    
+    
+    func openSettingsVC() {
+        let settingsVC = HASettingsRealVC()
+        
+        let backItem = UIBarButtonItem()
+        backItem.title = ""
+        navigationItem.backBarButtonItem = backItem
+        
+        navigationController?.pushViewController(settingsVC, animated: true)
+    }
+    
+    
+    func showFriends() {
+        print("showFriends")
+        let friendsVC = HAEditUsersVC()
+        
+        let navCon = UINavigationController(rootViewController: friendsVC)
+        presentViewController(navCon, animated: true, completion: nil)
+    }
+
+    func editProfile() {
+        let editProfileVC = HAEditProfileVC()
+        let navCon = UINavigationController(rootViewController: editProfileVC)
+        presentViewController(navCon, animated: true, completion: nil)
+    }
+    
+    
+    
     
     func showOptionsForAlbum(album: AlbumModel) {
         
@@ -294,14 +316,6 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     // Delegate method for NewAlbumVC ?
     func uploadAlbum(album: AlbumModel) { }
 
-    
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        
-        print("didSelectRowAtIndexPath: \(indexPath.row)")
-        
-    }
     
     
     

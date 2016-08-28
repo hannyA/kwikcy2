@@ -32,8 +32,6 @@ class HorizontalScrollCell: ASCellNode,
     
     var _collectionNode: ASCollectionNode
     var _elementSize: CGSize
-//    var _divider: ASDisplayNode
-    
     
     
     init(initWithElementSize size: CGSize) {
@@ -45,18 +43,12 @@ class HorizontalScrollCell: ASCellNode,
         flowLayout.minimumInteritemSpacing = kInnerPadding
         _collectionNode = ASCollectionNode(collectionViewLayout: flowLayout)
     
-        // Hairline cell separator
-//        _divider = ASDisplayNode()
-//        _divider.backgroundColor = UIColor.lightGrayColor()
-//        
         super.init()
         
         backgroundColor = UIColor.greenColor()
         _collectionNode.backgroundColor = UIColor.whiteColor()
         
         addSubnode(_collectionNode)
-//        addSubnode(_divider)
-        
     }
     
     override func didLoad() {
@@ -65,37 +57,11 @@ class HorizontalScrollCell: ASCellNode,
         _collectionNode.delegate = self
     }
     
-
-//    override func layout() {
-//        super.layout()
-//        
-////        _collectionNode.frame = bounds
-////        _collectionNode.view.contentInset = UIEdgeInsetsMake(kTopPadding, kOuterPadding, kBottomPadding, kOuterPadding);
-//        
-//        print("_collectionNode.frame: \(_collectionNode.frame)")
-//        print("_collectionNode.bounds: \(_collectionNode.bounds)")
-//        print("bounds: \(bounds)")
-//        print("frame: \(frame)")
-//        
-//        // Manually layout the divider.
-//        let pixelHeight:CGFloat = 1.0 / UIScreen.mainScreen().scale// [[UIScreen mainScreen] scale];
-//        _divider.frame = CGRectMake(0, 0, calculatedSize.width, pixelHeight)
-//    }
-    
-//    
     func collectionView(collectionView: ASCollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
         
         return UIEdgeInsetsMake(kTopPadding, kOuterPadding, kBottomPadding, kOuterPadding)
     }
     
-    
-//    override func layoutDidFinish() {
-//        super.layoutDidFinish()
-//        print("layoutDidFinish")
-//
-//        print("_collectionNode height \(_collectionNode.view.frame.height)")
-//        print("_collectionNode width \(_collectionNode.view.frame.width)")
-//    }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
@@ -106,16 +72,9 @@ class HorizontalScrollCell: ASCellNode,
         return insetSpec
     }
     
-    
-    
-    
-    
-    
-
 
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
       
-        print("collectionView: numberOfItemsInSection \(section)")
         if let delegate = delegate {
             return delegate.numberOfItemsInCollectionView()
         }
@@ -299,34 +258,11 @@ class HorizontalScrollCell: ASCellNode,
 //    }
     
     
-    
-//    func collectionView(collectionView: ASCollectionView, nodeBlockForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
-//        
-//        let userModel = delegate!.itemAtIndexPathRow(indexPath.row)
-//        
-//        let image = UIImage(named: userModel.userTestPic!)
-//        
-//        return {() -> ASCellNode in
-//            
-//            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.intoThingAir))
-//            panGesture.minimumNumberOfTouches = 1
-//            panGesture.delegate = self
-//            
-//            let imageCellNode = ImageCell(withImage: image!, size: self._elementSize, gesture: panGesture)
-//            imageCellNode.preferredFrameSize = self._elementSize
-//            
-//            self.cellNodeViews.append(imageCellNode)
-//            
-//            return imageCellNode
-//        }
-//    }
-    
-    
 
     func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode
     {
         let userModel = delegate!.itemAtIndexPathRow(indexPath.row)
-//        
+
         var image: UIImage?
         if let downloadedFile = userModel.downloadFileURL {
             if let data = NSData(contentsOfURL: downloadedFile) {
@@ -339,18 +275,13 @@ class HorizontalScrollCell: ASCellNode,
         panGesture.delegate = self
         
         
-        let imageCellNode = ImageCell(withImage: image, size: self._elementSize, gesture: panGesture, forUser: userModel)
-//        imageCellNode.preferredFrameSize = self._elementSize
+        let imageCellNode = ImageCell(withImage: image,
+                                      size: self._elementSize,
+                                      gesture: panGesture,
+                                      forUser: userModel)
         
         self.cellNodeViews.append(imageCellNode)
  
-//        let startSwipe = UISwipeGestureRecognizer(target: self, action: #selector(some))
-//        startSwipe.direction = [.Up, .Down]
-//        startSwipe.numberOfTouchesRequired = 1
-//        startSwipe.delegate = self
-//        imageCellNode.view.addGestureRecognizer(startSwipe)
-
-        
         return imageCellNode
     }
     
@@ -480,7 +411,6 @@ class HorizontalScrollCell: ASCellNode,
                         
                         }, completion: { (finished) in
                          
-                            
                             let index = self.cellNodeViews.indexOf({ (cellNode: ASCellNode) -> Bool in
                                 if cellNode.view == slideFinger.view {
                                     return true
@@ -513,24 +443,6 @@ class HorizontalScrollCell: ASCellNode,
         }
         slideFinger.setTranslation(CGPointZero, inView: self.view)
     }
-    
-
-    
-//    func collectionView(collectionView: ASCollectionView, nodeBlockForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
-//        
-//        return {() -> ASCellNode in
-//            let titleCN = SimpleCellNode(withMessage: "boo")
-//            return titleCN
-//        }
-    
-////        return {() -> ASCellNode in
-////            let imageCell = ImageCell()
-////            imageCell.preferredFrameSize = self._elementSize
-////            return imageCell
-////        }
-//        
-//    }
-    
     
     
     

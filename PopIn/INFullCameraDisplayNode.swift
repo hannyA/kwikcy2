@@ -341,6 +341,11 @@ class INFullCameraDisplayNode: ASDisplayNode, ASPagerDataSource, ASPagerDelegate
     
     
     func captureButtonEnabled(enabled: Bool) {
+        if enabled {
+            cameraContainerView?.addFocusImage()
+        } else {
+            cameraContainerView?.removeFocusImage()
+        }
         controlsCellNode.enableCaptureButton(enabled)
     }
 

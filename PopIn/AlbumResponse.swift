@@ -27,9 +27,7 @@ class AlbumResponse {
     
     init?(response result: AnyObject?) {
         
-        if result == nil {
-            return nil
-        } else if let response = result as? [String: AnyObject]  {
+        if let response = result as? [String: AnyObject]  {
             
             if (response[kErrorMessage] as? String) != nil {
                 return nil

@@ -36,6 +36,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         window.rootViewController = signInVCNavCtrl
         window.makeKeyAndVisible()
         
+        
+        
+        // Used at Login time, to add parameters to get user Settings
+        if NSUserDefaults().isFirstLaunchForUser("me") {
+            
+            //Call on background thread users info??
+            
+            print("First launch")
+        }
+        
+        // Show Welcome screen, Page View Controller, how to user app
+        if NSUserDefaults.isFirstLaunchEver() {
+            print("First launch")
+            
+        }
+        
+        
+        
 
         //MARK: Uncomment this line
 //        return AWSMobileClient.sharedInstance.didFinishLaunching(application, withOptions: launchOptions)
@@ -72,6 +90,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
+        NSUserDefaults.standardUserDefaults().synchronize()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {

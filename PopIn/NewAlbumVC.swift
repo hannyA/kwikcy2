@@ -67,15 +67,18 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func loadView() {
+        super.loadView()
+        newAlbumDisplayView.tableNode.view.allowsSelection = true
+        newAlbumDisplayView.tableNode.view.separatorStyle = .None
+    }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.whiteColor()
-        newAlbumDisplayView.tableNode.view.allowsSelection = true
-        newAlbumDisplayView.tableNode.view.separatorStyle = .None
-        
+       
         newAlbumDisplayView.buttonDisplay.button.addTarget(self,
                                                            action: #selector(createNewAlbum),
                                                            forControlEvents: .TouchUpInside)
@@ -121,7 +124,6 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
 
         delegate?.createNewAlbum(newAlbum)
         dismissVC()
-        
     }
     
     
@@ -145,7 +147,7 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             if selectedFriendsModel.count > 0 {
-                return rowsCountInTopSection + 1 // Add 1 for the user photos row
+                return rowsCountInTopSection + 1 // Add 1 for Hozizontal Collection Cell node to store user photos
             } else {
                 return rowsCountInTopSection
             }
@@ -216,10 +218,12 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
                 shouldHaveDivider = false
             }
             
-            let friendCN = HASearchFriendCN(withUserModel: friendModel, hasDivider: shouldHaveDivider)
-            self.showingFriendsCells.append(friendCN)
+//            let friendCN = HASearchFriendCN(withUserModel: friendModel, hasDivider: shouldHaveDivider)
+//            self.showingFriendsCells.append(friendCN)
 
             let cellNode = {() -> ASCellNode in
+                let friendCN = HASearchFriendCN(withUserModel: friendModel, hasDivider: shouldHaveDivider)
+                self.showingFriendsCells.append(friendCN)
 
                 if self.selectedFriendsModel.contains(friendModel) {
                     friendCN.userSelected(true)
@@ -345,9 +349,7 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
     
     
     func itemAtIndexPathRow(index: Int) -> UserUploadFriendModel {
-        print("itemAtIndexPathRow")
         let userModel = selectedFriendsModel[index]
-        print("itemAtIndexPathRow row \(index)")
         
         return userModel
     }

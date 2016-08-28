@@ -222,7 +222,6 @@ final class INCameraContainerView: UIView, UIGestureRecognizerDelegate, POPAnima
                 dispatch_async(dispatch_get_main_queue(), {
                     self.addSubview(self.previewView)
                     self.addSubview(self.finalViewContainer!)
-                    self.addFocusImage()
                 })
                 
                 self.session.commitConfiguration()
@@ -315,6 +314,7 @@ final class INCameraContainerView: UIView, UIGestureRecognizerDelegate, POPAnima
         focusAnimation.removeFromSuperview()
     }
     
+    // Must always run on main queue
     func cameraControlsSetup() {
 
         // Enable flash button
@@ -329,7 +329,6 @@ final class INCameraContainerView: UIView, UIGestureRecognizerDelegate, POPAnima
         }
         
         // Enable capture button
-        
 
         displayDelegate?.captureButtonEnabled(true)
     }
@@ -376,8 +375,12 @@ final class INCameraContainerView: UIView, UIGestureRecognizerDelegate, POPAnima
 
                     if error == nil && CMSampleBufferIsValid(imageDataSampleBuffer) {
                       
+                        
                         let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
                 
+                        imageData.asdk_animatedImageData()
+                        print("Real Original image size: \(imageData.length/1024) kb")
+                        
                         if let image = UIImage(data: imageData), let delegate = self.viewControllerDelegate {
                             
                             dispatch_async(dispatch_get_main_queue(), {
@@ -726,37 +729,8 @@ final class INCameraContainerView: UIView, UIGestureRecognizerDelegate, POPAnima
 
                             self.focusAnimation.center = newPoint
                             
+                            self.addAnimations()
                             
-                            //kPOPViewBounds, kPOPViewScaleXY, kPOPViewSize
-//                            let scaleAnimation = POPBasicAnimation(propertyNamed: kPOPViewBounds)
-////                            scaleAnimation.fromValue = NSValue(CGRect: CGRectMake(0, 0, 0, 0))
-//                            scaleAnimation.toValue = NSValue(CGRect: CGRectMake(0, 0, 90, 90))
-//                            
-//                            let scaleAnimation = POPBasicAnimation(propertyNamed: kPOPViewSize)
-//                            scaleAnimation.toValue = NSValue(CGSize: CGSizeMake(90, 90))
-
-                            
-                            let scaleAnimation = POPBasicAnimation(propertyNamed: kPOPViewScaleXY)
-                            scaleAnimation.fromValue = NSValue(CGSize: CGSizeMake(1, 1))
-                            scaleAnimation.toValue = NSValue(CGSize: CGSizeMake(7, 7))
-                            
-                            scaleAnimation.duration = 0.4
-                            scaleAnimation.timingFunction  = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-                            scaleAnimation.name = "scaleAnimation"
-                            scaleAnimation.delegate = self
-                            self.focusAnimation.pop_addAnimation(scaleAnimation, forKey: "scale")
-                            
-                            
-                            let alphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-                            alphaAnimation.fromValue = 1
-                            alphaAnimation.toValue = 0.0
-                            
-                            alphaAnimation.duration = 0.4
-                            alphaAnimation.timingFunction  = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-                            alphaAnimation.name = "alphaAnimation"
-                            alphaAnimation.delegate = self
-                            self.focusAnimation.pop_addAnimation(alphaAnimation, forKey: "alpha")
-                        
                         })
                     }
                     
@@ -778,7 +752,32 @@ final class INCameraContainerView: UIView, UIGestureRecognizerDelegate, POPAnima
     }
     
     
-    
+    func addAnimations() {
+        
+        let scaleAnimation = POPBasicAnimation(propertyNamed: kPOPViewScaleXY)
+        scaleAnimation.fromValue = NSValue(CGSize: CGSizeMake(1, 1))
+        scaleAnimation.toValue = NSValue(CGSize: CGSizeMake(7, 7))
+        
+        scaleAnimation.duration = 0.5
+        scaleAnimation.timingFunction  = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        scaleAnimation.name = "scaleAnimation"
+        scaleAnimation.delegate = self
+        
+        focusAnimation.pop_addAnimation(scaleAnimation, forKey: "scale")
+        
+        
+        
+        let alphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+        alphaAnimation.fromValue = 1
+        alphaAnimation.toValue = 0.0
+        
+        alphaAnimation.duration = 0.4
+        alphaAnimation.timingFunction  = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        alphaAnimation.name = "alphaAnimation"
+        alphaAnimation.delegate = self
+        
+        focusAnimation.pop_addAnimation(alphaAnimation, forKey: "alpha")
+    }
     
     func pop_animationDidStart(anim: POPAnimation!) {
         print("pop_animationDidStart")
@@ -988,8 +987,8 @@ final class INCameraContainerView: UIView, UIGestureRecognizerDelegate, POPAnima
 
 }
 
- extension CameraContainerView {
-    
+// extension CameraContainerView {
+
     //    @objc func focus(recognizer: UITapGestureRecognizer) {
     //
     //        let point = recognizer.locationInView(self)
@@ -1040,4 +1039,4 @@ final class INCameraContainerView: UIView, UIGestureRecognizerDelegate, POPAnima
     //        })
     //    }
     //
-}
+//}

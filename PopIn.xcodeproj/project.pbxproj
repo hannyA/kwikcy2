@@ -123,6 +123,10 @@
 		34828D671CCEF42D00707A1C /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34828D661CCEF42D00707A1C /* SignInVC.swift */; };
 		34828D691CCF09DC00707A1C /* mad-men-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 34828D681CCF09DC00707A1C /* mad-men-1.png */; };
 		34828D6B1CCFFCF100707A1C /* SignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34828D6A1CCFFCF100707A1C /* SignInButton.swift */; };
+		34866DC81D6E1C3400D1367A /* DataUsageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34866DC71D6E1C3400D1367A /* DataUsageVC.swift */; };
+		34866DCA1D6E3AA300D1367A /* NSUserDefaults+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34866DC91D6E3AA300D1367A /* NSUserDefaults+Utilities.swift */; };
+		34866DCC1D6EF3CB00D1367A /* AWSMobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34866DCB1D6EF3CB00D1367A /* AWSMobileClient.swift */; };
+		34866DCE1D6EF3DC00D1367A /* AWSMobileHubHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34866DCD1D6EF3DC00D1367A /* AWSMobileHubHelper.framework */; };
 		348999111D1CED5E00077B6C /* HAContactUsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999101D1CED5E00077B6C /* HAContactUsVC.swift */; };
 		348999131D1DB44C00077B6C /* HAContactFormDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999121D1DB44C00077B6C /* HAContactFormDisplay.swift */; };
 		348999191D1DF6F400077B6C /* HAPushNotificationsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999181D1DF6F400077B6C /* HAPushNotificationsVC.swift */; };
@@ -130,8 +134,6 @@
 		3489991D1D1DFFB000077B6C /* HASwitchCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489991C1D1DFFB000077B6C /* HASwitchCN.swift */; };
 		348999211D1E225400077B6C /* HAEditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999201D1E225400077B6C /* HAEditProfileVC.swift */; };
 		348999231D1E386200077B6C /* HAEditableProfileCN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999221D1E386200077B6C /* HAEditableProfileCN.swift */; };
-		348999271D1F1F1E00077B6C /* AWSMobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348999261D1F1F1E00077B6C /* AWSMobileClient.swift */; };
-		3489992B1D1F33D500077B6C /* AWSMobileHubHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3489992A1D1F33D500077B6C /* AWSMobileHubHelper.framework */; };
 		348CE44E1CCC445B00BCB276 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348CE44D1CCC445B00BCB276 /* AppDelegate.swift */; };
 		348CE4551CCC445B00BCB276 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4541CCC445B00BCB276 /* Assets.xcassets */; };
 		348CE4581CCC445B00BCB276 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 348CE4561CCC445B00BCB276 /* LaunchScreen.storyboard */; };
@@ -153,12 +155,6 @@
 		349EF4ED1D4890040039CEA6 /* LambdaLoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EF4EC1D4890040039CEA6 /* LambdaLoginResponse.swift */; };
 		349EF4EF1D48D8E50039CEA6 /* Me.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EF4EE1D48D8E50039CEA6 /* Me.swift */; };
 		34C280191D0019D200D5610A /* HAProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C280181D0019D200D5610A /* HAProfileVC.swift */; };
-		34C6E2261CF82057002167A1 /* HAFullCameraNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2251CF82057002167A1 /* HAFullCameraNode.swift */; };
-		34C6E2281CF8242B002167A1 /* HAFullCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2271CF8242B002167A1 /* HAFullCameraVC.swift */; };
-		34C6E22C1CFABBB0002167A1 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E22B1CFABBB0002167A1 /* CameraVC.swift */; };
-		34C6E22E1CFABBBB002167A1 /* CameraNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E22D1CFABBBB002167A1 /* CameraNode.swift */; };
-		34C6E2321CFAC3D0002167A1 /* CameraContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2311CFAC3D0002167A1 /* CameraContainerView.swift */; };
-		34C6E2341CFAC798002167A1 /* CameraControlsCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2331CFAC798002167A1 /* CameraControlsCellNode.swift */; };
 		34C6E2371CFC30E3002167A1 /* INCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2361CFC30E3002167A1 /* INCameraVC.swift */; };
 		34C6E2391CFC30EC002167A1 /* INFullCameraDisplayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E2381CFC30EC002167A1 /* INFullCameraDisplayNode.swift */; };
 		34C6E23B1CFC30F8002167A1 /* INCameraContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C6E23A1CFC30F8002167A1 /* INCameraContainerView.swift */; };
@@ -225,7 +221,26 @@
 		34FA8F751D67B4B600AF001A /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FA8F741D67B4B600AF001A /* UserModel.swift */; };
 		34FA8F771D67B5A000AF001A /* UserUploadFriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FA8F761D67B5A000AF001A /* UserUploadFriendModel.swift */; };
 		34FA8F791D67C16000AF001A /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FA8F781D67C16000AF001A /* UserProfileModel.swift */; };
+		34FDC8141D726ED900DA4FD8 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FDC8121D726ED900DA4FD8 /* Realm.framework */; };
+		34FDC8151D726ED900DA4FD8 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 34FDC8121D726ED900DA4FD8 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		34FDC8161D726ED900DA4FD8 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FDC8131D726ED900DA4FD8 /* RealmSwift.framework */; };
+		34FDC8171D726ED900DA4FD8 /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 34FDC8131D726ED900DA4FD8 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		34FDC8181D726ED900DA4FD8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				34FDC8171D726ED900DA4FD8 /* RealmSwift.framework in Embed Frameworks */,
+				34FDC8151D726ED900DA4FD8 /* Realm.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		026A7B17F0E52BC5F5E3DB02 /* Pods_PopIn.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PopIn.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -345,6 +360,10 @@
 		34828D661CCEF42D00707A1C /* SignInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
 		34828D681CCF09DC00707A1C /* mad-men-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mad-men-1.png"; sourceTree = "<group>"; };
 		34828D6A1CCFFCF100707A1C /* SignInButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInButton.swift; sourceTree = "<group>"; };
+		34866DC71D6E1C3400D1367A /* DataUsageVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataUsageVC.swift; sourceTree = "<group>"; };
+		34866DC91D6E3AA300D1367A /* NSUserDefaults+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSUserDefaults+Utilities.swift"; sourceTree = "<group>"; };
+		34866DCB1D6EF3CB00D1367A /* AWSMobileClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSMobileClient.swift; sourceTree = "<group>"; };
+		34866DCD1D6EF3DC00D1367A /* AWSMobileHubHelper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSMobileHubHelper.framework; sourceTree = "<group>"; };
 		348999101D1CED5E00077B6C /* HAContactUsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAContactUsVC.swift; sourceTree = "<group>"; };
 		348999121D1DB44C00077B6C /* HAContactFormDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAContactFormDisplay.swift; sourceTree = "<group>"; };
 		348999181D1DF6F400077B6C /* HAPushNotificationsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPushNotificationsVC.swift; sourceTree = "<group>"; };
@@ -352,8 +371,6 @@
 		3489991C1D1DFFB000077B6C /* HASwitchCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASwitchCN.swift; sourceTree = "<group>"; };
 		348999201D1E225400077B6C /* HAEditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAEditProfileVC.swift; sourceTree = "<group>"; };
 		348999221D1E386200077B6C /* HAEditableProfileCN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAEditableProfileCN.swift; sourceTree = "<group>"; };
-		348999261D1F1F1E00077B6C /* AWSMobileClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSMobileClient.swift; sourceTree = "<group>"; };
-		3489992A1D1F33D500077B6C /* AWSMobileHubHelper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSMobileHubHelper.framework; sourceTree = "<group>"; };
 		348CE44A1CCC445B00BCB276 /* PopIn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopIn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		348CE44D1CCC445B00BCB276 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		348CE4541CCC445B00BCB276 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -379,12 +396,6 @@
 		349EF4EC1D4890040039CEA6 /* LambdaLoginResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LambdaLoginResponse.swift; sourceTree = "<group>"; };
 		349EF4EE1D48D8E50039CEA6 /* Me.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Me.swift; sourceTree = "<group>"; };
 		34C280181D0019D200D5610A /* HAProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAProfileVC.swift; sourceTree = "<group>"; };
-		34C6E2251CF82057002167A1 /* HAFullCameraNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFullCameraNode.swift; sourceTree = "<group>"; };
-		34C6E2271CF8242B002167A1 /* HAFullCameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFullCameraVC.swift; sourceTree = "<group>"; };
-		34C6E22B1CFABBB0002167A1 /* CameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
-		34C6E22D1CFABBBB002167A1 /* CameraNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraNode.swift; sourceTree = "<group>"; };
-		34C6E2311CFAC3D0002167A1 /* CameraContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraContainerView.swift; sourceTree = "<group>"; };
-		34C6E2331CFAC798002167A1 /* CameraControlsCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraControlsCellNode.swift; sourceTree = "<group>"; };
 		34C6E2361CFC30E3002167A1 /* INCameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INCameraVC.swift; sourceTree = "<group>"; };
 		34C6E2381CFC30EC002167A1 /* INFullCameraDisplayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INFullCameraDisplayNode.swift; sourceTree = "<group>"; };
 		34C6E23A1CFC30F8002167A1 /* INCameraContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INCameraContainerView.swift; sourceTree = "<group>"; };
@@ -451,6 +462,8 @@
 		34FA8F741D67B4B600AF001A /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		34FA8F761D67B5A000AF001A /* UserUploadFriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserUploadFriendModel.swift; sourceTree = "<group>"; };
 		34FA8F781D67C16000AF001A /* UserProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
+		34FDC8121D726ED900DA4FD8 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Realm.framework; sourceTree = "<group>"; };
+		34FDC8131D726ED900DA4FD8 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = "<group>"; };
 		42B6B0AF99524418FE2199FB /* Pods-PopIn.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PopIn.release.xcconfig"; path = "Pods/Target Support Files/Pods-PopIn/Pods-PopIn.release.xcconfig"; sourceTree = "<group>"; };
 		58799F29B11EFF766F6F20DC /* Pods-PopIn.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PopIn.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PopIn/Pods-PopIn.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -460,7 +473,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3489992B1D1F33D500077B6C /* AWSMobileHubHelper.framework in Frameworks */,
+				34FDC8141D726ED900DA4FD8 /* Realm.framework in Frameworks */,
+				34866DCE1D6EF3DC00D1367A /* AWSMobileHubHelper.framework in Frameworks */,
+				34FDC8161D726ED900DA4FD8 /* RealmSwift.framework in Frameworks */,
 				2FF8F416E60F3DD5478679A4 /* Pods_PopIn.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -678,8 +693,8 @@
 		343474BD1D20AA8B000386FB /* Login and Register */ = {
 			isa = PBXGroup;
 			children = (
-				3403D5A61CD6F706001577BB /* CreateUsernameController */,
 				3403D5A91CD70129001577BB /* SigninController */,
+				3403D5A61CD6F706001577BB /* CreateUsernameController */,
 			);
 			name = "Login and Register";
 			sourceTree = "<group>";
@@ -769,7 +784,7 @@
 			children = (
 				343DC1D91D1B63A200A52381 /* HASettingCN.swift */,
 				347599201D6D3B1B00C2A0C0 /* HARadioCN.swift */,
-				347599191D6C904200C2A0C0 /* Controller */,
+				347599191D6C904200C2A0C0 /* Main Controller */,
 				3489990F1D1CECBB00077B6C /* ChildrenVC */,
 			);
 			name = Settings;
@@ -875,12 +890,12 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
-		347599191D6C904200C2A0C0 /* Controller */ = {
+		347599191D6C904200C2A0C0 /* Main Controller */ = {
 			isa = PBXGroup;
 			children = (
 				343DC1D61D1B5DC200A52381 /* HASettingsRealVC.swift */,
 			);
-			name = Controller;
+			name = "Main Controller";
 			sourceTree = "<group>";
 		};
 		3475991A1D6CB29C00C2A0C0 /* Controller */ = {
@@ -978,15 +993,6 @@
 			name = "Camera Controller";
 			sourceTree = "<group>";
 		};
-		3477DC141D083C3B009ADB67 /* Old cameras */ = {
-			isa = PBXGroup;
-			children = (
-				34C6E22A1CFAA7AD002167A1 /* Instagram like */,
-				34C6E2291CFAA737002167A1 /* Best Camera */,
-			);
-			name = "Old cameras";
-			sourceTree = "<group>";
-		};
 		3477DC151D083CA9009ADB67 /* Constants and Supporting files */ = {
 			isa = PBXGroup;
 			children = (
@@ -1003,7 +1009,6 @@
 				34C79FA21CF50D2400F5AA35 /* HAGlobalNode.swift */,
 				341893DC1CF565FD00F6AC15 /* TESTFullAppModel.swift */,
 				343DC1AD1D115F7400A52381 /* Debuggin Notes.swift */,
-				349EF4EE1D48D8E50039CEA6 /* Me.swift */,
 			);
 			name = "Constants and Supporting files";
 			sourceTree = "<group>";
@@ -1024,9 +1029,18 @@
 			name = "Edit Media Content";
 			sourceTree = "<group>";
 		};
+		34866DC61D6E1C0800D1367A /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				34866DC71D6E1C3400D1367A /* DataUsageVC.swift */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
 		3489990F1D1CECBB00077B6C /* ChildrenVC */ = {
 			isa = PBXGroup;
 			children = (
+				34866DC61D6E1C0800D1367A /* Network */,
 				344613041D313B2200CF1A4C /* Accounts */,
 				348999171D1DF6E400077B6C /* Push Notifications */,
 				348999161D1DF6D300077B6C /* Contact Us */,
@@ -1073,7 +1087,7 @@
 		348999251D1F1F0700077B6C /* AWSMobileClient */ = {
 			isa = PBXGroup;
 			children = (
-				348999261D1F1F1E00077B6C /* AWSMobileClient.swift */,
+				34866DCB1D6EF3CB00D1367A /* AWSMobileClient.swift */,
 			);
 			name = AWSMobileClient;
 			sourceTree = "<group>";
@@ -1117,7 +1131,6 @@
 				3477DC131D083106009ADB67 /* Camera Controller */,
 				3477DBFE1D056EA9009ADB67 /* Watch Friends Album */,
 				34186C191CE77FF900F9189E /* Following Page */,
-				3477DC141D083C3B009ADB67 /* Old cameras */,
 				34186BF31CDD781E00F9189E /* Search with Pager - Test */,
 				348CE4851CCCF3E500BCB276 /* ASDK */,
 			);
@@ -1203,26 +1216,6 @@
 				34EBB75E1D015F01009ADB97 /* View */,
 			);
 			name = Profiles;
-			sourceTree = "<group>";
-		};
-		34C6E2291CFAA737002167A1 /* Best Camera */ = {
-			isa = PBXGroup;
-			children = (
-				34C6E2271CF8242B002167A1 /* HAFullCameraVC.swift */,
-				34C6E2251CF82057002167A1 /* HAFullCameraNode.swift */,
-			);
-			name = "Best Camera";
-			sourceTree = "<group>";
-		};
-		34C6E22A1CFAA7AD002167A1 /* Instagram like */ = {
-			isa = PBXGroup;
-			children = (
-				34C6E22B1CFABBB0002167A1 /* CameraVC.swift */,
-				34C6E22D1CFABBBB002167A1 /* CameraNode.swift */,
-				34C6E2331CFAC798002167A1 /* CameraControlsCellNode.swift */,
-				34C6E2311CFAC3D0002167A1 /* CameraContainerView.swift */,
-			);
-			name = "Instagram like";
 			sourceTree = "<group>";
 		};
 		34C79F8C1CF380C500F5AA35 /* User Profile Page */ = {
@@ -1373,6 +1366,8 @@
 				34EE3DE21D5299CC00285D18 /* FacesFill */,
 				348999241D1F1EF800077B6C /* AWS */,
 				34509D7E1D63FB7A002C13F9 /* SwiftIconExtension.swift */,
+				34866DC91D6E3AA300D1367A /* NSUserDefaults+Utilities.swift */,
+				349EF4EE1D48D8E50039CEA6 /* Me.swift */,
 			);
 			name = "Third-Party";
 			sourceTree = "<group>";
@@ -1432,7 +1427,9 @@
 		C0EEF5AF590E92D60B7EE7EE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3489992A1D1F33D500077B6C /* AWSMobileHubHelper.framework */,
+				34FDC8121D726ED900DA4FD8 /* Realm.framework */,
+				34FDC8131D726ED900DA4FD8 /* RealmSwift.framework */,
+				34866DCD1D6EF3DC00D1367A /* AWSMobileHubHelper.framework */,
 				026A7B17F0E52BC5F5E3DB02 /* Pods_PopIn.framework */,
 			);
 			name = Frameworks;
@@ -1451,6 +1448,8 @@
 				348CE4481CCC445B00BCB276 /* Resources */,
 				614BA02612B31C7A662ABC2D /* Embed Pods Frameworks */,
 				867CE573E29ADE486A2589EA /* Copy Pods Resources */,
+				34FDC8181D726ED900DA4FD8 /* Embed Frameworks */,
+				34FDC8191D726F8A00DA4FD8 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1566,6 +1565,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		34FDC8191D726F8A00DA4FD8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework/strip-frameworks.sh\"";
+		};
 		5392051783A801830CB72371 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1631,7 +1643,6 @@
 				345999941CD027790057997B /* SignInDisplayNode.swift in Sources */,
 				34C79F961CF3C06700F5AA35 /* BasicDetailCellNode.swift in Sources */,
 				347599151D68835700C2A0C0 /* LTRButtonNode.swift in Sources */,
-				34C6E2261CF82057002167A1 /* HAFullCameraNode.swift in Sources */,
 				34186C0E1CE168B100F9189E /* PageNavigation.swift in Sources */,
 				343DC1A81D10352C00A52381 /* HASearchCN.swift in Sources */,
 				345671A21D5BD6D000E7B24A /* INCameraPreviewView.swift in Sources */,
@@ -1655,8 +1666,6 @@
 				34186B7F1CD8401600F9189E /* HAPaddedEditableText.swift in Sources */,
 				3464D9691D0B3A36007BCCA7 /* HABasicViewController.swift in Sources */,
 				34EBB7601D015F22009ADB97 /* BasicProfileCellNode.swift in Sources */,
-				34C6E2321CFAC3D0002167A1 /* CameraContainerView.swift in Sources */,
-				34C6E22C1CFABBB0002167A1 /* CameraVC.swift in Sources */,
 				34186C291CE78D9500F9189E /* GroupAlbumModel.swift in Sources */,
 				343DC1AE1D115F7400A52381 /* Debuggin Notes.swift in Sources */,
 				34186B8F1CD9E90E00F9189E /* HAChitChatVC.swift in Sources */,
@@ -1678,14 +1687,15 @@
 				34FA8F771D67B5A000AF001A /* UserUploadFriendModel.swift in Sources */,
 				34186C0C1CDF638700F9189E /* POPTransformViewController.swift in Sources */,
 				34C6E2391CFC30EC002167A1 /* INFullCameraDisplayNode.swift in Sources */,
+				34866DCA1D6E3AA300D1367A /* NSUserDefaults+Utilities.swift in Sources */,
 				34EE3DE81D52ABFC00285D18 /* UIImageView+FaceAware3.swift in Sources */,
-				348999271D1F1F1E00077B6C /* AWSMobileClient.swift in Sources */,
 				34C6E2431CFFA3F6002167A1 /* HAGlobal.swift in Sources */,
 				34509D6A1D5D3649002C13F9 /* FocusAnimation.swift in Sources */,
 				344613091D32CF3000CF1A4C /* UserSearchModel.swift in Sources */,
 				34C79F921CF39A5500F5AA35 /* ProfileModel.swift in Sources */,
 				343DC1C11D1470EB00A52381 /* HAButtonDisableOverlay.swift in Sources */,
 				34C6E2371CFC30E3002167A1 /* INCameraVC.swift in Sources */,
+				34866DC81D6E1C3400D1367A /* DataUsageVC.swift in Sources */,
 				3495486B1D4E5D09000F0341 /* LambdaErrorResponse.swift in Sources */,
 				34186B841CD993C100F9189E /* HACircleButton.swift in Sources */,
 				34EBB7641D016277009ADB97 /* HABasicNodeLayout.swift in Sources */,
@@ -1705,7 +1715,6 @@
 				348CE4A81CCCF43A00BCB276 /* LocationModel.m in Sources */,
 				34C79FA31CF50D2400F5AA35 /* HAGlobalNode.swift in Sources */,
 				34C79F9B1CF3C18300F5AA35 /* AboutCellNode.swift in Sources */,
-				34C6E2281CF8242B002167A1 /* HAFullCameraVC.swift in Sources */,
 				343DC19A1D0FE15A00A52381 /* AlbumUploadBottomButtonDisplay.swift in Sources */,
 				34186C2D1CE78E5300F9189E /* FriendAlbumModel.swift in Sources */,
 				344613061D313B4500CF1A4C /* HAAccountsVC.swift in Sources */,
@@ -1719,6 +1728,7 @@
 				343DC19E1D0FFA1400A52381 /* NewAlbumVC.swift in Sources */,
 				3446130D1D35C9DC00CF1A4C /* HALargeLoadingCN.swift in Sources */,
 				343DC1BA1D1311C700A52381 /* HAFollowingVC.swift in Sources */,
+				34866DCC1D6EF3CB00D1367A /* AWSMobileClient.swift in Sources */,
 				348999191D1DF6F400077B6C /* HAPushNotificationsVC.swift in Sources */,
 				34C280191D0019D200D5610A /* HAProfileVC.swift in Sources */,
 				34186C321CE7AE4C00F9189E /* AlbumCellNode.swift in Sources */,
@@ -1753,7 +1763,6 @@
 				34186B7D1CD8166E00F9189E /* HAPaddedButton.swift in Sources */,
 				3489991B1D1DFE1200077B6C /* HASwitchNode.swift in Sources */,
 				34C79F9D1CF3C19300F5AA35 /* PublicAlbumsCellNode.swift in Sources */,
-				34C6E22E1CFABBBB002167A1 /* CameraNode.swift in Sources */,
 				343DC1B81D1311B500A52381 /* HAFollowingTableNode.swift in Sources */,
 				34EBB7781D02E340009ADB97 /* HATESTNotification.swift in Sources */,
 				343DC1CA1D17046200A52381 /* HACompletionBlock.swift in Sources */,
@@ -1761,7 +1770,6 @@
 				34D314F41CEE9835008678BC /* HASearchTableVC.swift in Sources */,
 				343DC1BF1D14699300A52381 /* HAFillTitlePaddedButton.swift in Sources */,
 				3477DBFA1D03CFE9009ADB67 /* HANotificationCellNode.swift in Sources */,
-				34C6E2341CFAC798002167A1 /* CameraControlsCellNode.swift in Sources */,
 				343DC1CE1D17C76600A52381 /* FakeDisplay.swift in Sources */,
 				348999231D1E386200077B6C /* HAEditableProfileCN.swift in Sources */,
 				34509D831D656BE9002C13F9 /* HAAlbumCN.swift in Sources */,
@@ -1830,6 +1838,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				OTHER_SWIFT_FLAGS = "-D DEV_PUBLIC_ALBUMS -D DEV_FOLLOWERS";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEV_PUBLIC_ALBUMS -D DEV_FOLLOWERS";
 				SDKROOT = iphoneos;
@@ -1871,6 +1880,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
 				OTHER_SWIFT_FLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -1889,6 +1899,10 @@
 				);
 				INFOPLIST_FILE = PopIn/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = nocom.alyllc.PopIn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = PopIn_bridging_Header.h;
@@ -1906,6 +1920,10 @@
 				);
 				INFOPLIST_FILE = PopIn/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = nocom.alyllc.PopIn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = PopIn_bridging_Header.h;

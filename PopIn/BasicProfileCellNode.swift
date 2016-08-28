@@ -19,7 +19,10 @@ import AsyncDisplayKit
 protocol BasicProfileCNDelegate {
     func showImageOptions()
     func editProfile()
-//    func showLargeImage()
+    func showFriends()
+//    func editProfile()
+
+    //    func showLargeImage()
 }
 
 
@@ -108,11 +111,6 @@ class BasicProfileCellNode: ASCellNode {
         func textAttributedString(string: String, withFontSize size: CGFloat) -> NSAttributedString {
             return NSAttributedString(string: string, fontSize: size, color: UIColor.blackColor(), firstWordColor: nil)
         }
-    
-        
-        
-        
-        
         
         
 
@@ -153,7 +151,8 @@ class BasicProfileCellNode: ASCellNode {
         
         
         
-        friendCount = HADoubleLabelButton(withTitle: "25", andLabel: "Friends")
+        friendCount = HADoubleLabelButton(withTitle: String(profile.friendsCount ?? 0),
+                                          andLabel: "Friends")
         
         
         
@@ -300,16 +299,15 @@ class BasicProfileCellNode: ASCellNode {
 
         
         addSubnode(userPic)
-        addSubnode(likePoints)
-        addSubnode(likePointsLabel)
+//        addSubnode(likePoints)
+//        addSubnode(likePointsLabel)
 //        addSubnode(publicAlbumsCount)
 //        addSubnode(publicAlbumsCountLabel)
-        addSubnode(followersCount)
-        addSubnode(followersCountLabel)
-        addSubnode(followingCount)
-        addSubnode(followingCountLabel)
+//        addSubnode(followersCount)
+//        addSubnode(followersCountLabel)
+//        addSubnode(followingCount)
+//        addSubnode(followingCountLabel)
         addSubnode(friendCount)
-//        addSubnode(friendCountLabel)
         
         addSubnode(friendsButton)
         addSubnode(followButton)
@@ -325,7 +323,6 @@ class BasicProfileCellNode: ASCellNode {
     
     override func didLoad() {
         super.didLoad()
-        
         
         userPic.addTarget(self, action: #selector(showImageOptions), forControlEvents: .TouchUpInside)
         
@@ -352,11 +349,11 @@ class BasicProfileCellNode: ASCellNode {
         print("openCamera")
     }
     
-    func removePhoto() {
-//        if userProfile.deleteImage() {
-//            userPic.image = nil
-//        }
-    }
+//    func removePhoto() {
+////        if userProfile.deleteImage() {
+////            userPic.image = nil
+////        }
+//    }
     
     
     func showImageOptions() {
@@ -371,11 +368,12 @@ class BasicProfileCellNode: ASCellNode {
     
     func openFriendsListVC() {
         print("openFriendsListVC")
+        
+        delegate?.showFriends()
 
     }
     
     func addFriend() {
-        
         
         print("Addfriend")
     }

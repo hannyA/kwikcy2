@@ -144,9 +144,7 @@ class HASettingCN: ASCellNode {
                 // Manually layout the divider.
                 let pixelHeight:CGFloat = 1.0 / UIScreen.mainScreen().scale// [[UIScreen mainScreen] scale];
                 
-                let widthParts = calculatedSize.width/10
-                let width = widthParts * 8
-                //        let leftInset = widthParts*1.5
+                let width = calculatedSize.width * (10.0/11)
                 topDivider.frame = CGRectMake(leftInset, 0, width, pixelHeight)
             }
         }

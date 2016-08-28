@@ -45,18 +45,19 @@ class FocusAnimationView: UIView { //, POPAnimationDelegate {
         layer.path = path.CGPath
         layer.fillColor = UIColor.clearColor().CGColor
         layer.strokeColor = color.CGColor
-        layer.lineWidth = 2.0
+        layer.lineWidth = 1.0
         layer.backgroundColor = UIColor.clearColor().CGColor
 //        layer.frame = CGRectMake(0, 0, size.width, size.height)
         return layer
     }
+
     
-//    
-//    
+//
+//
 //    func pop_animationDidStart(anim: POPAnimation!) {
 //        print("pop_animationDidStart")
 //    }
-//    
+//
 //    func pop_animationDidStop(anim: POPAnimation!, finished: Bool) {
 //        print("pop_animationDidStop")
 //        hidden = true

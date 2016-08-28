@@ -20,17 +20,18 @@ let AWSLambdaNotifications    = "DromoNotifications" //"HASearchUsers"
 let AWSLambdaGetUsersProfile  = "DromoUserProfile" //"HASearchUsers"
 let AWSLambdaSocialAction     = "DromoFriendAction" //"HASearchUsers"
 
-let AWSLambdaUserFriends      = "DromoUserFriends"
+let AWSLambdaUserFriends      = "DromoUserFriends" // Gets a list of user friends
 
-let AWSLambdaMyAlbums         = "DromoUserAlbums" //"HASearchUsers"
-let AWSLambdaFriendsAlbums    = "DromoFriendsAlbums"
+let AWSLambdaMyAlbums         = "DromoUserAlbums" // List of my albums
+let AWSLambdaFriendsAlbums    = "DromoAlbumsOfFriends" // List of friends albums
 
 let AWSLambdaCreateAlbum      = "DromoCreateAlbum"
 let AWSLambdaDeleteAlbum      = "DromoDeleteAlbum"
 
-let AWSLambdaUpdateAlbum      = "DromoUpdateAlbum"
-let AWSLambdaAddAlbumFriend   = "DromoAddAlbumFriend"
-let AWSLambdaUploadMedia      = "DromoUploadMedia"
+let AWSLambdaUpdateAlbum      = "DromoUpdateAlbum" // Edit title, users,
+//let AWSLambdaAddAlbumFriend   = "DromoAddAlbumFriend"
+
+let AWSLambdaUploadMedia      = "DromoMediaUpload" // Uploads media to mulitple albums
 
 
 let AWSLambdaUpdateProfile      = "DromoUpdateProfile"
@@ -53,6 +54,8 @@ class AWSConstants {
             if let cloudUserInfo = error.userInfo as? [String: AnyObject],
                 cloudMessage = cloudUserInfo["errorMessage"] as? String {
                 errorMessage = "\(cloudMessage)"
+                
+                print("CloudMessage: \(errorMessage)")
             }
             
             errorMessage = AWSErrorBackend

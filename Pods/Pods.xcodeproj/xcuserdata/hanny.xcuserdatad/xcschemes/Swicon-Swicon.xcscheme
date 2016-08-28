@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '0ED9FC5F94AC007DF6777B0B'
+               BlueprintIdentifier = 'BA08A238B96FF56AEEF039AD'
                BlueprintName = 'Swicon-Swicon'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'Swicon.bundle'>

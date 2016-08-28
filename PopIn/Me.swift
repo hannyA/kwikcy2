@@ -185,6 +185,16 @@ class Me {
 
     
     
+    class func wipeData() -> Bool {
+        
+        do {
+            try keychain.removeAll()
+            return true
+        } catch let error {
+            print("error: \(error)")
+            return false
+        }
+    }
     
     
     

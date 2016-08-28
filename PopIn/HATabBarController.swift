@@ -11,7 +11,7 @@ import AWSMobileHubHelper
 import SwiftIconFont
 
 class HATabBarController: UITabBarController, UITabBarControllerDelegate {
-
+    
     var willEnterForegroundObserver: AnyObject!
     
     var viewWillAppearFromSignIn = false
@@ -20,7 +20,9 @@ class HATabBarController: UITabBarController, UITabBarControllerDelegate {
       
         super.viewDidLoad()
         
-        willEnterForegroundObserver = NSNotificationCenter.defaultCenter().addObserverForName(UIApplicationWillEnterForegroundNotification, object: nil, queue: NSOperationQueue.currentQueue()) { _ in
+        willEnterForegroundObserver = NSNotificationCenter.defaultCenter().addObserverForName(UIApplicationWillEnterForegroundNotification,
+                                                            object: nil,
+                                                            queue: NSOperationQueue.currentQueue()) { _ in
         }
 
         
@@ -90,9 +92,10 @@ class HATabBarController: UITabBarController, UITabBarControllerDelegate {
         viewControllers = controllers
     }
     
-//    deinit {
-//        NSNotificationCenter.rem
-//    }
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+//        NSNotificationCenter.defaultCenter().removeObserver(self, forKeyPath: willEnterForegroundObserver)
+    }
     
     
     
@@ -124,37 +127,13 @@ class HATabBarController: UITabBarController, UITabBarControllerDelegate {
             print("HATabar !AWSIdentityManager")
 
             let vc = SignInVC()
+            presentViewController(vc, animated: false, completion: nil)
             
-            navigationController?.pushViewController(vc, animated: false)
-//            presentViewController(vc, animated: false, completion: nil)
+//            navigationController?.pushViewController(vc, animated: false)
         }
     }
     
-    
-    
-
-//    func presentSignInViewController() {
-//        print("presentSignInViewController")
-////        if !AWSIdentityManager.defaultIdentityManager().loggedIn {
-//        
-//            let vc = SignInVC()
-//            let vcNavCon = UINavigationController(rootViewController: vc)
-//            
-////            let cancelButton = UIBarButtonItem(title: "Cancel", style: .Plain, target: newAlbumVC, action: #selector(dismissVC))
-////            newAlbumVC.navigationItem.setLeftBarButtonItem(cancelButton, animated: false)
-//            
-//            presentViewController(vcNavCon, animated: true, completion: nil)
-////        }
-//    }
-
-    
-    
-    //Delegate methods
-//    func tabBarController(tabBarController: UITabBarController, shouldSelectViewController viewController: UIViewController) -> Bool {
-//        print("Should select viewController: \(viewController.title) ?")
-//        return true;
-//    }
-
-  
-
+    func hideSelf() {
+        view.alpha = 0.0
+    }
 }

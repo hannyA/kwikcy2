@@ -130,8 +130,22 @@ class MyAlbums {
         }
     }
     
+    func albumsIds(albums:[AlbumModel]) -> [String] {
+        
+        var uploadAlbums = [String]()
+        
+        for album in albums {
+            if let id = album.id {
+                uploadAlbums.append(String(id))
+            }
+        }
+        return uploadAlbums
+    }
+    
     
     func uploadMedia(media: UIImage, to albums: [AlbumModel], completionClosure: (success: Bool) ->()) {
+        
+        print("uploadMedia")
         
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUploadMedia,
          withParameters: nil) { (result: AnyObject?, error: NSError?) in
@@ -156,12 +170,60 @@ class MyAlbums {
             }
             
             if let _ = AWSConstants.errorMessage(error) {
+                print("profileModel: CloudLogicViewController: Result: \(result)")
+
                 dispatch_async(dispatch_get_main_queue(), {
                     completionClosure(success: false)
                 })
             }
         }
 
+    }
+    
+    
+    
+    func uploadMedia(base64Encoded: String, type: String, timelimit: Int, to albums: [AlbumModel], completionClosure: (success: Bool, errorMessage: String?) ->()) {
+        
+        print("uploadMedia")
+
+        
+        var jsonObj = [String: AnyObject]()
+        
+        jsonObj[kGuid]      = Me.guid()
+        jsonObj[kAcctId]    = Me.acctId()
+
+        jsonObj[kMedia]     = base64Encoded
+        jsonObj[kType]      = type
+        jsonObj[kTimelimit] = timelimit
+        jsonObj[kAlbumIds] = albumsIds(albums)
+        
+        
+        
+        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUploadMedia,
+         withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
+            
+            if let result = result {
+                dispatch_async(dispatch_get_main_queue(), {
+                    print("uploadMedia: CloudLogicViewController: Result: \(result)")
+                    
+                    if let response = result as? [String: AnyObject]  {
+                        
+                        let successful   = response[kSuccess] as! Bool
+                        let errorMessage = response[kErrorMessage] as? String
+                        
+                        completionClosure(success: successful, errorMessage: errorMessage)
+                    }
+                })
+            }
+            
+            if let _ = AWSConstants.errorMessage(error) {
+                print("uploadMedia: failed")
+
+                dispatch_async(dispatch_get_main_queue(), {
+                    completionClosure(success: false, errorMessage: AWSErrorBackend)
+                })
+            }
+        }
     }
 }
 

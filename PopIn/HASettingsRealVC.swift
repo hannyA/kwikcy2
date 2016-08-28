@@ -11,6 +11,9 @@
 import AsyncDisplayKit
 import AWSMobileHubHelper
 
+protocol HASettingsRealVCDelegate {
+    func hideSelf()
+}
 class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     
@@ -33,7 +36,9 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     override func loadView() {
         super.loadView()
-        
+       
+        setup()
+
         tableNode.view.allowsSelection = true
         tableNode.view.separatorStyle = .None
         tableNode.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -46,7 +51,6 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
         title = "Options"
         tableNode.view.backgroundColor = UIColor(white: 0.97, alpha: 1.0)
         
-        setup()
     }
     
     
@@ -221,6 +225,8 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
             case 3:
                 print("Data Usage")
 
+                let dataUseVC = DataUsageVC()
+                navigationController?.pushViewController(dataUseVC, animated: true)
             default:
                 break
             }
@@ -244,6 +250,8 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
             switch row {
             case 1:
                 print("Rate the App")
+                
+                UIApplication.sharedApplication().openURL(NSURL(string : iTunesLink)!)
             case 2:
                 print("Log Out")
                 handleLogout()
@@ -315,12 +323,22 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     
     func handleLogout() {
-        if (AWSIdentityManager.defaultIdentityManager().loggedIn) {
+        if AWSIdentityManager.defaultIdentityManager().loggedIn {
+            
             AWSIdentityManager.defaultIdentityManager().logoutWithCompletionHandler({(result: AnyObject?, error: NSError?) -> Void in
+                
+                print("Result: \(result)")
+                print("Error: \(error)")
+                
+                if let errorMessage = AWSConstants.errorMessage(error) {
+                    
+                    print("errorMessage: \(errorMessage)")
+                }
+                
+//                Me.wipeData()
+                
                 self.presentSignInViewController()
-//                self.navigationController!.popToRootViewControllerAnimated(false)
             })
-            // print("Logout Successful: \(signInProvider.getDisplayName)");
         } else {
             assert(false)
             //Show could not log out...
@@ -334,30 +352,17 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
         print("presentSignInViewController")
         
         if !AWSIdentityManager.defaultIdentityManager().loggedIn {
-            
-            tabBarController?.selectedIndex = 1
-            
-//            let appDelegate = UIApplication.sharedApplication().delegate
-//            let a = appDelegate.tabbar
-//            AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate]
-//            UITabBarController *tabBarController = appdelegate.tabBarController;
-            
-//            let vc = SignInVC()
-//            presentViewController(vc, animated: false, completion: nil)
-        } else {
-            showVC()
+            print("!AWSIdentityManager.defaultIdentityManager().loggedIn ")
+
+            presentViewController(SignInVC(), animated: false, completion: {
+                
+                self.tabBarController?.selectedIndex = 0
+                
+                self.navigationController?.popViewControllerAnimated(false)
+            })
         }
     }
     
-    func showVC() {
-        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseIn , animations: {
-            self.view.alpha = 1.0
-            
-        }) { (complete) in
-            
-        }
-    }
-
 }
 
 

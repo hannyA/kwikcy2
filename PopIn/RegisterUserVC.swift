@@ -17,12 +17,13 @@ import FBSDKCoreKit
 import Toucan
 
 
-let kCompressionQualityBest: CGFloat = 1.0
-let kCompressionQualityHigh: CGFloat = 8.0
-let kCompressionQualityMedium: CGFloat = 5.0
-let kCompressionQualityLow: CGFloat = 2.0
-let kCompressionQualityWorst: CGFloat = 0.0
-
+enum kCompression: CGFloat {
+    case Best   = 1.0
+    case High   = 0.75
+    case Medium = 0.5
+    case Low    = 0.25
+    case Worst  = 0.0
+}
 
 class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCameraDelegate, RSKImageCropViewControllerDelegate, RSKImageCropViewControllerDataSource {
     
@@ -114,12 +115,12 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
 
         
         
-        let croppedImage = UIImageJPEGRepresentation(croppedProfileImage!, kCompressionQualityBest)
+        let croppedImage = UIImageJPEGRepresentation(croppedProfileImage!, kCompression.Medium.rawValue)
         let croppedImageSize = CGFloat( croppedImage!.length)
         print("croppedImageSize: \(croppedImageSize / kbSize) KB")
         
         
-        let originalImage = UIImageJPEGRepresentation(profileImage!, kCompressionQualityBest)
+        let originalImage = UIImageJPEGRepresentation(profileImage!, kCompression.Medium.rawValue)
         let originalImageSize = CGFloat( originalImage!.length)
         print("originalImageSize: \(originalImageSize / kbSize) KB")
         

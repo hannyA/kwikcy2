@@ -9,11 +9,16 @@
 
 import AsyncDisplayKit
 import SwiftIconFont
+import ReachabilitySwift
+import SwiftyUserDefaults
 
 class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     HAAlbumDisplayVCDelegate, HAFollowingTableNodeDelegate {
 
 
+    var reachability: Reachability?
+
+    
     let tableNodeDisplay: HAFollowingTableNode
     
     var feedModel = FollowFeedModel(withType: .Friends)
@@ -67,6 +72,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         print("HAFollowingVC viewDidLoad")
         
         
@@ -77,51 +83,126 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
         if hasCamera() {
             tableNodeDisplay.cameraButton.hidden = false
             
-            
-            
             let cameraTitleButton = UIBarButtonItem()
-//            
-//            
-//            title: "Camera",
-//                                                    style: .Done,
-//                                                    target: self,
-//                                                    action: #selector(openCamera))
-            
-            
-            /*
- 
-                Fonts that work: 
-                    FontAwesome
-                    Iconic
-                    Ionicon
-                    Octicon
-                    Themify
-             
-                Fonts that don't work:
-                    MaterialIcon
-             
-            */
-            
-            
-            /*
-             Cameras we like: 
-             .Ionicon, code: "android-camera"
-             
-             .Ionicon, code: "ios-camera-outline"
-
-             
-            */
-            
-            
-            
+        
             cameraTitleButton.icon(from: .MaterialIcon, code: "photo.camera", ofSize: 30)
-            
-            
-            
             navigationItem.setRightBarButtonItem(cameraTitleButton, animated: false)
         }
-        refreshFeed()
+        
+        
+//        let hostName = "google.com"
+//        
+//        let useClosures = true
+//        
+//        
+//        print("--- set up with host name: \(hostName)")
+        
+        do {
+            let reachability = try Reachability.reachabilityForInternetConnection()
+            self.reachability = reachability
+            print("--- set upreachability")
+
+        } catch ReachabilityError.FailedToCreateWithAddress(let address) {
+            print("Unable to create Reachability with address:\n\(address)")
+            return
+        } catch {}
+        
+        
+//        if useClosures {
+//            reachability?.whenReachable = { reachability in
+//                dispatch_async(dispatch_get_main_queue()) {
+//                    self.updateWhenReachable(reachability)
+//                }
+//            }
+//            reachability?.whenUnreachable = { reachability in
+//                dispatch_async(dispatch_get_main_queue()) {
+//                    self.updateWhenNotReachable(reachability)
+//                }
+//            }
+//        } else {
+//            NSNotificationCenter.defaultCenter().addObserver(self,
+//                                                             selector: #selector(reachabilityChanged),
+//                                                             name: ReachabilityChangedNotification,
+//                                                             object: reachability)
+//        }
     }
+    
+    
+    
+//    func updateWhenReachable(reachability: Reachability) {
+//       
+//        print("\(reachability.description) - \(reachability.currentReachabilityString)")
+//       
+//        if reachability.isReachableViaWiFi() {
+//            print("reachability.isReachableViaWiFi")
+//        } else if reachability.isReachableViaWWAN() {
+//            print("reachability.isReachableViaWWAN")
+//        } else if reachability.isReachable() {
+//            print("reachability.isReachable")
+//        } else {
+//            print("reachability = I don't know....")
+//        }
+//    }
+//    
+//    
+//    func updateWhenNotReachable(reachability: Reachability) {
+//       
+//        print("\(reachability.description) - \(reachability.currentReachabilityString)")
+//        
+//        if reachability.isReachableViaWiFi() {
+//            print("reachability.isReachableViaWiFi")
+//        } else if reachability.isReachableViaWWAN() {
+//            print("reachability.isReachableViaWWAN")
+//        } else if reachability.isReachable() {
+//            print("reachability.isReachable")
+//        } else {
+//            print("reachability = I don't know....")
+//        }
+//    }
+    
+    
+    
+//    func startNotifier() {
+//        print("--- start notifier")
+//        do {
+//            try reachability?.startNotifier()
+//        } catch {
+//            print("Unable to start notifier")
+//            return
+//        }
+//    }
+//
+//    func stopNotifier() {
+//        print("--- stop notifier")
+//        reachability?.stopNotifier()
+//        NSNotificationCenter.defaultCenter().removeObserver(self,
+//                                                            name: ReachabilityChangedNotification,
+//                                                            object: nil)
+//        reachability = nil
+//    }
+//    
+//    func reachabilityChanged(note: NSNotification) {
+//        let reachability = note.object as! Reachability
+//        
+//        print("\(reachability.description) - \(reachability.currentReachabilityString)")
+//        
+//        if reachability.isReachableViaWiFi() {
+//            print("reachability.isReachableViaWiFi")
+//        } else if reachability.isReachableViaWWAN() {
+//            print("reachability.isReachableViaWWAN")
+//        } else if reachability.isReachable() {
+//            print("reachability.isReachable")
+//        } else {
+//            print("reachability = I don't know....")
+//        }
+//    }
+//    
+//    
+//    deinit {
+//        stopNotifier()
+//    }
+
+    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -129,7 +210,30 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
 
         navigationController?.navigationBarHidden = false
         tabBarController?.tabBar.hidden = false
+        
+        print("isReachable: \(reachability?.isReachable())")
+        print("isReachableViaWWAN: \(reachability?.isReachableViaWWAN())")
+        print("isReachableViaWiFi: \(reachability?.isReachableViaWiFi())")
 
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        print("HAFollowing Viewdid appear")
+        refreshFeed()
+    }
+    
+    
+    func downloadAllMedia() {
+        
+        if !Defaults[.useLessData] {
+            
+            print("Call function to download all media content")
+        } else {
+           
+            print("Don't download data: In data savings mode")
+            
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -254,6 +358,8 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
             
             //    // immediately start second larger fetch
             //    [self loadPageWithContext:nil];
+            
+            self.downloadAllMedia()
             
             }, numbersOfResultsToReturn: 4)
     }

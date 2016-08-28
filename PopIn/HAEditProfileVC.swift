@@ -460,8 +460,6 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
     func dimissMessageVC() {
         print("dimissMessageVC")
         dismissViewControllerAnimated(true, completion: nil)
-
     }
-
 }
     
