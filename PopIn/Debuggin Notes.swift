@@ -30,5 +30,11 @@
  
  
  
+    TODO: List
+    1) Add shared instance for my albums and my friends
+    2) Add network activity
+    3) iOS phone App images
+ 
+ 
  
  */

@@ -13,6 +13,7 @@ import SwiftIconFont
 protocol MyAlbumCNDelegate {
     func showOptionsForAlbum(album: AlbumModel)
     func uploadAlbum(album: AlbumModel)
+    func retryUploadingMediaToAlbum(album: AlbumModel)
 }
 
 class MyAlbumCN: HAAlbumCN {
@@ -161,7 +162,7 @@ class MyAlbumCN: HAAlbumCN {
                             forState: .Normal)
         
         
-        albumImageView.addTarget(self, action: #selector(retryCreatingAlbum), forControlEvents: .TouchUpInside)
+        albumImageView.addTarget(self, action: #selector(retryCreatingAlbumOrUploadingMedia), forControlEvents: .TouchUpInside)
         moreOptionButton.addTarget(self, action: #selector(showMoreOptionsMenu), forControlEvents: .TouchUpInside)
         
         userSelected(false)
@@ -169,14 +170,24 @@ class MyAlbumCN: HAAlbumCN {
         view.addSubview(activityIndicatorView)
         
         NSNotificationCenter.defaultCenter().addObserver(self,
-                                                         selector:#selector(uploadSuccessful), name:"kAlbumUploadNotification",
+                                                         selector:#selector(uploadSuccessful),
+                                                         name:kAlbumCreateNotification,
                                                          object: album)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector:#selector(mediaUploadSuccessful),
+                                                         name: kAlbumMediaUploadNotification,
+                                                         object: album)
+        
         hideSpinningWheel()
         hideRetryButton()
 
         if album.isUploading {
             print(" MyAlbumCN didLoad isUploading")
             showSpinningWheel()
+        } else {
+            print(" MyAlbumCN didLoad is not Uploading")
         }
     }
     
@@ -198,7 +209,8 @@ class MyAlbumCN: HAAlbumCN {
     
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "kAlbumUploadNotification", object: album)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kAlbumCreateNotification, object: album)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kAlbumMediaUploadNotification, object: album)
     }
     
     
@@ -248,6 +260,25 @@ class MyAlbumCN: HAAlbumCN {
 
     
     
+    func mediaUploadSuccessful(notification : NSNotification) {
+        
+        hideSpinningWheel()
+        
+        if let userInfo = notification.userInfo {
+            
+            if let successful = userInfo["success"] as? Bool {
+                if successful {
+                    NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                                        name: kAlbumMediaUploadNotification,
+                                                                        object: album)
+                } else {
+                    print("MyAlbumCN showRetryButton")
+                    showRetryButton()
+                }
+            }
+        }
+    }
+
     func uploadSuccessful(notification : NSNotification) {
         
         hideSpinningWheel()
@@ -256,7 +287,7 @@ class MyAlbumCN: HAAlbumCN {
             
             if let successful = userInfo["success"] as? Bool {
                 if successful {
-                    NSNotificationCenter.defaultCenter().removeObserver(self, name: "kAlbumUploadNotification", object: album)
+                    NSNotificationCenter.defaultCenter().removeObserver(self, name: kAlbumCreateNotification, object: album)
                 } else {
                     print("MyAlbumCN showRetryButton")
                     showRetryButton()
@@ -273,35 +304,37 @@ class MyAlbumCN: HAAlbumCN {
     func hideRetryButton() {
         albumImageView.userInteractionEnabled = false
         albumImageView.titleNode.alpha = 0.0
-
     }
     
     
-    func retryCreatingAlbum() {
+    func retryCreatingAlbumOrUploadingMedia() {
         print("retryCreatingAlbum")
         print("albumImageView.titleNode.alpha: \(albumImageView.titleNode.alpha )")
         print("albumImageView.titleNode.hidden: \(albumImageView.titleNode.hidden )")
         
         
-//        if !album.isUploading && (albumImageView.titleNode.alpha == 1.0 || albumImageView.titleNode.hidden == false) {
-//        
-//            showSpinningWheel()
-//            delegate?.uploadAlbum(album)
-//        }
+        if !album.isUploading && (albumImageView.titleNode.alpha == 1.0 || albumImageView.titleNode.hidden == false)
+        {
+            hideRetryButton()
+            showSpinningWheel()
+            
+            if album.id == nil {
+                delegate?.uploadAlbum(album)
+            } else if !album.lastUploadSuccessful {
+                delegate?.retryUploadingMediaToAlbum(album)
+            }
+        }
     }
     
 
     func showSpinningWheel() {
-        
         userInteractionEnabled = false
-        
         activityIndicatorView.startAnimating()
         changeCellNodeAlpha(0.3)
     }
     
     func hideSpinningWheel() {
         print(" uploadAlbum hideSpinningWheel")
-
         userInteractionEnabled = true
         activityIndicatorView.stopAnimating()
         changeCellNodeAlpha(1.0)

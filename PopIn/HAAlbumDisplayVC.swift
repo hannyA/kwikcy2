@@ -11,7 +11,7 @@
 import AsyncDisplayKit
 
 protocol HAAlbumDisplayVCDelegate {
-    func removeNewAlbumAtIndexPath(indexPath: NSIndexPath)
+    func removeNewAlbum(album: AlbumModel)
 }
 
 class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate, MediaModelDelegate {
@@ -41,6 +41,7 @@ class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate, MediaModel
         self.indexPath = indexPath
         isNewAlbumSection = newSection
         
+//        self.init(album: album)
         
         if isNewAlbumSection {
             print("startWithNewContent")
@@ -58,6 +59,15 @@ class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate, MediaModel
     }
     
     
+    convenience init(userAlbum album: AlbumModel) {
+        
+        self.init(album: album, isFromNewAlbumSection: false, atIndexPath: NSIndexPath(index: 0))
+
+    }
+    
+    
+    
+    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -73,7 +83,7 @@ class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate, MediaModel
         super.viewWillAppear(animated)
         
         print("viewWillAppear")
-        let image = UIImage(named: (self.currentMediaContent.media)!)
+        let image = UIImage(named: (self.currentMediaContent.media))
         changeDisplayViewToImage(image!)
         print("viewWillAppear done")
 
@@ -141,11 +151,8 @@ class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate, MediaModel
     
     func closeAlbumVC() {
         
-        
-        if isNewAlbumSection && !albumModel.hasNewContent {
-            delegate?.removeNewAlbumAtIndexPath(indexPath)
-        }
-        
+        delegate?.removeNewAlbum(albumModel)
+
         stopCurrentTimer()
         
         UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
@@ -154,10 +161,12 @@ class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate, MediaModel
         }) { (complete) in
             
             self.dismissViewControllerAnimated(false, completion: nil)
-//            self.navigationController?.popViewControllerAnimated(false)
         }
     }
-
+    
+    
+    
+    
     
     func pauseAlbum() {
 
@@ -172,7 +181,7 @@ class HAAlbumDisplayVC: ASViewController, HAAlbumDisplayNodeDelegate, MediaModel
     func changeCurrentMediaContent(mediaContent: MediaModel) {
         
         currentMediaContent = mediaContent
-        let image = UIImage(named: (currentMediaContent.media)!)
+        let image = UIImage(named: (currentMediaContent.media))
         changeDisplayViewToImage(image!)
         startCurrentTimer()
     }

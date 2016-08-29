@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		2FF8F416E60F3DD5478679A4 /* Pods_PopIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 026A7B17F0E52BC5F5E3DB02 /* Pods_PopIn.framework */; };
 		3403D5A81CD6F760001577BB /* RegisterUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3403D5A71CD6F760001577BB /* RegisterUserVC.swift */; };
+		34092FE21D733BA00069957A /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34092FE11D733BA00069957A /* Album.swift */; };
+		34092FE61D733C0A0069957A /* Realm+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34092FE51D733C0A0069957A /* Realm+Utilities.swift */; };
+		34092FE81D736E010069957A /* RealmFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34092FE71D736E010069957A /* RealmFriend.swift */; };
 		34186B7B1CD7E9AA00F9189E /* CreateUserNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B7A1CD7E9AA00F9189E /* CreateUserNode.swift */; };
 		34186B7D1CD8166E00F9189E /* HAPaddedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B7C1CD8166E00F9189E /* HAPaddedButton.swift */; };
 		34186B7F1CD8401600F9189E /* HAPaddedEditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34186B7E1CD8401600F9189E /* HAPaddedEditableText.swift */; };
@@ -245,6 +248,9 @@
 /* Begin PBXFileReference section */
 		026A7B17F0E52BC5F5E3DB02 /* Pods_PopIn.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PopIn.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3403D5A71CD6F760001577BB /* RegisterUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterUserVC.swift; sourceTree = "<group>"; };
+		34092FE11D733BA00069957A /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Album.swift; path = RealmModel/Album.swift; sourceTree = "<group>"; };
+		34092FE51D733C0A0069957A /* Realm+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Realm+Utilities.swift"; path = "RealmModel/Realm+Utilities.swift"; sourceTree = "<group>"; };
+		34092FE71D736E010069957A /* RealmFriend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RealmFriend.swift; path = RealmModel/RealmFriend.swift; sourceTree = "<group>"; };
 		34186B7A1CD7E9AA00F9189E /* CreateUserNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateUserNode.swift; sourceTree = "<group>"; };
 		34186B7C1CD8166E00F9189E /* HAPaddedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPaddedButton.swift; sourceTree = "<group>"; };
 		34186B7E1CD8401600F9189E /* HAPaddedEditableText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPaddedEditableText.swift; sourceTree = "<group>"; };
@@ -502,6 +508,31 @@
 				34186B781CD7E94400F9189E /* SubNodes */,
 			);
 			name = SigninController;
+			sourceTree = "<group>";
+		};
+		34092FE01D733B590069957A /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
+			sourceTree = "<group>";
+		};
+		34092FE31D733BC90069957A /* Realm */ = {
+			isa = PBXGroup;
+			children = (
+				34092FE51D733C0A0069957A /* Realm+Utilities.swift */,
+				34092FE41D733BD20069957A /* Model */,
+			);
+			name = Realm;
+			sourceTree = "<group>";
+		};
+		34092FE41D733BD20069957A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				34092FE11D733BA00069957A /* Album.swift */,
+				34092FE71D736E010069957A /* RealmFriend.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		34186B781CD7E94400F9189E /* SubNodes */ = {
@@ -1114,6 +1145,7 @@
 		348CE44C1CCC445B00BCB276 /* PopIn */ = {
 			isa = PBXGroup;
 			children = (
+				34092FE01D733B590069957A /* New Group */,
 				34EE3DE11D5299A500285D18 /* Third-Party */,
 				3477DC151D083CA9009ADB67 /* Constants and Supporting files */,
 				34EBB76E1D0212B0009ADB97 /* ASNode Extras */,
@@ -1122,10 +1154,10 @@
 				343474BD1D20AA8B000386FB /* Login and Register */,
 				34EBB7711D02DA91009ADB97 /* Notification Table */,
 				343DC1D81D1B638A00A52381 /* Settings */,
-				34C280171D00182600D5610A /* Profiles */,
+				34C280171D00182600D5610A /* My Profile */,
 				34C79F9E1CF4F74B00F5AA35 /* iconBeast Images */,
 				34186C351CE8E3C600F9189E /* App Test Images */,
-				34C79F8C1CF380C500F5AA35 /* User Profile Page */,
+				34C79F8C1CF380C500F5AA35 /* UserSearch Profile Page */,
 				348DF0361CEE47600032B7A5 /* Search Page */,
 				3464D9671D0B395C007BCCA7 /* Select Album to Upload to */,
 				3477DC131D083106009ADB67 /* Camera Controller */,
@@ -1177,8 +1209,8 @@
 		348DF0361CEE47600032B7A5 /* Search Page */ = {
 			isa = PBXGroup;
 			children = (
-				344613071D32CF2100CF1A4C /* Model */,
 				34C79FA11CF4F98000F5AA35 /* Contoller */,
+				344613071D32CF2100CF1A4C /* Model */,
 				34D3151E1CF0F0A8008678BC /* View */,
 				34D314F51CEF7707008678BC /* Test Data */,
 			);
@@ -1205,7 +1237,7 @@
 			name = "Camera Image View";
 			sourceTree = "<group>";
 		};
-		34C280171D00182600D5610A /* Profiles */ = {
+		34C280171D00182600D5610A /* My Profile */ = {
 			isa = PBXGroup;
 			children = (
 				34FA8F6E1D668C1200AF001A /* Main Profile + Albums */,
@@ -1215,18 +1247,18 @@
 				34EBB7691D01DFA6009ADB97 /* Model */,
 				34EBB75E1D015F01009ADB97 /* View */,
 			);
-			name = Profiles;
+			name = "My Profile";
 			sourceTree = "<group>";
 		};
-		34C79F8C1CF380C500F5AA35 /* User Profile Page */ = {
+		34C79F8C1CF380C500F5AA35 /* UserSearch Profile Page */ = {
 			isa = PBXGroup;
 			children = (
-				34C79F931CF39AA200F5AA35 /* Test Data */,
+				34C79F8F1CF3833B00F5AA35 /* Controller */,
 				34C79F901CF39A4A00F5AA35 /* Model */,
 				34C79F941CF3C05400F5AA35 /* View */,
-				34C79F8F1CF3833B00F5AA35 /* Controller */,
+				34C79F931CF39AA200F5AA35 /* Test Data */,
 			);
-			name = "User Profile Page";
+			name = "UserSearch Profile Page";
 			sourceTree = "<group>";
 		};
 		34C79F8F1CF3833B00F5AA35 /* Controller */ = {
@@ -1368,6 +1400,7 @@
 				34509D7E1D63FB7A002C13F9 /* SwiftIconExtension.swift */,
 				34866DC91D6E3AA300D1367A /* NSUserDefaults+Utilities.swift */,
 				349EF4EE1D48D8E50039CEA6 /* Me.swift */,
+				34092FE31D733BC90069957A /* Realm */,
 			);
 			name = "Third-Party";
 			sourceTree = "<group>";
@@ -1641,6 +1674,7 @@
 				34828D6B1CCFFCF100707A1C /* SignInButton.swift in Sources */,
 				3403D5A81CD6F760001577BB /* RegisterUserVC.swift in Sources */,
 				345999941CD027790057997B /* SignInDisplayNode.swift in Sources */,
+				34092FE81D736E010069957A /* RealmFriend.swift in Sources */,
 				34C79F961CF3C06700F5AA35 /* BasicDetailCellNode.swift in Sources */,
 				347599151D68835700C2A0C0 /* LTRButtonNode.swift in Sources */,
 				34186C0E1CE168B100F9189E /* PageNavigation.swift in Sources */,
@@ -1743,6 +1777,7 @@
 				343DC1AA1D1039A200A52381 /* HASearchFriendCN.swift in Sources */,
 				34509D7B1D628926002C13F9 /* HADownloadManager.swift in Sources */,
 				34509D721D603A40002C13F9 /* MyAlbums.swift in Sources */,
+				34092FE61D733C0A0069957A /* Realm+Utilities.swift in Sources */,
 				343DC1D01D18490F00A52381 /* HASearchControllerNode.swift in Sources */,
 				34D314F71CEF7726008678BC /* TESTSearchModel.swift in Sources */,
 				343DC1E01D1C7BDE00A52381 /* HASimpleUserDetailCN.swift in Sources */,
@@ -1765,6 +1800,7 @@
 				34C79F9D1CF3C19300F5AA35 /* PublicAlbumsCellNode.swift in Sources */,
 				343DC1B81D1311B500A52381 /* HAFollowingTableNode.swift in Sources */,
 				34EBB7781D02E340009ADB97 /* HATESTNotification.swift in Sources */,
+				34092FE21D733BA00069957A /* Album.swift in Sources */,
 				343DC1CA1D17046200A52381 /* HACompletionBlock.swift in Sources */,
 				348CE44E1CCC445B00BCB276 /* AppDelegate.swift in Sources */,
 				34D314F41CEE9835008678BC /* HASearchTableVC.swift in Sources */,

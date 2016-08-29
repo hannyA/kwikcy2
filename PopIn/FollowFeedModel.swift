@@ -123,15 +123,15 @@ class FollowFeedModel {
     
 
     
-    func IdsOfNewAlbums() -> [Int] {
-        //["1111", "2222"]
-        
-        var dict = [Int]()
-        for album in albums {
-            dict.append(album.id!)
-        }
-        return dict
-    }
+//    func IdsOfNewAlbums() -> [String] {
+//        //["1111", "2222"]
+//        
+//        var dict = [String]()
+//        for album in albums {
+//            dict.append(album.id!)
+//        }
+//        return dict
+//    }
     
     
     

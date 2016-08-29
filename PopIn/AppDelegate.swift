@@ -7,7 +7,7 @@
 //
 
 import UIKit
-//import Foundation
+import SwiftyUserDefaults
 
 protocol PhotoFeedControllerProtocol {
     func resetAllData()
@@ -38,26 +38,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         
         
-        // Used at Login time, to add parameters to get user Settings
-        if NSUserDefaults().isFirstLaunchForUser("me") {
-            
-            //Call on background thread users info??
-            
+        
+        if Defaults[.isFirstLaunch] {
             print("First launch")
+        } else {
+            print("Not First launch")
         }
         
-        // Show Welcome screen, Page View Controller, how to user app
-        if NSUserDefaults.isFirstLaunchEver() {
-            print("First launch")
-            
-        }
         
+        let versionNumber = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
+        let buildNumber = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+        
+    
+        print("versionNumber: \(versionNumber), buildNumber: \(buildNumber)")
         
         
 
         //MARK: Uncomment this line
-//        return AWSMobileClient.sharedInstance.didFinishLaunching(application, withOptions: launchOptions)
-        return true
+        return AWSMobileClient.sharedInstance.didFinishLaunching(application, withOptions: launchOptions)
+//        return true
         
     }
     

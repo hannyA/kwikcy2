@@ -28,7 +28,7 @@ class SignInDisplayNode: ASDisplayNode {
     
     override init() {
         spinningWheel = NVActivityIndicatorView(frame: CGRectMake(0, 0, 65, 65),
-                                    type: .BallSpinFadeLoader,
+                                    type: .BallRotateChase,
                                     color: UIColor.flatWhiteColor(),
                                     padding: 10.0)
         spinningWheel.hidesWhenStopped = true
@@ -143,6 +143,7 @@ class SignInDisplayNode: ASDisplayNode {
                                         frame: view.frame,
                                         colors: [
                                             UIColor.flatWatermelonColor(),
+                                            UIColor.flatWhiteColor(),
                                             UIColor.flatWhiteColor()])
         
         

@@ -22,14 +22,24 @@ let AppName = "Chap Chat"
 let iTunesLink = "https://itunes.apple.com/us/app/tinder/id547702041?mt=8"
 // "itms-apps://itunes.apple.com/app/id547702041"
 
+
+
 // Profile Photo
 let kHDVersion:CGFloat = 1080.0
 let kSDVersion:CGFloat = 540.0
 
 
+
+
 //NSUserDefaults Keys and Types
 
 let uDataUse = "DataUse" // Bool
+
+
+// Notifications 
+
+let kAlbumCreateNotification      = "AlbumCreateNotification"
+let kAlbumMediaUploadNotification = "AlbumMediaUploadNotification"
 
 
 let kDictionaryRepresentation = "dictionaryRepresentation"
@@ -64,24 +74,28 @@ let kFollowing      = "following"
 let kFriends        = "friends"
 let kVerified       = "verified"
 
-let kNotificationId = "id"
+let kNotificationId = "notificationId"
 let kAlbumId        = "albumId"
 let kType           = "type"
 
 
 
-let kTitle             = "title";
-let kFriendsListAdd    = "friendsToAdd";
-let kFriendsListRemove = "friendsToRemove";
-let kAction            = "action";
+
+let kFriendGuid =    "fguid"
 
 
-let kMedia      = "media";
-let kMediaURL   = "mediaUrl";
 
-let kTimelimit  = "timelimit";
-let kAlbumIds   = "albumIds";
+let kTitle             = "title"
+let kFriendsListAdd    = "friendsToAdd"
+let kFriendsListRemove = "friendsToRemove"
+let kAction            = "action"
 
+
+let kMedia      = "media"
+let kMediaURL   = "mediaUrl"
+
+let kTimelimit  = "timelimit"
+let kAlbumIds   = "albumIds"
 
 
 let kTimestamp      = "timestamp"
@@ -91,6 +105,7 @@ let kCreateDate      = "createDate"
 let kNewestMediaTime = "newestTime"
 let kNewestMediaUrl  = "newestUrl"
 
+let kCount = "count"
 
 let kBlocked        = "blocked"
 

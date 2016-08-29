@@ -23,6 +23,9 @@ let AWSLambdaSocialAction     = "DromoFriendAction" //"HASearchUsers"
 let AWSLambdaUserFriends      = "DromoUserFriends" // Gets a list of user friends
 
 let AWSLambdaMyAlbums         = "DromoUserAlbums" // List of my albums
+
+let AWSLambdaOpenAlbum        = "DromoAlbumOpen" // Open/Get media content
+
 let AWSLambdaFriendsAlbums    = "DromoAlbumsOfFriends" // List of friends albums
 
 let AWSLambdaCreateAlbum      = "DromoCreateAlbum"

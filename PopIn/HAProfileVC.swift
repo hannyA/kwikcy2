@@ -11,7 +11,7 @@ import AsyncDisplayKit
 import SwiftyDrop
 import RealmSwift
 
-class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, ProfilePagerControlCellNodeDelegate, MyAlbumCNDelegate, BasicProfileCNDelegate {
+class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, ProfilePagerControlCellNodeDelegate, MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate {
 
     enum TableViewSection {
         case Albums
@@ -22,12 +22,11 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
 
 //    var currentTableView: TableViewSection
 //    var profilePageController: ProfilePagerControlCellNode?
-
 //    var basicUserCellNode: BasicProfileCellNode?
-    
 //    var profileView: HAProfileDisplayView
     
     var albums: MyAlbums
+//    var albums: My
     var isLoadingAlbums = true
     var userModel: UserSearchModel
     let downloadManager = HADownloadManager(imageType: .Crop)
@@ -44,7 +43,7 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
         
         userModel = UserSearchModel(withBasic: userInfo, imageType: .Crop)
         
-        albums = MyAlbums()
+        albums = MyAlbums.sharedInstance
         
         super.init(node: tableNode)
         
@@ -64,8 +63,6 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
         tableNode.view.allowsSelection = true
         tableNode.view.separatorStyle = .None
         tableNode.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        
-
     }
     
     
@@ -73,6 +70,7 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print("HAProfileVC viewDidLoad")
         
         navigationItem.title = Me.username()
         navigationController?.navigationBar.translucent = false
@@ -87,10 +85,11 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
         navigationItem.setRightBarButtonItem(settingsButton, animated: false)
         
         
+        // Downloads the users profile image
         self.downloadManager.setDownloadProfileImages([self.userModel])
-        
         self.downloadManager.downloadAllUserThumbImages()
  
+        
         
         albums.load { (success) in
             
@@ -107,10 +106,24 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
             }
             
             self.tableNode.view.reloadSections(NSIndexSet(index: 1),
-                withRowAnimation: .None)
+                                               withRowAnimation: .None)
         }
     }
 
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.hidden = false
+        
+        updateAlbums()
+        
+    }
+    
+    func updateAlbums() {
+        
+        
+        
+    }
     
     
     func deleteRowsFromTableViewWithCount(count: Int, withAnimation animation: UITableViewRowAnimation) {
@@ -235,13 +248,78 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     
     
     
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         print("didSelectRowAtIndexPath section: \(indexPath.section)")
         print("didSelectRowAtIndexPath row    : \(indexPath.row)")
         
+        
+        if indexPath.section == 1 && albums.oldCount() > 0 {
+            
+            
+            let cellNode = tableNode.view.nodeForRowAtIndexPath(indexPath) as! MyAlbumCN
+            let album = cellNode.album
+
+            
+            // If we have all the data in our model
+            if album.hasEnoughContentToPresent() {
+                print("hasEnoughContentToPresent")
+
+                
+                print("New album has \(album.mediaCount()) images")
+
+                print("==================================================")
+                print("================   New Selection  ================")
+                print("==================================================")
+                
+                setupShow(album)
+           
+            } else {
+                print("We need some more images to present")
+
+                
+                cellNode.showSpinningWheel()
+                
+                album.downloadMediaContent(onCompletion: { (successful, errorMessage) in
+                    
+                    cellNode.hideSpinningWheel()
+                  
+                    if successful {
+                        self.setupShow(album)
+                    } else {
+                        
+                        Drop.down(errorMessage ?? AWSErrorBackend,
+                            state: .Error ,
+                            duration: 4.0,
+                            action: nil)
+                    }
+                })
+            }
+        }
     }
     
+    
+    func removeNewAlbum(album: AlbumModel) {
+        // Do not implement
+    }
+
+    
+    
+    func setupShow(album: AlbumModel) {
+        
+        
+        let displayAlbumVC = HAAlbumDisplayVC(userAlbum: album)
+        displayAlbumVC.delegate = self
+        presentClearViewController(displayAlbumVC)
+    }
+    
+    
+    func presentClearViewController(viewController: UIViewController) {
+        
+        viewController.view.alpha = 0
+        navigationController?.pushViewController(viewController, animated: false)
+    }
     
     
     func openSettingsVC() {
@@ -317,6 +395,52 @@ class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, Profile
     func uploadAlbum(album: AlbumModel) { }
 
     
+    func retryUploadingMediaToAlbum(album: AlbumModel) {
+        
+        album.retryUploadingLastMedia { (successful, errorMessage) in
+            
+            if !successful {
+                
+                Drop.down(errorMessage ?? AWSErrorBackend,
+                    state: .Error ,
+                    duration: 4.0,
+                    action: nil)
+            }
+            NSNotificationCenter.defaultCenter().postNotificationName(kAlbumMediaUploadNotification,
+                                                                    object: album,
+                                                                    userInfo: ["success": successful])
+        }
+//        
+//        let imageRep = UIImageJPEGRepresentation(newPhoto, kCompression.Worst.rawValue)
+//        
+//        let imageSize = CGFloat( imageRep!.length)
+//        print("imageSize: \(imageSize / 1024) KB")
+//        
+//        
+//        let imageBase64 = imageRep?.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+//        
+//        
+//        
+//        
+//        
+//        albums.uploadMedia(imageBase64!, type: MediaType.Photo.rawValue, timelimit: 5, to: selectedAlbumModel) { (successful, errorMessage) in
+//            
+//            if !successful {
+//                
+//                Drop.down(errorMessage!,
+//                          state: .Error ,
+//                          duration: 4.0,
+//                          action: nil)
+//            }
+//            
+//            
+//            for album in self.selectedAlbumModel {
+//                NSNotificationCenter.defaultCenter().postNotificationName(kAlbumMediaUploadNotification,
+//                                                                          object: album,
+//                                                                          userInfo: ["success": successful])
+//            }
+//        }
+    }
     
     
     

@@ -15,11 +15,12 @@ let kAlbums = "Albums"
 class AlbumResponse {
     
     struct Album {
-        var albumId     :Int
-        var title       :String
-        var date        :String
-        var newestTime  :String?
-        var newestUrl   :String?
+        var albumId    :String
+        var title      :String
+        var date       :String
+        var newestTime :String?
+        var newestUrl  :String?
+        var mediaCount  :Int?
     }
     
     
@@ -40,18 +41,20 @@ class AlbumResponse {
                 
                 for album in albums {
                     
-                    let albumId    = album[kAlbumId] as! Int
+                    let albumId    = album[kAlbumId] as! String
                     let title      = album[kTitle] as! String
                     let date       = album[kCreateDate] as! String
                     let newestTime = album[kNewestMediaTime] as? String
                     let newestUrl  = album[kNewestMediaUrl] as? String
+                    let mediaCount  = album[kCount] as? Int
 
                     
                     let album = Album(albumId: albumId,
                                        title: title,
                                        date: date,
                                        newestTime: newestTime,
-                                       newestUrl: newestUrl)
+                                       newestUrl: newestUrl,
+                                       mediaCount: mediaCount)
                     
                     self.albums.append(album)
                 }

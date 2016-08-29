@@ -12,7 +12,7 @@ import KeychainAccess
 import NVActivityIndicatorView
 
 import AWSCognitoIdentityProvider
-
+import BigBrother
 
 class SignInVC: ASViewController  {
     
@@ -162,10 +162,14 @@ class SignInVC: ASViewController  {
             
                 // Lambda function does userId exist?
                 
-                AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaLogin,
-                    withParameters: nil) { (result: AnyObject?, error: NSError?) in
+                BigBrother.Manager.sharedInstance.incrementActivityCount()
 
-                        print("3) Is Main Thread: \(NSThread.isMainThread()), ASSERT to false")
+                AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaLogin,
+                 withParameters: nil) { (result: AnyObject?, error: NSError?) in
+
+                    print("3) Is Main Thread: \(NSThread.isMainThread()), ASSERT to false")
+
+                    BigBrother.Manager.sharedInstance.decrementActivityCount()
 
                     if let result = result {
                         print("Logged into App: \(AppName)")

@@ -13,20 +13,22 @@ protocol MediaModelDelegate {
 
 class MediaModel {
     
-    enum MediaType {
-        case Photo
-        case Video
+    enum MediaType: String {
+        case Photo = "photo"
+        case Video = "video"
+        case Gif   = "gif"
+       
     }
     
     var delegate:MediaModelDelegate?
     
     var type: MediaType
     
-    var photo: UIImage?
-    var photoData: NSData?
+//    var photo: UIImage?
+//    var photoData: NSData?
     var mediaURL: NSURL?
-
-    var media: String?
+    var mediaData: NSData
+    var media: String
     
     var timeLimit: Int?
     var timeLeft: Int?
@@ -56,23 +58,64 @@ class MediaModel {
 //        
 //    }
     
+//    object[kAlbumId]   = albumId
+//    object[kType]      = result.type // video, gif, photo
+//    object[kMediaURL]  = result.media_url
+//    object[kTimestamp] = result.timestamp;
+//    object[kTimelimit] = result.timelimit
     
-    init(withImage image: String, andTimeLimit time: Int, isNew new: Bool ) {
+    
+    class func mediaType(type: String) -> MediaType {
         
-        type = .Photo
-        media = image
-        timeLimit = time
+        switch type {
+        case "photo":
+            return .Photo
+        case "video":
+            return .Video
+        case "gif":
+            return .Gif
+        default:
+            return .Photo
+        }
+    }
+    
+    
+    init(newMedia base64Data: String, type _type: String, timeLimit timelimit: Int?, timestamp: String, isNew new: Bool ) {
+        
+        type = MediaModel.mediaType(_type)
+        
+        let decodedData = NSData(base64EncodedString: base64Data, options: .IgnoreUnknownCharacters)!
+        
+//        let dataDecoded:NSData = NSData(base64EncodedString: base64Data,
+//                                        options: NSDataBase64DecodingOptions(rawValue: 0))!
+      
+//        let decodedimage:UIImage = UIImage(data: dataDecoded)!
+
+        self.media = base64Data
+        
+        mediaData = decodedData
+        timeLimit = timelimit
         isNew = new
-//        date = "some Date"
-        
+
+        date = timestamp
     }
     
-    init(withPhoto photo: UIImage ) {
-    
-        type = .Photo
-        self.photo = photo
-        isNew = true
-    }
+//    init(withImage image: String, andTimeLimit time: Int, isNew new: Bool ) {
+//        
+//        type = .Photo
+//        media = image
+//        timeLimit = time
+//        isNew = new
+//        //        date = "some Date"
+//        
+//    }
+//    
+//    init(withPhoto photo: UIImage ) {
+//    
+//        type = .Photo
+//        self.photo = photo
+//        isNew = true
+//    }
     
     @objc func updateVC() {
         timeLeft = timeLeft! - 1

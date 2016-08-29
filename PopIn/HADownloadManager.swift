@@ -66,7 +66,6 @@ class HADownloadManager {
     func setDownloadProfileImages(users:[UserSearchModel] ) {
         
         allUsers.appendContentsOf( users )
-
     }
     
     func downloadAllUserThumbImages() {

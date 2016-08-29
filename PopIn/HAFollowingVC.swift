@@ -403,30 +403,39 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     }
     
     
-    func removeNewAlbumAtIndexPath(indexPath: NSIndexPath) {
+//    func indexPathOfALbum
+    
+    
+    func removeNewAlbum(album: AlbumModel) {
         
-        feedModel.removeNewAlbumAtIndex(indexPath.row)
-        
-        self.tableNodeDisplay.tableNode.view.beginUpdates()
-        
-        self.tableNodeDisplay.tableNode.view.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-        
-        print("removeNewAlbumAtIndexath count  \(feedModel.numberOfNewAlbums())")
-        
-        
-        
-        if !feedModel.hasNewAlbums() {
-            print("removeNewAlbumAtIndexPath has no NewAlbums")
-            let newAlbumSection  = NSIndexSet(index: 0)
-            self.tableNodeDisplay.tableNode.view.deleteSections(newAlbumSection, withRowAnimation: .None)
-        } else {
-            print("removeNewAlbumAtIndexPath still has NewAlbums")
+        if let index = feedModel.indexOfNewAlbumModel(album) {
             
+            if !album.hasNewContent {
+               
+                feedModel.removeNewAlbumAtIndex(index)
+                
+                self.tableNodeDisplay.tableNode.view.beginUpdates()
+                
+                
+                self.tableNodeDisplay.tableNode.view.deleteRowsAtIndexPaths([NSIndexPath(forRow: index,
+                                                                                         inSection: 0)],
+                                                                            withRowAnimation: .None)
+                
+                print("removeNewAlbumAtIndexath count  \(feedModel.numberOfNewAlbums())")
+                
+                if !feedModel.hasNewAlbums() {
+                    print("removeNewAlbumAtIndexPath has no NewAlbums")
+                    let newAlbumSection  = NSIndexSet(index: 0)
+                    self.tableNodeDisplay.tableNode.view.deleteSections(newAlbumSection, withRowAnimation: .None)
+                } else {
+                    print("removeNewAlbumAtIndexPath still has NewAlbums")
+                    
+                }
+                self.tableNodeDisplay.tableNode.view.endUpdates()
+            }
         }
-        self.tableNodeDisplay.tableNode.view.endUpdates()
+        
     }
-    
-    
     
     
     /* ============================================================================
@@ -613,7 +622,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
                 newAlbumSection = true
                 album = feedModel.newAlbumAtIndex(indexPathRow)!
                 print("New album at index : \(indexPathRow)")
-                print("New album has \(album.mediaCount!) images")
+                print("New album has \(album.mediaCount) images")
                 print("New newMediaIndex: \(album.newMediaIndex!)")
             } else {
                 print("Old album secton 1")
@@ -634,6 +643,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
         displayAlbumVC.delegate = self
         presentClearViewController(displayAlbumVC)
     }
+    
     
     
     

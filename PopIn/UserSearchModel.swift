@@ -8,6 +8,7 @@
 
 import AWSS3
 import AWSMobileHubHelper
+import RealmSwift
 
 
 protocol UserSearchModelDelegate {
@@ -70,10 +71,6 @@ class UserSearchModel: UserModel {
     }
 
     
-//    var volume: Double {
-//        return width * height * depth
-//    }
-    
     func updateFriendStatus(status: PublicFriendStatus) {
         friendStatus = status
         if let delegate = delegate {
@@ -117,14 +114,24 @@ class UserSearchModel: UserModel {
         }
     }
     
+//    
+//      "Action"          : action,
+//      "FriendGuid"
+//    
+//    
+// "NotificationId" : notificationId,
+// "FriendGuid"
+    
+    
+    
     
     func lambdaNotificationAction(action: String, notificationId: Int, completionClosure: (successful :Bool, errorMessage: String?, friendStatus: PublicFriendStatus) ->()) {
         
         
-        let jsonInput:[String: AnyObject] = ["AcctId"         : Me.acctId()!,
-                                             "Action"         : action,
-                                             "NotificationId" : notificationId,
-                                             "FriendGuid"     : guid]
+        let jsonInput:[String: AnyObject] = [kAcctId         : Me.acctId()!,
+                                             kAction         : action,
+                                             kNotificationId : notificationId,
+                                             kFriendGuid     : guid]
         
         var parameters: [String: AnyObject]
         
@@ -156,9 +163,9 @@ class UserSearchModel: UserModel {
             
             print("action: \(action)")
             
-            let jsonInput:[String: String] = ["AcctId"          : Me.acctId()!,
-                                              "Action"          : action,
-                                              "FriendGuid"      : guid]
+            let jsonInput:[String: String] = [kAcctId     : Me.acctId()!,
+                                              kAction     : action,
+                                              kFriendGuid : guid]
 
             var parameters: [String: AnyObject]
             
@@ -195,7 +202,39 @@ class UserSearchModel: UserModel {
                 dispatch_async(dispatch_get_main_queue(), {
                     print("UserSearch CloudLogicViewController: Result: \(result)")
                     
+                    
+                    
                     let (didUpdateFriendStatus, errorMessage) = self.updateFriendStatus(result)
+                    
+                    
+              
+                    
+                    
+                    
+                    // Get the default Realm
+                    let realm = try! Realm()
+                    // You only need to do this once (per thread)
+                    
+                    let friend = RealmFriend()
+                    friend.userName = self.userName
+                    friend.guid = self.guid
+                    if let url = self.downloadFileURL {
+                        friend.picture =  NSData(contentsOfURL: url)
+                    }
+                    
+                    
+//                    let realmFriend = realm.create(<#T##type: T.Type##T.Type#>, value: <#T##AnyObject#>, update: <#T##Bool#>)
+                    
+                    
+                    let realmFriend = realm.create(RealmFriend.self, value: friend)//, update: true)
+                    
+                    // Add to the Realm inside a transaction
+                    try! realm.write {
+                        realm.add(realmFriend)
+                    }
+                    
+                    
+                    
                     
                     
                     
@@ -327,34 +366,6 @@ class UserSearchModel: UserModel {
     }
     
     
-    /*
-     *  Returns:
-     *      ProfileExt: Bool
-     *      Profile: 
-     *          Guid
-     *          Verified
-     *          Username
-     *          Fullname
-     *          About
-     *          Domain
-     *      FriendStatus
-     *
-
-     
-     ProfileExt: Bool
-     
-     Profile contains:
-     
-         Guid
-         Verified
-         Username
-         Fullname
-         
-         About
-         Domain
-     FriendStatus
-     
-    */
     
     
     let kDidUpdate = "DidUpdate"

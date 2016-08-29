@@ -11,14 +11,24 @@ import AWSMobileHubHelper
 
 class MyAlbums {
     
+    // Shared instance of this class
+    static let sharedInstance = MyAlbums()
+    private var isInitialized: Bool
+    
+    
+    
     private var albums: [AlbumModel]
     private var newAlbums: [AlbumModel]
     //    var publicAlbums: [AlbumModel]
     
     
+    
+    // Sort by title, last input date
+    
     init() {
         albums    = [AlbumModel]()
         newAlbums = [AlbumModel]()
+        isInitialized = false
     }
     
     
@@ -44,10 +54,6 @@ class MyAlbums {
     func newAlbumAtIndex(index: Int) -> AlbumModel {
         return newAlbums[index]
     }
-
-//    func albumsEmpty() -> Bool {
-//        return albums.isEmpty
-//    }
     
     func newEmpty() -> Bool {
         return newAlbums.isEmpty
@@ -70,6 +76,17 @@ class MyAlbums {
         return !bothFilled() && !bothEmpty()
     }
     
+    func clearNewAlbums() {
+        newAlbums.removeAll()
+    }
+    
+    
+    func moveNewAlbumsToOld() {
+        
+        albums.appendContentsOf(newAlbums)
+        newAlbums.removeAll()
+    }
+    
     
     func indexOfAlbum(album:AlbumModel, inList list: [AlbumModel]) -> Int? {
         
@@ -83,22 +100,41 @@ class MyAlbums {
     }
     
     
-    func findAlbum(album: AlbumModel) -> (section: Int, row: Int)? {
+    func albumsIds(albums:[AlbumModel]) -> [String] {
+        
+        var uploadAlbums = [String]()
+        
+        for album in albums {
+            if let id = album.id {
+                uploadAlbums.append(id)
+            }
+        }
+        return uploadAlbums
+    }
+    
+    
+    func findAlbum(album: AlbumModel) -> NSIndexPath? {
         
         if let index = indexOfAlbum(album, inList: newAlbums) {
-            return (0, index)
+            return NSIndexPath(forRow: 0, inSection: index)
         } else if let index = indexOfAlbum(album, inList: albums) {
             if newEmpty() {
-                return (0, index)
+                return NSIndexPath(forRow: 0, inSection: index)
             } else {
-                return (1, index)
+                return NSIndexPath(forRow: 1, inSection: index)
             }
         }
         return nil
     }
     
     
+    
     func load(completionClosure: (success: Bool) ->()) {
+        
+        if isInitialized {
+            completionClosure(success: true)
+            return
+        }
         
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaMyAlbums,
          withParameters: nil) { (result: AnyObject?, error: NSError?) in
@@ -114,6 +150,9 @@ class MyAlbums {
                             let album = AlbumModel(withAlbum: albumItem)
                             self.albums.append(album)
                         }
+
+                        self.isInitialized = true
+
                         completionClosure(success: true)
                         
                     } else {
@@ -128,56 +167,6 @@ class MyAlbums {
                 })
             }
         }
-    }
-    
-    func albumsIds(albums:[AlbumModel]) -> [String] {
-        
-        var uploadAlbums = [String]()
-        
-        for album in albums {
-            if let id = album.id {
-                uploadAlbums.append(String(id))
-            }
-        }
-        return uploadAlbums
-    }
-    
-    
-    func uploadMedia(media: UIImage, to albums: [AlbumModel], completionClosure: (success: Bool) ->()) {
-        
-        print("uploadMedia")
-        
-        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUploadMedia,
-         withParameters: nil) { (result: AnyObject?, error: NSError?) in
-            
-            if let result = result {
-                dispatch_async(dispatch_get_main_queue(), {
-                    print("profileModel: CloudLogicViewController: Result: \(result)")
-                    
-                    if let myAlbumsList = AlbumResponse(response: result) {
-                        
-                        for albumItem in myAlbumsList.albums {
-                            
-                            let album = AlbumModel(withAlbum: albumItem)
-                            self.albums.append(album)
-                        }
-                        completionClosure(success: true)
-                        
-                    } else {
-                        completionClosure(success: false)
-                    }
-                })
-            }
-            
-            if let _ = AWSConstants.errorMessage(error) {
-                print("profileModel: CloudLogicViewController: Result: \(result)")
-
-                dispatch_async(dispatch_get_main_queue(), {
-                    completionClosure(success: false)
-                })
-            }
-        }
-
     }
     
     
@@ -185,6 +174,7 @@ class MyAlbums {
     func uploadMedia(base64Encoded: String, type: String, timelimit: Int, to albums: [AlbumModel], completionClosure: (success: Bool, errorMessage: String?) ->()) {
         
         print("uploadMedia")
+        
 
         
         var jsonObj = [String: AnyObject]()
@@ -195,13 +185,25 @@ class MyAlbums {
         jsonObj[kMedia]     = base64Encoded
         jsonObj[kType]      = type
         jsonObj[kTimelimit] = timelimit
-        jsonObj[kAlbumIds] = albumsIds(albums)
+        jsonObj[kAlbumIds]  = albumsIds(albums)
         
-        
+        for album in albums {
+            album.isUploading = true
+            
+            album.lastMediaObject = base64Encoded
+            album.lastType       = type
+            album.lastTimelimit  = timelimit
+        }
         
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUploadMedia,
          withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
             
+            
+            for album in albums {
+                album.isUploading = false
+            }
+            
+
             if let result = result {
                 dispatch_async(dispatch_get_main_queue(), {
                     print("uploadMedia: CloudLogicViewController: Result: \(result)")

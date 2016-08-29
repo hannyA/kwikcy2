@@ -51,6 +51,7 @@ class UserProfilePageVC: ASViewController, ASTableDelegate, ASTableDataSource, H
     
     
     override func viewDidLoad() {
+        print("UserProfilePageVC viewDidLoad")
         super.viewDidLoad()
         
         tableNode.view.allowsSelection = true
@@ -94,13 +95,14 @@ class UserProfilePageVC: ASViewController, ASTableDelegate, ASTableDataSource, H
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-//        navigationController?.hidesBarsOnSwipe = true
+        
+        // Need this after we upload media
+        tabBarController?.tabBar.hidden = false
     }
     
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-//        navigationController?.hidesBarsOnSwipe = false
     }
     
     //MARK: - ASTableDataSource methods

@@ -13,12 +13,13 @@
 //}
 
 import AWSMobileHubHelper
+import RealmSwift
 
 class AlbumModel {
     
     var dictionaryRepresentation: [String: AnyObject]
 
-    var id: Int?
+    var id: String?
     var title: String?
     var ownerProfile: UserModel?
     
@@ -40,21 +41,75 @@ class AlbumModel {
     var urlString: String?
     var URL: NSURL? // urlString ? [NSURL URLWithString:urlString] : nil;
     
-    var mediaCount: Int?
+//    var mediaCount: Int = 0   // Number we have in memory
+    var totalMediaCount: Int? = 0   // Total number in album
     
     var mediaContent = [MediaModel]()  //later urls? or NSData
+    
     
     var hasNewContent: Bool
     
     var currentItemIndex = 0
     var newMediaIndex: Int?
     
+//    var isBeingCreated = false
+
     var isUploading = false
+    var lastUploadSuccessful = true
+
     
-    var acl: [String]?
+    var lastMediaObject: String? // Maybe this should be a local URL
+    var lastType: String?
+    var lastTimelimit: Int?
     
     
+    typealias Guid = String
+    var acl: [Guid]?
     
+    
+    func hasContent() -> Bool {
+        
+        if mediaContent.count > 0 {
+            return true
+        }
+        return false
+    }
+    
+    
+    func hasEnoughContentToPresent() -> Bool {
+        
+        if mediaContent.count == totalMediaCount || mediaContent.count  > 5  {
+            return true
+        }
+        return false
+    }
+    
+    
+    func mediaCount() -> Int {
+        return mediaContent.count
+    }
+    
+    
+//    var onUsernamesChanged: ([String]->())?
+//
+//    var loadedUsernames = [String]() {
+//        didSet {
+//            onUsernamesChanged?(loadedUsernames)
+//        }
+//    }
+//    
+//    var finishedUploading: ((Bool)->())?
+    
+//    typealias completion = (result: String)->()
+//    
+//    var onComplete: (completion)? //an optional function
+
+    
+//    func finishedUploadingwith(success: Bool) {
+//        isUploading = false
+//        finishedUploading?(success)
+//        
+//    }
     
     
     // For creating new albums
@@ -62,11 +117,27 @@ class AlbumModel {
         
         self.title = title
         self.acl = usersGuids
-        mediaCount = 0
+        
+//        
+//        let realmAlbum = Album()
+//        realmAlbum.title = title
+//        realmAlbum.acl.appendContentsOf(userList(acl!))
+//        
+//        
+//        let realm = try! Realm()
+//        try! realm.write() {
+//            
+//            realm.create(Album.self, value: realmAlbum, update: false)
+//            
+//            //            (Album.self, value: ["Jane", 27])
+//            //            // Reading from or modifying a `RealmOptional` is done via the `value` property
+//            //            person.age.value = 28
+//        }
+
+        
         
         dictionaryRepresentation = [String: AnyObject]()
         dictionaryRepresentation["title"] = self.title
-//        mediaContent = [MediaModel]()
         hasNewContent = false
     }
     
@@ -76,18 +147,20 @@ class AlbumModel {
     init(withAlbum album: AlbumResponse.Album) {
         
         
-        title = album.title
-        id = album.albumId
-        createDate  = album.date
-        newestMediaUrl = album.newestUrl
-        newMediaTime = album.newestTime
+        title           = album.title
+        id              = album.albumId
+        createDate      = album.date
+        newestMediaUrl  = album.newestUrl
+        newMediaTime    = album.newestTime
+        totalMediaCount = album.mediaCount
+        
         
         dictionaryRepresentation = [String: AnyObject]()
-        dictionaryRepresentation["title"] = album.title
-        dictionaryRepresentation["id"] = album.albumId
-        dictionaryRepresentation["title"] = album.date
-        dictionaryRepresentation["time"] = album.newestTime
-        dictionaryRepresentation["coverPhoto"] = album.newestUrl
+        dictionaryRepresentation[kTitle]          = album.title
+        dictionaryRepresentation[kAlbumId]        = album.albumId
+        dictionaryRepresentation[kDate]           = album.date
+        dictionaryRepresentation[kTimestamp]      = album.newestTime
+        dictionaryRepresentation[kNewestMediaUrl] = album.newestUrl
 
         hasNewContent = false
         
@@ -96,18 +169,63 @@ class AlbumModel {
 //        newMediaIndex = dictionaryRepresentation["newMediaIndex"] as? Int
     }
 
-    init(withAlbumInfo info: [String: AnyObject]) {
-       
-        dictionaryRepresentation = info
-        hasNewContent = false
-//        mediaContent = dictionaryRepresentation["mediaContent"] as! [MediaModel]
-//        hasNewContent = dictionaryRepresentation["hasNewContent"] as! Bool
-//        newMediaIndex = dictionaryRepresentation["newMediaIndex"] as? Int
+//    init(withAlbumInfo info: [String: AnyObject]) {
+//       
+//        dictionaryRepresentation = info
+//        hasNewContent = false
+////        mediaContent = dictionaryRepresentation["mediaContent"] as! [MediaModel]
+////        hasNewContent = dictionaryRepresentation["hasNewContent"] as! Bool
+////        newMediaIndex = dictionaryRepresentation["newMediaIndex"] as? Int
+//    }
+    
+    func retryUploadingLastMedia(onCompletion closure: (successful :Bool, errorMessage: String?) ->() ){
+        
+        var jsonObj = [String: AnyObject]()
+        
+        jsonObj[kGuid]      = Me.guid()
+        jsonObj[kAcctId]    = Me.acctId()
+        
+        jsonObj[kMedia]     = lastMediaObject
+        jsonObj[kType]      = lastType
+        jsonObj[kTimelimit] = lastTimelimit
+        jsonObj[kAlbumIds]  = [id!]
+        
+        isUploading = true
+        
+        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUploadMedia,
+         withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
+            
+            self.isUploading = false
+            
+            if let result = result {
+                dispatch_async(dispatch_get_main_queue(), {
+                    print("uploadMedia: CloudLogicViewController: Result: \(result)")
+                    
+                    if let response = result as? [String: AnyObject]  {
+                        
+                        let successful   = response[kSuccess] as! Bool
+                        let errorMessage = response[kErrorMessage] as? String
+                        
+                        closure(successful: successful, errorMessage: errorMessage)
+                    }
+                })
+            }
+            
+            if let _ = AWSConstants.errorMessage(error) {
+                print("uploadMedia: failed")
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    closure(successful: false, errorMessage: AWSErrorBackend)
+
+                })
+            }
+        }
     }
     
+ 
     
-
-    func uploadAlbum(onCompletion closure: (successful :Bool) ->() ){
+    
+    func createAlbum(onCompletion closure: (successful :Bool) ->() ){
         
         isUploading = true
         
@@ -118,6 +236,8 @@ class AlbumModel {
         
         jsonObj["friends"] = acl
         
+        
+            
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaCreateAlbum,
         withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
             
@@ -131,7 +251,7 @@ class AlbumModel {
                     if let objectAsDictionary = result as? [String: AnyObject] {
                         
                         let success = objectAsDictionary["Success"] as! Bool
-                        let albumId = objectAsDictionary[kAlbumId] as? Int
+                        let albumId = objectAsDictionary[kAlbumId] as? String
                         
                         if success {
                             self.id = albumId
@@ -177,8 +297,8 @@ class AlbumModel {
                     
                     if let objectAsDictionary = result as? [String: AnyObject] {
                         
-                        let success = objectAsDictionary["Success"] as! Bool
-                        let albumId = objectAsDictionary["AlbumId"] as? Int
+                        let success = objectAsDictionary[kSuccess] as! Bool
+                        let albumId = objectAsDictionary[kAlbumId] as? String
                         
                         if success {
                             self.id = albumId
@@ -198,7 +318,6 @@ class AlbumModel {
                 })
             }
         }
-
     }
     
     
@@ -211,8 +330,8 @@ class AlbumModel {
 
         jsonObj[kGuid]     = Me.guid()
         jsonObj["action"] = "Title"
-        jsonObj["albumId"] = id
-        jsonObj["title"] = title
+        jsonObj[kAlbumId] = id
+        jsonObj[kTitle] = title
         
         
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUpdateAlbum,
@@ -249,19 +368,127 @@ class AlbumModel {
     
     
     
+//    var fguid       = event[kFGuid];
+//    
+//    // TODO: Validate mediaUrl and timestamp
+//    
+//    var lastMediaUrl  = event[kMediaURL];
+//    var lastTimestamp = event[kTimestamp]
+
     
     
-    func insertPhotoImage(photo: UIImage) {
-     
-        coverPhotoImage = photo
-        let newMedia = MediaModel(withPhoto: photo)
-        mediaContent.append(newMedia)
+    func downloadMediaContent(onCompletion closure: (successful :Bool, errorMessage: String?) ->() ){
         
-        if var count = mediaCount {
-            count += 1
-            mediaCount = count
+//        AWSLambdaOpenAlbum
+        
+        var jsonObj = [String: AnyObject]()
+        
+        jsonObj[kGuid]    = Me.guid()
+        jsonObj[kAcctId]  = Me.acctId()
+        jsonObj[kAlbumId] = id
+        
+        
+        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaOpenAlbum,
+         withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
+            
+            self.isUploading = false
+            
+            if let result = result {
+                dispatch_async(dispatch_get_main_queue(), {
+                    
+                    if let objectAsDictionary = result as? [String: AnyObject] {
+                        
+
+                        let albumExists = objectAsDictionary["AlbumExists"] as! Bool
+                        let album = objectAsDictionary["Album"] as? [[String: AnyObject]]
+                        let errorMessage = objectAsDictionary[kErrorMessage] as? String
+
+                        if albumExists {
+                            
+                            for media in album! {
+                               
+                                let newMediaContent = MediaModel(newMedia: media[kMedia] as! String,
+                                    type: media[kType] as! String,
+                                    timeLimit: media[kTimelimit] as? Int,
+                                    timestamp: media[kTimestamp] as! String,
+                                    isNew: false)
+                            
+                                self.mediaContent.append(newMediaContent)
+                            
+                            }
+                            closure(successful: true, errorMessage: nil)
+                        } else {
+                            closure(successful: false, errorMessage: errorMessage)
+                        }
+                    } else {
+                        closure(successful: false, errorMessage: nil)
+                    }
+                })
+            }
+            
+            if let _ = AWSConstants.errorMessage(error) {
+                dispatch_async(dispatch_get_main_queue(), {
+                    closure(successful: false, errorMessage: AWSErrorBackend)
+                })
+            }
         }
     }
+    
+    //            closure(successful: true)
+
+    
+    
+
+    //    private func randomMediaContent() -> ( [MediaModel], Bool, Int) {
+    //
+    //        var newMediaExists = isNewMedia()
+    //        var returnValueMediaExists = false
+    //
+    //        var newMediaExistsAtIndex = 0
+    //        let numberOfContent = Int(arc4random_uniform(UInt32(10)))
+    //
+    //        var contentList = [MediaModel]()
+    //
+    //
+    //        for _ in 0...numberOfContent {
+    //
+    //            if newMediaExists {
+    //
+    //                contentList.append(MediaModel(withImage: randomMediaContentStrings(),
+    //                                              andTimeLimit: randomTimerLimit(),
+    //                                              isNew: newMediaExists))
+    //                returnValueMediaExists = true
+    //
+    //            } else {
+    //                contentList.append(MediaModel(withImage: randomMediaContentStrings(),
+    //                                              andTimeLimit: randomTimerLimit(),
+    //                                              isNew: newMediaExists))
+    //
+    //                newMediaExists = isNewMedia()
+    //                newMediaExistsAtIndex += 1
+    //            }
+    //        }
+    //        
+    //        return (contentList, returnValueMediaExists, newMediaExistsAtIndex)
+    //    }
+
+    
+    
+    
+    
+    
+    
+//    func insertPhotoImage(photo: UIImage) {
+//     
+//        coverPhotoImage = photo
+//        let newMedia = MediaModel(withPhoto: photo)
+//        mediaContent.append(newMedia)
+//        
+////        if var count = mediaCount {
+////            count += 1
+////            mediaCount = count
+////        }
+//    }
     
     
     func insertRepresentationString(title: String, forObject:AnyObject){
@@ -310,7 +537,7 @@ class AlbumModel {
         
         
         print("mediaContent.count: \(mediaContent.count)")
-        print("mediaCount: \(mediaCount!)")
+
         print("currentItemIndex:\(currentItemIndex) < mediaContent.count:\(mediaContent.count)")
         
         if currentItemIndex < mediaContent.count {

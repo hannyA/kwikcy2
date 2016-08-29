@@ -31,8 +31,8 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     //    var albumsCellNodesList         = [MyAlbumCN]()
     
     // These are not sorted because of the async property of nodeblock
-    var oldAlbumsCellNodesList         = [MyAlbumCN]()
-    var newAlbumsCellNodesList         = [MyAlbumCN]()
+//    var oldAlbumsCellNodesList         = [MyAlbumCN]()
+//    var newAlbumsCellNodesList         = [MyAlbumCN]()
     
 
     
@@ -40,7 +40,8 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
 
         newPhoto = photo
         albumTableNodeDisplay = AlbumUploadDisplayView()
-        albums = MyAlbums()
+        
+        albums = MyAlbums.sharedInstance
         
         super.init(node: albumTableNodeDisplay)
         
@@ -85,6 +86,18 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         navigationController?.navigationBarHidden = false
     }
     
+    /*
+     *  Gets called one of 2 ways. Either User,
+     *
+     *  1)  pushes back button effectively canceling
+     *  2)  User calls uploadMediaToSelectedAlbums
+     */
+    deinit {
+        print("AlbumUpload deinit")
+        albums.clearNewAlbums()
+    }
+    
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
     }
@@ -119,6 +132,9 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     }
     
     
+    /*
+     *  This function will move the new albums into the oldalbums list
+     */
     
     func uploadMediaToSelectedAlbums() {
         albumTableNodeDisplay.buttonsDisplay.disableDoneButton()
@@ -139,30 +155,41 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         
         
         
-        albums.uploadMedia(imageBase64!,
-                           type: MediaType.Photo.rawValue,
-                           timelimit: 5,
-                           to: selectedAlbumModel) { (successful, errorMessage) in
-                         
-                            if !successful {
-                                
-                                Drop.down(errorMessage!,
-                                          state: .Error ,
-                                          duration: 4.0,
-                                          action: nil)
-                            }
+        
+        
+        albums.uploadMedia(imageBase64!, type: MediaType.Photo.rawValue, timelimit: 5, to: selectedAlbumModel) { (successful, errorMessage) in
+            
+            if !successful {
+                
+                Drop.down(errorMessage!,
+                          state: .Error ,
+                          duration: 4.0,
+                          action: nil)
+            }
+                            
+            
+            for album in self.selectedAlbumModel {
+                NSNotificationCenter.defaultCenter().postNotificationName(kAlbumMediaUploadNotification,
+                                                                          object: album,
+                                                                          userInfo: ["success": successful])
+            }       
         }
         
+//        let vc = tabBarController?.selectedViewController as! UINavigationController
+//        tabBarController?.selectedIndex = 4
+//        vc.popToRootViewControllerAnimated(false)
         
-        
-        navigationController?.popToRootViewControllerAnimated(false)
         tabBarController?.selectedIndex = 4
-
+        (tabBarController?.viewControllers![0] as! UINavigationController).popToRootViewControllerAnimated(false)
     }
     
     
+    //    // We don't implement this here, WHy is it here. Cause I'm too lazy to make this optional
+    func retryUploadingMediaToAlbum(album: AlbumModel) {}
+
     
-    
+    //TODO: Chnage this, don't create an album on server that may not be used or unselected
+    //
     func createNewAlbum(newAlbum: AlbumModel) {
         
         albumTableNodeDisplay.tableNode.view.beginUpdates()
@@ -191,12 +218,14 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
     func uploadAlbum(newAlbum: AlbumModel) {
         print("will uploadAlbum")
-//        let albumsCellNodes = self.findCellNodesInList(self.newAlbumsCellNodesList, containing: newAlbum)
-
      
-        newAlbum.uploadAlbum { (successful) in
-//            print("albumsCellNodes count: \(albumsCellNodes.count)")
+        newAlbum.createAlbum { (successful) in
             print("will newAlbum.uploadAlbum")
+         
+            NSNotificationCenter.defaultCenter().postNotificationName(kAlbumCreateNotification,
+                object: newAlbum,
+                userInfo: ["success": successful])
+            
             if successful {
                 print("will newAlbum.uploadAlbum successful")
 //                for albumCN in albumsCellNodes {
@@ -206,18 +235,12 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
 //                    albumCN.uploadSuccessful(true)
 //                    newAlbum.insertPhotoImage(newPhoto)
 //                }
-                NSNotificationCenter.defaultCenter().postNotificationName("kAlbumUploadNotification",
-                                                                          object: newAlbum,
-                                                                          userInfo: ["success": true])
             } else {
                 print("will newAlbum.uploadAlbum failed")
 //                for albumCN in albumsCellNodes {
 //                    albumCN.userSelected(false)
 //                    albumCN.uploadSuccessful(false)
 //                }
-                NSNotificationCenter.defaultCenter().postNotificationName("kAlbumUploadNotification",
-                                                                          object: newAlbum,
-                                                                          userInfo: ["success": false])
                 Drop.down("Couldn't create your album \(randomUpsetEmoji())",
                           state: .Error ,
                           duration: 3.0,
@@ -230,25 +253,25 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
     // Helper
     
-    func findCellNodesInList(list: [MyAlbumCN], containing album: AlbumModel) -> [MyAlbumCN] {
-        
-        return list.filter({ (albumCN: MyAlbumCN) -> Bool in
-            if albumCN.album === album {
-                return true
-            }
-            return false
-        })
-    }
-    
-    
-    func findCellNodesContaining(album: AlbumModel) -> [MyAlbumCN] {
-        
-        var cellNodes = findCellNodesInList(oldAlbumsCellNodesList, containing: album)
-        let newCellNodes = findCellNodesInList(newAlbumsCellNodesList, containing: album)
-        
-        cellNodes.appendContentsOf(newCellNodes)
-        return cellNodes
-    }
+//    func findCellNodesInList(list: [MyAlbumCN], containing album: AlbumModel) -> [MyAlbumCN] {
+//        
+//        return list.filter({ (albumCN: MyAlbumCN) -> Bool in
+//            if albumCN.album === album {
+//                return true
+//            }
+//            return false
+//        })
+//    }
+//    
+//    
+//    func findCellNodesContaining(album: AlbumModel) -> [MyAlbumCN] {
+//        
+//        var cellNodes = findCellNodesInList(oldAlbumsCellNodesList, containing: album)
+//        let newCellNodes = findCellNodesInList(newAlbumsCellNodesList, containing: album)
+//        
+//        cellNodes.appendContentsOf(newCellNodes)
+//        return cellNodes
+//    }
     
     
     
@@ -314,7 +337,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
                                               hasTopDivider: indexPath.row  == 0 ? false : true )
                 albumCellNode.selectionStyle = .None
                 albumCellNode.delegate = self
-                self.newAlbumsCellNodesList.append(albumCellNode)
+//                self.newAlbumsCellNodesList.append(albumCellNode)
 
                 return albumCellNode
             }
@@ -330,7 +353,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
                                               hasTopDivider  : indexPath.row  == 0 ? false : true )
                 albumCellNode.selectionStyle = .None
                 albumCellNode.delegate = self
-                self.oldAlbumsCellNodesList.append(albumCellNode)
+//                self.oldAlbumsCellNodesList.append(albumCellNode)
                 print("2 nodeForRowAtIndexPath oldCellNode added old cellnode")
                 print("3 nodeForRowAtIndexPath oldCellNode AlbumId: \(album.id)")
 
@@ -387,6 +410,13 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     }
     
     
+    func printSelectedAlbums() {
+        
+        for album in selectedAlbumModel {
+            print("Album title: \(album.title)")
+        }
+    }
+    
     func printAlbums(list: [MyAlbumCN]) {
     
         print("==================================")
@@ -402,25 +432,26 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
+        print("")
         
         print("AWWWW didSelectRowAtIndexPath: \(indexPath.section), row: \(indexPath.row)")
         let album: AlbumModel
         
-        let listType: [MyAlbumCN]
+//        let listType: [MyAlbumCN]
 
         if albums.bothFilled() {
             
             if indexPath.section == 0 {
                 
                 album = albums.newAlbumAtIndex(indexPath.row)
-                listType = newAlbumsCellNodesList
+//                listType = newAlbumsCellNodesList
 
             } else { // Section 1
                 
                 if indexPath.row < albums.oldCount() {
                     
                     album = albums.oldAlbumAtIndex(indexPath.row)
-                    listType = oldAlbumsCellNodesList
+//                    listType = oldAlbumsCellNodesList
 
                 } else { // Geting more albums from server, This should be done automatically
                     
@@ -431,14 +462,14 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
             if !albums.newEmpty() {
                 
                 album = albums.newAlbumAtIndex(indexPath.row)
-                listType = newAlbumsCellNodesList
+//                listType = newAlbumsCellNodesList
 
             } else if !albums.oldEmpty() {
                 
                 if indexPath.row < albums.oldCount() {
                     
                     album = albums.oldAlbumAtIndex(indexPath.row)
-                    listType = oldAlbumsCellNodesList
+//                    listType = oldAlbumsCellNodesList
 
                 } else { // Geting more albums from server
                     
@@ -457,28 +488,23 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         
         if let _ = album.id {
             
-            let albumsCellNodeList = findCellNodesInList(listType, containing: album)
-            print("number of album cells = \(albumsCellNodeList.count)")
             
-            printAlbums(listType)
-            for albumCN in albumsCellNodeList {
-                if albumCN.album.isUploading {
-                    print("isUploading")
-                    
-                    Drop.down("Creating album in process",
-                              state: .Warning ,
-                              duration: 3.0,
-                              action: nil)
-                     break
+            let node = albumTableNodeDisplay.tableNode.view.nodeForRowAtIndexPath(indexPath) as! MyAlbumCN
+           
+            if node.album.isUploading {
+                print("isUploading")
+                
+                Drop.down("Creating album in process",
+                          state: .Warning ,
+                          duration: 3.0,
+                          action: nil)
+            } else {
+                print("not Uploading")
+                node.userSelected(!node.isUserSelected)
+                if node.isUserSelected {
+                    addNewAlbum(node.album)
                 } else {
-                    print("not Uploading")
-                    albumCN.userSelected(!albumCN.isUserSelected)
-                    if albumCN.isUserSelected {
-                        addNewAlbum(albumCN.album)
-                    } else {
-                        removeAlbum(albumCN.album)
-                    }
-                    break
+                    removeAlbum(node.album)
                 }
             }
             
@@ -488,6 +514,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
                 albumTableNodeDisplay.buttonsDisplay.disableDoneButton()
             }
         }
+        printSelectedAlbums()
     }
     
     func indexOfSelectedAlbum(album: AlbumModel) -> Int? {
@@ -518,6 +545,9 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
 
     
     
+    
+    
+    
     func saveNewTitle(title: String, forAlbum album: AlbumModel) {
         
 //        let indexPath = self.albums.findAlbum(album)  //  self.albums.oldAlbumAtIndex(indexPath.row)
@@ -525,11 +555,19 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         
         print("saveNewTitle Is main trhread: \(NSThread.isMainThread())")
         
-        let cellNodes = self.findCellNodesContaining(album)
         
-        for cellNode in cellNodes {
-            cellNode.showSpinningWheel()
-        }
+//        let cellNode = albumTableNodeDisplay.tableNode.view.nodeForRowAtIndexPath(index)
+//        let cellNodes = self.findCellNodesContaining(album)
+        
+        //        for cellNode in cellNodes {
+        //            cellNode.showSpinningWheel()
+        //        }
+      
+        
+        let indexPath = self.albums.findAlbum(album)  //  self.albums.oldAlbumAtIndex(indexPath.row)
+        let cellNode  = albumTableNodeDisplay.tableNode.view.nodeForRowAtIndexPath(indexPath!) as! MyAlbumCN
+        cellNode.showSpinningWheel()
+
         
         album.updateTitle(title) { (successful) in
             
@@ -537,10 +575,10 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
                 
 //                let cellNodes = self.findCellNodesContaining(album)
                 
-                for cellNode in cellNodes {
+//                for cellNode in cellNodes {
                     cellNode.hideSpinningWheel()
                     cellNode.replaceTitle()
-                }
+//                }
                 print("Saved new title")
                 
             } else {
@@ -612,7 +650,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
                                             style: .Default) { (defaultAction) in
                                                 print("editUsersAction pressed")
                                                 
-            let album = self.albums.findAlbum(album)  //  self.albums.oldAlbumAtIndex(indexPath.row)
+            let albumIndexPath = self.albums.findAlbum(album)  //  self.albums.oldAlbumAtIndex(indexPath.row)
                                                 
         }
         alertActionController.addAction(editUsersAction)
