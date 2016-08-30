@@ -489,17 +489,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3403D5A61CD6F706001577BB /* CreateUsernameController */ = {
+		3403D5A61CD6F706001577BB /* Register User */ = {
 			isa = PBXGroup;
 			children = (
 				3403D5A71CD6F760001577BB /* RegisterUserVC.swift */,
 				34EE3DE91D52CF5600285D18 /* RegisterProfileCamera.swift */,
 				34186B791CD7E96000F9189E /* SubNodes */,
 			);
-			name = CreateUsernameController;
+			name = "Register User";
 			sourceTree = "<group>";
 		};
-		3403D5A91CD70129001577BB /* SigninController */ = {
+		3403D5A91CD70129001577BB /* Sign In */ = {
 			isa = PBXGroup;
 			children = (
 				34828D661CCEF42D00707A1C /* SignInVC.swift */,
@@ -507,7 +507,7 @@
 				3495486A1D4E5D09000F0341 /* LambdaErrorResponse.swift */,
 				34186B781CD7E94400F9189E /* SubNodes */,
 			);
-			name = SigninController;
+			name = "Sign In";
 			sourceTree = "<group>";
 		};
 		34092FE01D733B590069957A /* New Group */ = {
@@ -724,8 +724,8 @@
 		343474BD1D20AA8B000386FB /* Login and Register */ = {
 			isa = PBXGroup;
 			children = (
-				3403D5A91CD70129001577BB /* SigninController */,
-				3403D5A61CD6F706001577BB /* CreateUsernameController */,
+				3403D5A91CD70129001577BB /* Sign In */,
+				3403D5A61CD6F706001577BB /* Register User */,
 			);
 			name = "Login and Register";
 			sourceTree = "<group>";

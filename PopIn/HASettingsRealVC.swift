@@ -335,7 +335,7 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
                     print("errorMessage: \(errorMessage)")
                 }
                 
-//                Me.wipeData()
+                Me.wipeData()
                 
                 self.presentSignInViewController()
             })
@@ -354,6 +354,8 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
         if !AWSIdentityManager.defaultIdentityManager().loggedIn {
             print("!AWSIdentityManager.defaultIdentityManager().loggedIn ")
 
+            
+            
             presentViewController(SignInVC(), animated: false, completion: {
                 
                 self.tabBarController?.selectedIndex = 0

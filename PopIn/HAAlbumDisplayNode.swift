@@ -10,7 +10,7 @@ import AsyncDisplayKit
 
 protocol HAAlbumDisplayNodeDelegate {
     func closeAlbumVC()
-    func pauseAlbum()
+//    func pauseAlbum()
 
     func showPreviousItem()
     func showNextItem()
@@ -31,23 +31,38 @@ class HAAlbumDisplayNode: ASDisplayNode {
 
     
     let imageNode: ASImageNode
+    
     let videoNode: ASVideoNode
     
     
     
-    override init() {
+    init(mediaContent: MediaModel) {
         
         timeViewNode = ASTextNode()
-        timeViewNode.attributedText = HAGlobal.titlesAttributedString("10", color: UIColor.blackColor(), textSize: kTextSizeRegular)
+        
+        timeViewNode.attributedText = HAGlobal.titlesAttributedString(String(mediaContent.timeLimit), color: UIColor.blackColor(), textSize: kTextSizeRegular)
         timeViewNode.backgroundColor = UIColor.blueColor()
         timeViewNode.layerBacked = true
         
         showButtonsOutline = true
         
+        
+        
+        
+        
         imageNode = ASImageNode()
-        imageNode.backgroundColor = UIColor.whiteColor()
+        imageNode.backgroundColor = UIColor.clearColor()
 
         videoNode = ASVideoNode()
+        
+        
+        if mediaContent.type == .Photo {
+            imageNode.image = UIImage(data: mediaContent.mediaData)
+        }
+        
+        
+        
+        
         
         previousItemButton = ASButtonNode()
         previousItemButton.setTitle("back", withFont: UIFont.boldSystemFontOfSize(20), withColor: UIColor.blackColor(), forState: .Normal)
@@ -71,7 +86,7 @@ class HAAlbumDisplayNode: ASDisplayNode {
         super.init()
         
         
-        
+        backgroundColor = UIColor.clearColor()
         addSubnode(imageNode)
         addSubnode(videoNode)
         
@@ -99,9 +114,9 @@ class HAAlbumDisplayNode: ASDisplayNode {
         
         imageNode.addTarget(self, action: #selector(doNothing), forControlEvents: .TouchUpInside)
         
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(pauseAlbum))
-        tapGestureRecognizer.numberOfTapsRequired = 1
-        imageNode.view.addGestureRecognizer(tapGestureRecognizer)
+//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(pauseAlbum))
+//        tapGestureRecognizer.numberOfTapsRequired = 1
+//        imageNode.view.addGestureRecognizer(tapGestureRecognizer)
     
     
         
@@ -145,10 +160,10 @@ class HAAlbumDisplayNode: ASDisplayNode {
     
     func doNothing(){}
     
-    func pauseAlbum() {
-        print("pauseAlbum")
-        delegate?.pauseAlbum()
-    }
+//    func pauseAlbum() {
+//        print("pauseAlbum")
+//        delegate?.pauseAlbum()
+//    }
     
     
     func closeAlbumView() {
@@ -176,11 +191,7 @@ class HAAlbumDisplayNode: ASDisplayNode {
         UIView.animateWithDuration(0.4, delay: 0.0, options: .CurveEaseInOut, animations: {
             self.imageNode.image = UIImage(named: image)
             
-            }, completion: nil)
-        
-        
-        
-//        imageNode.image = UIImage(named: image)
+        }, completion: nil)
     }
     
     

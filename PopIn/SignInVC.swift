@@ -14,7 +14,7 @@ import NVActivityIndicatorView
 import AWSCognitoIdentityProvider
 import BigBrother
 
-class SignInVC: ASViewController  {
+class SignInVC: ASViewController, RegisterUserVCDelegate  {
     
     
     
@@ -129,16 +129,10 @@ class SignInVC: ASViewController  {
     
     
     
-    /*
-     Other screens just faded in, especially when background is plain white
-     Learn more - next screep slid over
-     You're on messenger - screen slid in from right
-     Main screen - no sliding - - just faded in
-     
-     
-     When click on Next button - replace Next with spinning wheel
-     */
-    
+    func didRegister() {
+        navigationController?.popViewControllerAnimated(false)
+        dismissVC()
+    }
     
     // MARK: - Utility Methods
     
@@ -201,8 +195,10 @@ class SignInVC: ASViewController  {
 
                                 } else {
                                     // User does not exist
+                                    print("Push register")
+
                                     let vc = RegisterUserVC()
-                                    
+                                    vc.delegate = self
                                     self.navigationController?.pushViewController(vc, animated: false)
                                 }
                             } else {

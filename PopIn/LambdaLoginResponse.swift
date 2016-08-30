@@ -11,7 +11,7 @@ import Foundation
 
 let kSavedImage     = "SavedImage"
 let kUserExists     = "UserExists"
-let kProfiles     = "Profiles"
+let kProfiles       = "Profiles"
 
 class LambdaLoginResponse {
     

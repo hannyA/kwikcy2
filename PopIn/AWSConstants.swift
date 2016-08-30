@@ -16,9 +16,9 @@ let AWSLambdaValidateUsername = "DromoValidateUsername" //"DRValidateUsername"
 let AWSLambdaSearchUsers      = "DromoSearchUsers" //"HASearchUsers"
 
 
-let AWSLambdaNotifications    = "DromoNotifications" //"HASearchUsers"
-let AWSLambdaGetUsersProfile  = "DromoUserProfile" //"HASearchUsers"
-let AWSLambdaSocialAction     = "DromoFriendAction" //"HASearchUsers"
+let AWSLambdaNotifications    = "DromoNotifications"
+let AWSLambdaGetUsersProfile  = "DromoUserProfile"
+let AWSLambdaSocialAction     = "DromoFriendAction" 
 
 let AWSLambdaUserFriends      = "DromoUserFriends" // Gets a list of user friends
 

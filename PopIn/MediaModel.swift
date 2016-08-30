@@ -26,9 +26,12 @@ class MediaModel {
     
 //    var photo: UIImage?
 //    var photoData: NSData?
-    var mediaURL: NSURL?
-    var mediaData: NSData
-    var media: String
+    
+//    var mediaURL: NSURL?
+    
+    var mediaData    : NSData
+    var mediaKey     : String
+    
     
     var timeLimit: Int?
     var timeLeft: Int?
@@ -80,24 +83,27 @@ class MediaModel {
     }
     
     
-    init(newMedia base64Data: String, type _type: String, timeLimit timelimit: Int?, timestamp: String, isNew new: Bool ) {
+    //Folder is actually a guid
+    
+    init(mediaData base64Data: String, type _type: String, mediaUrl: String, timeLimit timelimit: Int?, timestamp: String, isNew new: Bool) {
         
         type = MediaModel.mediaType(_type)
         
-        let decodedData = NSData(base64EncodedString: base64Data, options: .IgnoreUnknownCharacters)!
+        let decodedData = NSData(base64EncodedString: base64Data,
+                                 options: .IgnoreUnknownCharacters)!
+        
+        
         
 //        let dataDecoded:NSData = NSData(base64EncodedString: base64Data,
 //                                        options: NSDataBase64DecodingOptions(rawValue: 0))!
-      
 //        let decodedimage:UIImage = UIImage(data: dataDecoded)!
 
-        self.media = base64Data
+        mediaKey = mediaUrl
         
-        mediaData = decodedData
-        timeLimit = timelimit
-        isNew = new
-
-        date = timestamp
+        mediaData   = decodedData
+        timeLimit   = timelimit
+        isNew       = new
+        date        = timestamp
     }
     
 //    init(withImage image: String, andTimeLimit time: Int, isNew new: Bool ) {

@@ -184,10 +184,10 @@ class MyAlbumCN: HAAlbumCN {
         hideRetryButton()
 
         if album.isUploading {
-            print(" MyAlbumCN didLoad isUploading")
+            print("1) MyAlbumCN didLoad isUploading")
             showSpinningWheel()
         } else {
-            print(" MyAlbumCN didLoad is not Uploading")
+            print("2) MyAlbumCN didLoad is not Uploading")
         }
     }
     

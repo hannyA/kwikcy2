@@ -285,7 +285,6 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     func closeCamera() {
         navigationController?.popViewControllerAnimated(false)
         dismissViewControllerAnimated(true, completion: nil)
-//        parentViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     
@@ -639,7 +638,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
         
         
 //        
-        let displayAlbumVC = HAAlbumDisplayVC(album: album, isFromNewAlbumSection:newAlbumSection,  atIndexPath: indexPath)
+        let displayAlbumVC = HAAlbumDisplayVC(album: album, isFromNewAlbumSection:newAlbumSection)
         displayAlbumVC.delegate = self
         presentClearViewController(displayAlbumVC)
     }

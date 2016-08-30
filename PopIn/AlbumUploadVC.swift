@@ -12,6 +12,7 @@ import AWSMobileHubHelper
 import SwiftyDrop
 
 
+let DefaultTimeLimit = 10
 
 /*
  *  View Controller that shows the list of albums that we can choose to add the photo/video
@@ -28,13 +29,6 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     var isLoadingAlbums = true
     
     var selectedAlbumModel = [AlbumModel]()
-    //    var albumsCellNodesList         = [MyAlbumCN]()
-    
-    // These are not sorted because of the async property of nodeblock
-//    var oldAlbumsCellNodesList         = [MyAlbumCN]()
-//    var newAlbumsCellNodesList         = [MyAlbumCN]()
-    
-
     
     init(withPhoto photo: UIImage) {
 
@@ -137,13 +131,10 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
      */
     
     func uploadMediaToSelectedAlbums() {
+       
         albumTableNodeDisplay.buttonsDisplay.disableDoneButton()
-        print("Lets update all new albus with the new media content")
+        print("Lets update all new albums with the new media content")
 
-        for albumModel in selectedAlbumModel {
-            print("Uploading to Album - Title: \(albumModel.title), Id: \(albumModel.id)")
-        }
-        
         
         let imageRep = UIImageJPEGRepresentation(newPhoto, kCompression.Worst.rawValue)
         
@@ -154,10 +145,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         let imageBase64 = imageRep?.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
         
         
-        
-        
-        
-        albums.uploadMedia(imageBase64!, type: MediaType.Photo.rawValue, timelimit: 5, to: selectedAlbumModel) { (successful, errorMessage) in
+        albums.uploadMedia(imageBase64!, type: MediaType.Photo.rawValue, timelimit: DefaultTimeLimit, to: selectedAlbumModel) { (successful, errorMessage) in
             
             if !successful {
                 
@@ -166,7 +154,6 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
                           duration: 4.0,
                           action: nil)
             }
-                            
             
             for album in self.selectedAlbumModel {
                 NSNotificationCenter.defaultCenter().postNotificationName(kAlbumMediaUploadNotification,
@@ -502,9 +489,9 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
                 print("not Uploading")
                 node.userSelected(!node.isUserSelected)
                 if node.isUserSelected {
-                    addNewAlbum(node.album)
+                    addAlbumToSelectedList(node.album)
                 } else {
-                    removeAlbum(node.album)
+                    removeAlbumFromSelectedList(node.album)
                 }
             }
             
@@ -527,7 +514,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         }
     }
     
-    func addNewAlbum(album: AlbumModel) {
+    func addAlbumToSelectedList(album: AlbumModel) {
         
         let index = indexOfSelectedAlbum(album)
         
@@ -536,7 +523,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         }
     }
     
-    func removeAlbum(album: AlbumModel) {
+    func removeAlbumFromSelectedList(album: AlbumModel) {
         
         if let index = indexOfSelectedAlbum(album) {
             selectedAlbumModel.removeAtIndex(index)

@@ -13,8 +13,7 @@ class MyAlbums {
     
     // Shared instance of this class
     static let sharedInstance = MyAlbums()
-    private var isInitialized: Bool
-    
+    var isInitialized: Bool
     
     
     private var albums: [AlbumModel]
@@ -22,6 +21,8 @@ class MyAlbums {
     //    var publicAlbums: [AlbumModel]
     
     
+    // Changed when we create a new Album and
+    var shouldUpdateTable = false
     
     // Sort by title, last input date
     
@@ -81,22 +82,21 @@ class MyAlbums {
     }
     
     
-    func moveNewAlbumsToOld() {
-        
-        albums.appendContentsOf(newAlbums)
-        newAlbums.removeAll()
-    }
+//    func moveNewSelectedAlbumsToOld() {
+//        
+//        albums.appendContentsOf(newAlbums)
+//        newAlbums.removeAll()
+//    }
     
     
     func indexOfAlbum(album:AlbumModel, inList list: [AlbumModel]) -> Int? {
         
-        let index = list.indexOf { (albumModel) -> Bool in
+        return list.indexOf { (albumModel) -> Bool in
             if album === albumModel {
                 return true
             }
             return false
         }
-        return index
     }
     
     
@@ -131,6 +131,7 @@ class MyAlbums {
     
     func load(completionClosure: (success: Bool) ->()) {
         
+        print("AWSLambdaMyAlbums being called")
         if isInitialized {
             completionClosure(success: true)
             return
@@ -171,11 +172,25 @@ class MyAlbums {
     
     
     
-    func uploadMedia(base64Encoded: String, type: String, timelimit: Int, to albums: [AlbumModel], completionClosure: (success: Bool, errorMessage: String?) ->()) {
+    func uploadMedia(base64Encoded: String, type: String, timelimit: Int, to selectedAlbums: [AlbumModel], completionClosure: (success: Bool, errorMessage: String?) ->()) {
         
-        print("uploadMedia")
+        print("uploadMedia to \(selectedAlbums.count) albums")
+       
+        for selectedAlbum in selectedAlbums {
+            
+            if let _ = indexOfAlbum(selectedAlbum, inList: newAlbums) {
+                
+                shouldUpdateTable = true
+                albums.append(selectedAlbum)
+            }
+        }
         
-
+        newAlbums.removeAll()
+        
+        
+        albums.sortInPlace { (album1, album2) -> Bool in
+            return album1.title < album2.title
+        }
         
         var jsonObj = [String: AnyObject]()
         
@@ -187,19 +202,19 @@ class MyAlbums {
         jsonObj[kTimelimit] = timelimit
         jsonObj[kAlbumIds]  = albumsIds(albums)
         
-        for album in albums {
+        for album in selectedAlbums {
             album.isUploading = true
             
-            album.lastMediaObject = base64Encoded
-            album.lastType       = type
-            album.lastTimelimit  = timelimit
+            album.lastUploadedMediaObject = base64Encoded
+            album.lastUploadedType        = type
+            album.lastUploadedTimelimit   = timelimit
         }
         
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUploadMedia,
          withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
             
             
-            for album in albums {
+            for album in selectedAlbums {
                 album.isUploading = false
             }
             

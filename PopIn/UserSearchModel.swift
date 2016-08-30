@@ -210,28 +210,28 @@ class UserSearchModel: UserModel {
               
                     
                     
-                    
-                    // Get the default Realm
-                    let realm = try! Realm()
-                    // You only need to do this once (per thread)
-                    
-                    let friend = RealmFriend()
-                    friend.userName = self.userName
-                    friend.guid = self.guid
-                    if let url = self.downloadFileURL {
-                        friend.picture =  NSData(contentsOfURL: url)
-                    }
-                    
+//                    
+//                    // Get the default Realm
+//                    let realm = try! Realm()
+//                    // You only need to do this once (per thread)
+//                    
+//                    let friend = RealmFriend()
+//                    friend.userName = self.userName
+//                    friend.guid = self.guid
+//                    if let url = self.downloadFileURL {
+//                        friend.picture =  NSData(contentsOfURL: url)
+//                    }
+//                    
                     
 //                    let realmFriend = realm.create(<#T##type: T.Type##T.Type#>, value: <#T##AnyObject#>, update: <#T##Bool#>)
                     
-                    
-                    let realmFriend = realm.create(RealmFriend.self, value: friend)//, update: true)
-                    
-                    // Add to the Realm inside a transaction
-                    try! realm.write {
-                        realm.add(realmFriend)
-                    }
+//                    
+//                    let realmFriend = realm.create(RealmFriend.self, value: friend)//, update: true)
+//                    
+//                    // Add to the Realm inside a transaction
+//                    try! realm.write {
+//                        realm.add(realmFriend)
+//                    }
                     
                     
                     

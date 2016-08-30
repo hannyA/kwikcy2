@@ -20,7 +20,7 @@ class AlbumResponse {
         var date       :String
         var newestTime :String?
         var newestUrl  :String?
-        var mediaCount  :Int?
+        var mediaCount :Int
     }
     
     
@@ -46,8 +46,9 @@ class AlbumResponse {
                     let date       = album[kCreateDate] as! String
                     let newestTime = album[kNewestMediaTime] as? String
                     let newestUrl  = album[kNewestMediaUrl] as? String
-                    let mediaCount  = album[kCount] as? Int
+                    let mediaCount = album[kCount] as? Int ?? 0
 
+                    print("this count: mediaCount: \(mediaCount),  album[kCount]: \( album[kCount])")
                     
                     let album = Album(albumId: albumId,
                                        title: title,

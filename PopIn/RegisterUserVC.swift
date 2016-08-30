@@ -17,12 +17,18 @@ import FBSDKCoreKit
 import Toucan
 
 
+
+
 enum kCompression: CGFloat {
     case Best   = 1.0
     case High   = 0.75
     case Medium = 0.5
     case Low    = 0.25
     case Worst  = 0.0
+}
+
+protocol RegisterUserVCDelegate {
+    func didRegister()
 }
 
 class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCameraDelegate, RSKImageCropViewControllerDelegate, RSKImageCropViewControllerDataSource {
@@ -49,6 +55,8 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
     let kValidityKey = "isValid"
     let createUserNode: CreateUserNode
     
+    
+    var delegate: RegisterUserVCDelegate?
     
     var profileImage: UIImage?
     var croppedProfileImage: UIImage?
@@ -160,8 +168,9 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
                                 // Let user pick Profile and save info then
                             }
                             
+                            self.delegate?.didRegister()
                             // also get username and profilephoto
-                            self.navigationController?.popToRootViewControllerAnimated(false)
+//                            self.navigationController?.popToRootViewControllerAnimated(false)
                             // self.navigationController?.popViewControllerAnimated(false)
 
                         } else {

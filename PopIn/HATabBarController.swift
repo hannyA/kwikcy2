@@ -123,13 +123,16 @@ class HATabBarController: UITabBarController, UITabBarControllerDelegate {
         print("HATabar presentSignInViewController")
 
 
-        if !AWSIdentityManager.defaultIdentityManager().loggedIn {
+        if !AWSIdentityManager.defaultIdentityManager().loggedIn || Me.guid() == nil {
             print("HATabar !AWSIdentityManager")
 
-            let vc = SignInVC()
-            presentViewController(vc, animated: false, completion: nil)
-            
-//            navigationController?.pushViewController(vc, animated: false)
+            let signInVC = SignInVC()
+            let notificationVCNavCtrl = UINavigationController(rootViewController: signInVC)
+            notificationVCNavCtrl.setNavigationBarHidden(true, animated: false)
+            presentViewController(notificationVCNavCtrl, animated: false, completion: nil)
+        } else {
+            print("HATabar defaultIdentityManager loggedIn: \(AWSIdentityManager.defaultIdentityManager().loggedIn) Me.guid: \(Me.guid())")
+
         }
     }
     

@@ -12,6 +12,11 @@ import SwiftIconFont
 import AWSMobileHubHelper
 import SwiftyDrop
 
+
+protocol HAEditProfileVCDelegate {
+    func updateProfile()
+}
+
 class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFieldDelegate {
     
     
@@ -40,6 +45,9 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
      gender : wc
      dob: cake
      */
+    
+    
+    var delegate: HAEditProfileVCDelegate?
     
     let tableNode: ASTableNode
     
@@ -329,6 +337,7 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
             
             if let result = result {
                 dispatch_async(dispatch_get_main_queue(), {
+                    
                     self.enableView()
                     print("CloudLogicViewController: Result: \(result)")
                     
@@ -459,6 +468,7 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
     
     func dimissMessageVC() {
         print("dimissMessageVC")
+        delegate?.updateProfile()
         dismissViewControllerAnimated(true, completion: nil)
     }
 }

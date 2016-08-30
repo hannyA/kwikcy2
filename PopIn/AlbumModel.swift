@@ -41,8 +41,7 @@ class AlbumModel {
     var urlString: String?
     var URL: NSURL? // urlString ? [NSURL URLWithString:urlString] : nil;
     
-//    var mediaCount: Int = 0   // Number we have in memory
-    var totalMediaCount: Int? = 0   // Total number in album
+    var totalMediaCount: Int = 0   // Total number in album
     
     var mediaContent = [MediaModel]()  //later urls? or NSData
     
@@ -50,17 +49,18 @@ class AlbumModel {
     var hasNewContent: Bool
     
     var currentItemIndex = 0
-    var newMediaIndex: Int?
+    var newMediaIndex   : Int?
     
 //    var isBeingCreated = false
 
-    var isUploading = false
+    var isUploading          = false
+    var isDownloading        = false
     var lastUploadSuccessful = true
 
     
-    var lastMediaObject: String? // Maybe this should be a local URL
-    var lastType: String?
-    var lastTimelimit: Int?
+    var lastUploadedMediaObject: String? // Maybe this should be a local URL
+    var lastUploadedType: String?
+    var lastUploadedTimelimit: Int?
     
     
     typealias Guid = String
@@ -78,7 +78,9 @@ class AlbumModel {
     
     func hasEnoughContentToPresent() -> Bool {
         
-        if mediaContent.count == totalMediaCount || mediaContent.count  > 5  {
+        print("mediaContent.count: \(mediaContent.count), totalMediaCount: \(totalMediaCount)")
+        
+        if ( mediaContent.count > 0 && mediaContent.count == totalMediaCount ) || mediaContent.count  > 5  {
             return true
         }
         return false
@@ -155,6 +157,8 @@ class AlbumModel {
         totalMediaCount = album.mediaCount
         
         
+        print("22222: \(totalMediaCount)")
+
         dictionaryRepresentation = [String: AnyObject]()
         dictionaryRepresentation[kTitle]          = album.title
         dictionaryRepresentation[kAlbumId]        = album.albumId
@@ -185,9 +189,9 @@ class AlbumModel {
         jsonObj[kGuid]      = Me.guid()
         jsonObj[kAcctId]    = Me.acctId()
         
-        jsonObj[kMedia]     = lastMediaObject
-        jsonObj[kType]      = lastType
-        jsonObj[kTimelimit] = lastTimelimit
+        jsonObj[kMedia]     = lastUploadedMediaObject
+        jsonObj[kType]      = lastUploadedType
+        jsonObj[kTimelimit] = lastUploadedTimelimit
         jsonObj[kAlbumIds]  = [id!]
         
         isUploading = true
@@ -377,65 +381,100 @@ class AlbumModel {
 
     
     
-    func downloadMediaContent(onCompletion closure: (successful :Bool, errorMessage: String?) ->() ){
+    //TODO: This doesn't work - Error Message: Partial data. The first 100KB is displayed.
+
+    
+    
+    func downloadMediaContent(onCompletion closure: (didGetNewContent :Bool, errorMessage: String?) ->() ){
         
-//        AWSLambdaOpenAlbum
+        print("downloadMediaContent")
+        //        AWSLambdaOpenAlbum
+        
+        if isDownloading {
+            return
+        }
+        
+        isDownloading = true
         
         var jsonObj = [String: AnyObject]()
         
-        jsonObj[kGuid]    = Me.guid()
-        jsonObj[kAcctId]  = Me.acctId()
-        jsonObj[kAlbumId] = id
+        jsonObj[kGuid]      = Me.guid()
+        jsonObj[kAcctId]    = Me.acctId()
+        jsonObj[kAlbumId]  = id
+        jsonObj[kMediaURL]  = mediaContent.last?.mediaKey
+        jsonObj[kTimestamp] = mediaContent.last?.date
         
         
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaOpenAlbum,
          withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
             
-            self.isUploading = false
+            self.isDownloading = false
             
+            print("result: \(result)")
+
             if let result = result {
                 dispatch_async(dispatch_get_main_queue(), {
                     
+                    var didGetNewContent = false
                     if let objectAsDictionary = result as? [String: AnyObject] {
                         
-
-                        let albumExists = objectAsDictionary["AlbumExists"] as! Bool
-                        let album = objectAsDictionary["Album"] as? [[String: AnyObject]]
+                        
+                        let albumStillExists = objectAsDictionary["AlbumExists"] as! Bool
                         let errorMessage = objectAsDictionary[kErrorMessage] as? String
+                        
+                        if albumStillExists {
+                            print("albumStillExists")
 
-                        if albumExists {
                             
-                            for media in album! {
-                               
-                                let newMediaContent = MediaModel(newMedia: media[kMedia] as! String,
-                                    type: media[kType] as! String,
-                                    timeLimit: media[kTimelimit] as? Int,
-                                    timestamp: media[kTimestamp] as! String,
-                                    isNew: false)
-                            
-                                self.mediaContent.append(newMediaContent)
-                            
+                            if let album = objectAsDictionary["Album"] as? [[String: AnyObject]] {
+                                
+                                print("mediaModel == nil")
+
+                                for media in album {
+                                    
+                                    let newMediaContent = MediaModel(mediaData: media[kMedia] as! String,
+                                                                     type     : media[kType] as! String,
+                                                                     mediaUrl : media[kMediaURL] as! String,
+                                                                     timeLimit: media[kTimelimit] as? Int,
+                                                                     timestamp: media[kTimestamp] as! String,
+                                                                     isNew    : false)
+                                    
+                                    
+                                    // We shouldn't really have to do this, but to be safe?
+                                    if self.mediaContent.indexOf({ (mediaModel) -> Bool in
+                                        
+                                        if mediaModel.mediaKey == newMediaContent.mediaKey {
+                                            return true
+                                        }
+                                        return false
+                                    }) == nil {
+                                        
+                                        print("mediaModel == nil")
+
+                                        didGetNewContent = true
+                                        self.mediaContent.append(newMediaContent)
+                                    }
+                                }
                             }
-                            closure(successful: true, errorMessage: nil)
+                            closure(didGetNewContent: didGetNewContent, errorMessage: nil)
+
+                            
                         } else {
-                            closure(successful: false, errorMessage: errorMessage)
+                            closure(didGetNewContent: didGetNewContent, errorMessage: errorMessage)
                         }
                     } else {
-                        closure(successful: false, errorMessage: nil)
+                        closure(didGetNewContent: didGetNewContent, errorMessage: nil)
                     }
                 })
             }
             
             if let _ = AWSConstants.errorMessage(error) {
                 dispatch_async(dispatch_get_main_queue(), {
-                    closure(successful: false, errorMessage: AWSErrorBackend)
+                    closure(didGetNewContent: false, errorMessage: AWSErrorBackend)
                 })
             }
         }
     }
-    
-    //            closure(successful: true)
-
     
     
 
