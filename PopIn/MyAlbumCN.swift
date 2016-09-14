@@ -9,11 +9,13 @@
 
 import AsyncDisplayKit
 import SwiftIconFont
+import NVActivityIndicatorView
+
 
 protocol MyAlbumCNDelegate {
-    func showOptionsForAlbum(album: AlbumModel)
-    func uploadAlbum(album: AlbumModel)
-    func retryUploadingMediaToAlbum(album: AlbumModel)
+    func showOptionsForAlbum(album: UserAlbumModel)
+    func uploadAlbum(album: UserAlbumModel)
+    func retryUploadingMediaToAlbum(album: UserAlbumModel)
 }
 
 class MyAlbumCN: HAAlbumCN {
@@ -33,7 +35,7 @@ class MyAlbumCN: HAAlbumCN {
     let FONT_SIZE:           CGFloat = 14
     
     
-    let album: AlbumModel
+    let album: UserAlbumModel
     var delegate:MyAlbumCNDelegate?
     
     let albumImageView: ASButtonNode
@@ -46,12 +48,12 @@ class MyAlbumCN: HAAlbumCN {
     let moreOptionButton: ASButtonNode
     let _divider: ASDisplayNode
 
-    let activityIndicatorView: UIActivityIndicatorView
+    let activityIndicatorView: NVActivityIndicatorView
     let albumWidth:CGFloat = 66.0
 
     
     
-    init(withAlbumObject albumModel: AlbumModel, isSelectable selectionEnabled: Bool, hasTopDivider: Bool) {
+    init(withAlbumObject albumModel: UserAlbumModel, isSelectable selectionEnabled: Bool, hasTopDivider: Bool) {
         
         print("MyAlbumCN didLoad init ")
  
@@ -115,9 +117,18 @@ class MyAlbumCN: HAAlbumCN {
         _divider.backgroundColor = UIColor.lightGrayColor()
         
 
-        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-        activityIndicatorView.color = UIColor.blackColor()
+//        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+//        activityIndicatorView.color = UIColor.blackColor()
 
+        
+        activityIndicatorView = NVActivityIndicatorView(frame: CGRectMake(0, 0, albumWidth, albumWidth),
+                                                type: .Snapper2,
+                                                color: UIColor.flatPlumColor(),
+                                                padding: 10.0)
+        activityIndicatorView.hidesWhenStopped = true
+    
+        
+        
        
         super.init()
         
@@ -180,6 +191,7 @@ class MyAlbumCN: HAAlbumCN {
                                                          name: kAlbumMediaUploadNotification,
                                                          object: album)
         
+
         hideSpinningWheel()
         hideRetryButton()
 
@@ -329,14 +341,14 @@ class MyAlbumCN: HAAlbumCN {
 
     func showSpinningWheel() {
         userInteractionEnabled = false
-        activityIndicatorView.startAnimating()
+        activityIndicatorView.startAnimation()
         changeCellNodeAlpha(0.3)
     }
     
     func hideSpinningWheel() {
         print(" uploadAlbum hideSpinningWheel")
         userInteractionEnabled = true
-        activityIndicatorView.stopAnimating()
+        activityIndicatorView.stopAnimation()
         changeCellNodeAlpha(1.0)
     }
     

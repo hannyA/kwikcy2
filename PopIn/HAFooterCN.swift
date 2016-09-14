@@ -13,15 +13,47 @@ import AsyncDisplayKit
 class HAFooterCN: ASCellNode {
     
     let textNode: ASTextNode
-    
-    var hasTopDivider   : Bool = false
-    var hasBottomDivider: Bool = false
-    
     let topDivider: ASDisplayNode
     let bottomDivider: ASDisplayNode
     
     
-    init(withTitle title: String, hasTopDivider _topDivider: Bool, hasBottomDivider _bottomDivider: Bool)  {
+    var hasTopDivider   : Bool = false
+    var hasBottomDivider: Bool = false
+    
+    
+    
+    convenience init(withLeftTitle leftTitle: String, verificationString: NSAttributedString, rightTitle: String, hasTopDivider _topDivider: Bool, hasBottomDivider _bottomDivider: Bool)  {
+        
+        let beginText = NSAttributedString(string: leftTitle,
+                                           fontSize: kTextSizeXS,
+                                           color: UIColor.lightGrayColor(),
+                                           firstWordColor: nil)
+        let endText = NSAttributedString(string: rightTitle,
+                                         fontSize: kTextSizeXS,
+                                         color: UIColor.lightGrayColor(),
+                                         firstWordColor: nil)
+        
+        let verificationText = NSMutableAttributedString(attributedString: beginText)
+        verificationText.appendAttributedString(verificationString)
+        verificationText.appendAttributedString(endText)
+        
+        
+        self.init(withAttributedTitle: verificationText, hasTopDivider: _topDivider, hasBottomDivider: _bottomDivider)
+    }
+    
+    
+    
+    convenience init(withTitle title: String, hasTopDivider _topDivider: Bool, hasBottomDivider _bottomDivider: Bool)  {
+        
+        let attributedTitle = HAGlobal.titlesAttributedString(title,
+                                                              color: UIColor.lightGrayColor(),
+                                                              textSize: kTextSizeXS)
+        
+        self.init(withAttributedTitle: attributedTitle, hasTopDivider: _topDivider, hasBottomDivider: _bottomDivider)
+    }
+    
+    
+    init(withAttributedTitle attributedTitle: NSAttributedString, hasTopDivider _topDivider: Bool, hasBottomDivider _bottomDivider: Bool)  {
         
         hasTopDivider    = _topDivider
         hasBottomDivider = _bottomDivider
@@ -29,13 +61,9 @@ class HAFooterCN: ASCellNode {
         
         
         textNode = ASTextNode()
+        textNode.attributedString = attributedTitle
         textNode.layerBacked = true
-        
-        
-        textNode.attributedString = HAGlobal.titlesAttributedString(title,
-                                                                    color: UIColor.lightGrayColor(),
-                                                                    textSize: kTextSizeXS)
-        
+
         // Hairline cell separator
         topDivider = ASDisplayNode()
         topDivider.layerBacked = true
@@ -77,34 +105,7 @@ class HAFooterCN: ASCellNode {
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
-        let spacer = ASLayoutSpec()
-        spacer.flexGrow = true
-        
-        
-        var contents = [ASLayoutable]()
-        
-        contents.append(textNode)
-        
-        let topInset        :CGFloat = 7
-        let leftInset       :CGFloat = 15
-        let rightInset      :CGFloat = 10.0
-        let bottomInset     :CGFloat = 7
-        
-        let nodeStack = ASStackLayoutSpec(direction: .Horizontal,
-                                          spacing: 0,
-                                          justifyContent: .Start,
-                                          alignItems: .Center,
-                                          children: contents)
-        
-        
-        let insets = UIEdgeInsetsMake(topInset, leftInset, bottomInset, rightInset)
-        
-        let textWrapper = ASInsetLayoutSpec(insets: insets, child: nodeStack)
-        
-        return textWrapper
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(7, 15, 7, 10),
+                                            child: textNode)
     }
-    
-    
-    
-    
 }

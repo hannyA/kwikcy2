@@ -8,41 +8,40 @@
 
 
 import AsyncDisplayKit
+import AWSMobileHubHelper
 
 class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     
-    let newFriendTitle  = "New Friend Requests"
-    let acceptedFriends = "Accepted Friend Requests"
-    let newContent      = "New Media Content"
+    let kPushNotificationType  = "PushNotificationType";
+    let kPushNotificationValue = "PushNotificationValue";
+
+    enum PushNotificationType: String {
+        case NewFriends      = "newFriends"
+        case NewMedia        = "newMedia"
+        case AcceptedFriends = "acceptedFriends"
+    }
+    
+
+    let newFriendText       = "New Friend Requests"
+    let acceptedFriendsText = "Accepted Friend Requests"
+    let newContentText      = "New Media Content"
    
     
-    struct NotifUpdate {
-        var newFriends: Bool
-        var acceptedFriends: Bool
-        var newMedia: Bool
+    struct PushNotificationSettings {
+        var newFriends      : Bool
+        var acceptedFriends : Bool
+        var newMedia        : Bool
     }
     
     let tableNode: ASTableNode
     var data = [[String]]()
     
     // Get this data from users AWS cloud settings
-    var notifUpdates:NotifUpdate
+    var notifUpdates:PushNotificationSettings?
     
     
     init() {
-        
-        let defaults = NSUserDefaults.standardUserDefaults()
-        
-        let newFriends              = defaults.boolForKey(newFriendTitle)
-        let acceptedFriendsRequests = defaults.boolForKey(acceptedFriends)
-        let newMediaContent         = defaults.boolForKey(newContent)
-        
-        
-        notifUpdates = NotifUpdate(newFriends: newFriends,
-                                   acceptedFriends: acceptedFriendsRequests,
-                                   newMedia: newMediaContent)
-        
         
         
         tableNode = ASTableNode(style: .Plain)
@@ -66,7 +65,6 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
         tableNode.view.separatorStyle = .None
         tableNode.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         
-        
     }
     
     override func viewDidLoad() {
@@ -76,6 +74,20 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
         tableNode.view.backgroundColor = UIColor(white: 0.97, alpha: 1.0)
         
         setup()
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+      
+        let guid = Me.sharedInstance.guid()!
+
+        
+        let newFriends              = defaults.boolForKey("\(guid)\(PushNotificationType.NewFriends.rawValue)")
+        let acceptedFriendsRequests = defaults.boolForKey("\(guid)\(PushNotificationType.AcceptedFriends.rawValue)")
+        
+        let newMediaContent = defaults.boolForKey("\(guid)\(PushNotificationType.NewMedia.rawValue)")
+        
+        notifUpdates = PushNotificationSettings(newFriends: newFriends,
+                                                acceptedFriends: acceptedFriendsRequests,
+                                                newMedia: newMediaContent)
     }
     
     
@@ -92,20 +104,15 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
         
         var rows = [String]()
         rows.append("FRIENDS")
-        rows.append(newFriendTitle)
-        rows.append(acceptedFriends)
+        rows.append(newFriendText)
+        rows.append(acceptedFriendsText)
         data.append(rows)
         
         rows = [String]()
         rows.append("CONTENT")
-        rows.append(newContent)
+        rows.append(newContentText)
         rows.append("janeappleseed posted a new album")
         data.append(rows)
-        
-        // Footer
-//        rows = [String]()
-//        rows.append("")
-//        data.append(rows)
     }
     
     
@@ -137,7 +144,7 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
 
         } else {
             
-            if indexPath.section == 1 && indexPath.row == 2 {  // example
+            if indexPath.section == 1 && indexPath.row == 2 {  // footer?
                 
                 let cellNode = HAFooterCN(withTitle: title,
                                           hasTopDivider: true,
@@ -165,27 +172,15 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
             
             if indexPath.section == 0 {
                 if indexPath.row == 1 {
+                    image = notifUpdates!.newFriends ? selectedImage : unselectedImage
                     
-                    if notifUpdates.newFriends == true {
-                        image = selectedImage
-                    } else {
-                        image = unselectedImage
-                    }
                 } else { // if indexPath.row == 2 {
-                    if notifUpdates.acceptedFriends == true {
-                        image = selectedImage
-                    } else {
-                        image = unselectedImage
-                    }
+                    image = notifUpdates!.acceptedFriends ? selectedImage : unselectedImage
                 }
             } else { // if indexPath.section == 1 && indexPath.row == 1  {
-                    
-                if notifUpdates.newMedia == true {
-                    image = selectedImage
-                } else {
-                    image = unselectedImage
-                }
+                image = notifUpdates!.newMedia ? selectedImage : unselectedImage
             }
+            
             cellNode = HARadioCN(withTitle: title,
                                    rightImage: image,
                                    hasTopDivider: indexPath.row == 1 ? false :true,
@@ -196,6 +191,55 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
             return cellNode
         }
     }
+    
+    
+    func pushNotificationSettings(onCompletion closure: (activeStatus: UserActiveStatus?, errorMessage: String?) ->() ){
+    }
+
+    
+    func updatePushNotification(type: String, turnOn isOn: Bool, onCompletion closure: (activeStatus: UserActiveStatus?, didUpdate :Bool, isOn: Bool?, errorMessage: String?) ->() ){
+
+        
+        var jsonObj = [String: AnyObject]()
+        
+        jsonObj[kAcctId]  = Me.sharedInstance.acctId()
+        jsonObj[kPushNotificationType]  = type
+        jsonObj[kPushNotificationValue] = isOn
+        
+        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaUpdatePushNotificationSettings,
+         withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
+            
+            if let result = result {
+                dispatch_async(dispatch_get_main_queue(), {
+                    print("refreshFeedWithCompletionBlock - Result: \(result)")
+                    
+                    if let response = PushNotificationUpdateResponse(response: result) {
+                        
+                        closure(activeStatus: response.userActiveStatus,
+                                didUpdate   : response.success,
+                                isOn        : response.updatedValue,
+                                errorMessage: response.errorMessage)
+                    } else {
+                        
+                        closure(activeStatus: nil,
+                                didUpdate   : false,
+                                isOn        : nil,
+                                errorMessage: AWSErrorBackend)
+                    }
+                })
+            }
+            if let _ = AWSConstants.errorMessage(error) {
+                dispatch_async(dispatch_get_main_queue(), {
+                   
+                    closure(activeStatus: nil,
+                            didUpdate   : false,
+                            isOn        : nil,
+                            errorMessage: AWSErrorBackend)
+                })
+            }
+        }
+    }
+    
     
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -223,70 +267,66 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
                 
             
                 if cellNode.userInteractionEnabled {
-                    print("userInteractionEnabled")
-
-                    cellNode.makingNetworkCall()
                     
+                    print("userInteractionEnabled")
+                    cellNode.makingNetworkCall()
                     print("Dispatch netowrk call")
                     
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelayFast * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                        
-                        // if savedSettings {
-                        //     save in defaults
-                        // }
-                        
-                        self.notifUpdates.newFriends = !self.notifUpdates.newFriends
-
-                        NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates.newFriends,
-                                                                      forKey: self.newFriendTitle)
+                    
+                    updatePushNotification(PushNotificationType.NewFriends.rawValue, turnOn: !notifUpdates!.newFriends ,  onCompletion: { (userActiveStatus, didUpdate, isOn, errorMessage) in
                         
                         cellNode.returnedNetworkCall()
-                        
-                        UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
 
-            
-                            if self.notifUpdates.newFriends {
+                        if didUpdate {
+                            
+                            self.notifUpdates!.newFriends = isOn!
+                            
+                            NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates!.newFriends,
+                                forKey: PushNotificationType.NewFriends.rawValue)
+                        }
+                       
+                        UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
+                            
+                            if self.notifUpdates!.newFriends {
                                 cellNode.resetRightImage(selectedImage, color: UIColor.flatGreenColor())
                             } else {
                                 cellNode.resetRightImage(unselectedImage, color: UIColor.grayColor())
                             }
-                            
                         }, completion: nil)
-                    }
+                    })
                 }
-                
             case 2:
                 
                 let cellNode = tableNode.view.nodeForRowAtIndexPath(indexPath) as! HARadioCN
-                
                 
                 if cellNode.userInteractionEnabled {
                     
                     cellNode.makingNetworkCall()
                     
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelayFast * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                    updatePushNotification(PushNotificationType.AcceptedFriends.rawValue,
+                        turnOn: !notifUpdates!.acceptedFriends ,
+                        onCompletion: { (userActiveStatus, didUpdate, isOn, errorMessage) in
                         
-                        // if savedSettings {
-                        //     save in defaults
-                        // }
-                    
-                        self.notifUpdates.acceptedFriends = !self.notifUpdates.acceptedFriends
-                        
-                        NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates.acceptedFriends,
-                                                                      forKey: self.acceptedFriends)
                         cellNode.returnedNetworkCall()
+                        
+                        if didUpdate {
+                            
+                            self.notifUpdates!.acceptedFriends = isOn!
+                            
+                            NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates!.acceptedFriends,
+                                forKey: PushNotificationType.AcceptedFriends.rawValue)
+                        }
                         
                         UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
                             
-                            
-                            if self.notifUpdates.acceptedFriends {
+                            if self.notifUpdates!.acceptedFriends {
                                 cellNode.resetRightImage(selectedImage, color: UIColor.flatGreenColor())
                             } else {
                                 cellNode.resetRightImage(unselectedImage, color: UIColor.grayColor())
                             }
                             
                         }, completion: nil)
-                    }
+                    })
                 }
             default:
                 break
@@ -302,30 +342,30 @@ class HAPushNotificationsVC: ASViewController, ASTableDelegate, ASTableDataSourc
                     
                     cellNode.makingNetworkCall()
                     
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelayFast * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                        
-                        // if savedSettings {
-                        //     save in defaults
-                        // }
-                        
-                        self.notifUpdates.newMedia = !self.notifUpdates.newMedia
-                        
-                        NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates.newMedia,
-                                                                      forKey: self.newContent)
+                    updatePushNotification(PushNotificationType.NewMedia.rawValue,
+                       turnOn: !notifUpdates!.newMedia ,
+                       onCompletion: { (userActiveStatus, didUpdate, isOn, errorMessage) in
                         
                         cellNode.returnedNetworkCall()
                         
+                        if didUpdate {
+                            
+                            self.notifUpdates!.newMedia = isOn!
+                            
+                            NSUserDefaults.standardUserDefaults().setBool(self.notifUpdates!.newMedia,
+                                forKey: PushNotificationType.NewMedia.rawValue)
+                        }
+                        
                         UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
                             
-                            
-                            if self.notifUpdates.newMedia {
+                            if self.notifUpdates!.newMedia {
                                 cellNode.resetRightImage(selectedImage, color: UIColor.flatGreenColor())
                             } else {
                                 cellNode.resetRightImage(unselectedImage, color: UIColor.grayColor())
                             }
                             
                         }, completion: nil)
-                    }
+                    })
                 }
             default:
                 break

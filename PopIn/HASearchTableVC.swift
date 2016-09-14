@@ -266,19 +266,19 @@ class HASearchTableVC: ASViewController, ASTableDelegate, ASTableDataSource, UIS
         
         let jsonInput = ["searchText": searchText]
         
-        var parameters: [String: AnyObject]
-        
-        do {
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(jsonInput, options: .PrettyPrinted)
-            let anyObj = try NSJSONSerialization.JSONObjectWithData(jsonData, options: []) as! [String: AnyObject]
-            parameters = anyObj
-            
-        } catch let error as NSError {
-            print("json error: \(error.localizedDescription)")
-            return
-        }
-        
-        searchResults.query(parameters) { (serverError, errorMessage) in
+//        var parameters: [String: AnyObject]
+//        
+//        do {
+//            let jsonData = try NSJSONSerialization.dataWithJSONObject(jsonInput, options: .PrettyPrinted)
+//            let anyObj = try NSJSONSerialization.JSONObjectWithData(jsonData, options: []) as! [String: AnyObject]
+//            parameters = anyObj
+//            
+//        } catch let error as NSError {
+//            print("json error: \(error.localizedDescription)")
+//            return
+//        }
+//        
+        searchResults.query(jsonInput) { (serverError, errorMessage) in
             
             self.fetchingSearchResults = false
             self.serverError = serverError

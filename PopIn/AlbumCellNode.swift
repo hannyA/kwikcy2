@@ -27,7 +27,7 @@ class AlbumCellNode: ASCellNode {
     let FONT_SIZE:           CGFloat = 14
     
     
-    let album: AlbumModel
+    let album: FriendAlbumModel
     let userAvatarImageView: ASImageNode// ASNetworkImageNode
     let albumImageView: ASImageNode //SNetworkImageNode
     let userNameLabel: ASTextNode
@@ -39,14 +39,14 @@ class AlbumCellNode: ASCellNode {
     let _divider: ASDisplayNode
 
     
-    init(withAlbumObject albumModel: AlbumModel) {
+    init(withAlbumObject albumModel: FriendAlbumModel) {
         
         album = albumModel
         
         userAvatarImageView = ASImageNode() //ASNetworkImageNode()
 //        userAvatarImageView.URL = album.ownerProfile!.userPicURL
-        userAvatarImageView.layerBacked = true
-        userAvatarImageView.image = UIImage(named: (album.ownerProfile?.userTestPic)!)
+//        userAvatarImageView.layerBacked = true
+//        userAvatarImageView.image = UIImage(named: (album.ownerProfile?.userTestPic)!)
         
         userAvatarImageView.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
         userAvatarImageView.preferredFrameSize = CGSizeMake(34, 34)
@@ -79,7 +79,6 @@ class AlbumCellNode: ASCellNode {
         
         albumImageView = ASImageNode()
         albumImageView.layerBacked = true
-        albumImageView.image = UIImage(named: album.coverPhoto!) // album.coverPhotoURL
         albumImageView.backgroundColor = ASDisplayNodeDefaultPlaceholderColor()
         albumImageView.preferredFrameSize = CGSizeMake(66, 66)
         albumImageView.cornerRadius = 33.0
@@ -103,54 +102,27 @@ class AlbumCellNode: ASCellNode {
         
         
         
-        // User pic
-//        _avatarNode = [[ASNetworkImageNode alloc] init];
-//        _avatarNode.backgroundColor = ASDisplayNodeDefaultPlaceholderColor();
-//        _avatarNode.preferredFrameSize = CGSizeMake(44, 44);
-//        _avatarNode.cornerRadius = 22.0;
-//        _avatarNode.URL = [NSURL URLWithString:_post.photo];
-//        _avatarNode.imageModificationBlock = ^UIImage *(UIImage *image) {
-//            
-//            UIImage *modifiedImage;
-//            CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
-//            
-//            UIGraphicsBeginImageContextWithOptions(image.size, false, [[UIScreen mainScreen] scale]);
-//            
-//            [[UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:44.0] addClip];
-//            [image drawInRect:rect];
-//            modifiedImage = UIGraphicsGetImageFromCurrentImageContext();
-//            
-//            UIGraphicsEndImageContext();
-//            
-//            return modifiedImage;
-//            
-//        };
-//        [self addSubnode:_avatarNode];
         
         
         
         
-        
-        
+        // Username
         userNameLabel = ASTextNode()
-        
-        userNameLabel.attributedText = HAGlobal.titlesAttributedString((albumModel.ownerProfile?.userName)!,
+        userNameLabel.attributedText = HAGlobal.titlesAttributedString((albumModel.ownerProfile.userName),
                                                                        color: UIColor.blackColor(),
                                                                        textSize: kTextSizeRegular)
-        
         
         userNameLabel.flexShrink = true
         userNameLabel.layerBacked = true
 
-
+        // Users realname
         userRealNameLabel = ASTextNode()
-        
-        userRealNameLabel.attributedText = HAGlobal.titlesAttributedString((albumModel.ownerProfile?.fullName)!,
+        userRealNameLabel.attributedText = HAGlobal.titlesAttributedString((albumModel.ownerProfile.fullName ?? ""),
                                                                        color: UIColor.blackColor(),
                                                                        textSize: kTextSizeRegular)
         userRealNameLabel.layerBacked = true
         
-        
+        // 
         photoTimeIntervalSincePostLabel = HAGlobalNode.createLayerBackedTextNodeWithString(album.timeAttributedStringWithFontSize(AlbumTimeFontSize))
         
         
@@ -170,8 +142,26 @@ class AlbumCellNode: ASCellNode {
         
         super.init()
         
+        albumModel.ownerProfile.avatarImageClosure = { image in
+            print("UserSearchTableCN avatarImageClosure 2")
+            
+            self.userAvatarImageView.image = image
+        }
+
         
-       
+        
+        if userAvatarImageView.image == nil {
+            print("UserSearchTableCN userAvatarImageView.image 3")
+            
+            if let downloadedFile = albumModel.ownerProfile.downloadFileURL {
+                print("UserSearchTableCN userAvatarImageView.image 4")
+                
+                if let data = NSData(contentsOfURL: downloadedFile) {
+                    userAvatarImageView.image = UIImage(data: data)
+                }
+            }
+        }
+        
         
         addSubnode(userAvatarImageView)
         addSubnode(albumImageView)

@@ -28,7 +28,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     var newPhoto: UIImage
     var isLoadingAlbums = true
     
-    var selectedAlbumModel = [AlbumModel]()
+    var selectedAlbumModel = [UserAlbumModel]()
     
     init(withPhoto photo: UIImage) {
 
@@ -172,12 +172,12 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
     
     //    // We don't implement this here, WHy is it here. Cause I'm too lazy to make this optional
-    func retryUploadingMediaToAlbum(album: AlbumModel) {}
+    func retryUploadingMediaToAlbum(album: UserAlbumModel) {}
 
     
     //TODO: Chnage this, don't create an album on server that may not be used or unselected
     //
-    func createNewAlbum(newAlbum: AlbumModel) {
+    func createNewAlbum(newAlbum: UserAlbumModel) {
         
         albumTableNodeDisplay.tableNode.view.beginUpdates()
 
@@ -203,7 +203,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
     
     
-    func uploadAlbum(newAlbum: AlbumModel) {
+    func uploadAlbum(newAlbum: UserAlbumModel) {
         print("will uploadAlbum")
      
         newAlbum.createAlbum { (successful) in
@@ -422,7 +422,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         print("")
         
         print("AWWWW didSelectRowAtIndexPath: \(indexPath.section), row: \(indexPath.row)")
-        let album: AlbumModel
+        let album: UserAlbumModel
         
 //        let listType: [MyAlbumCN]
 
@@ -504,7 +504,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         printSelectedAlbums()
     }
     
-    func indexOfSelectedAlbum(album: AlbumModel) -> Int? {
+    func indexOfSelectedAlbum(album: UserAlbumModel) -> Int? {
         
         return selectedAlbumModel.indexOf { (albumModel) -> Bool in
             if album === albumModel {
@@ -514,7 +514,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         }
     }
     
-    func addAlbumToSelectedList(album: AlbumModel) {
+    func addAlbumToSelectedList(album: UserAlbumModel) {
         
         let index = indexOfSelectedAlbum(album)
         
@@ -523,7 +523,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
         }
     }
     
-    func removeAlbumFromSelectedList(album: AlbumModel) {
+    func removeAlbumFromSelectedList(album: UserAlbumModel) {
         
         if let index = indexOfSelectedAlbum(album) {
             selectedAlbumModel.removeAtIndex(index)
@@ -535,7 +535,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
     
     
-    func saveNewTitle(title: String, forAlbum album: AlbumModel) {
+    func saveNewTitle(title: String, forAlbum album: UserAlbumModel) {
         
 //        let indexPath = self.albums.findAlbum(album)  //  self.albums.oldAlbumAtIndex(indexPath.row)
 
@@ -580,7 +580,7 @@ MyAlbumCNDelegate, AlbumUploadDisplayViewDelegate, NewAlbumVCDelegate {
     
     
     // Allow to Edit users  or title
-    func showOptionsForAlbum(album: AlbumModel) {
+    func showOptionsForAlbum(album: UserAlbumModel) {
         
         
         print("showMoreOptions")

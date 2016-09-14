@@ -112,17 +112,9 @@ class HASettingCN: ASCellNode {
     
     
     
-    override func didLoad() {
-        super.didLoad()
-    }
-    
-    
-    
     override func layout() {
         super.layout()
-        
-        
-        print("111 Layout")
+                
         if isHeader {
            
             // Manually layout the divider.

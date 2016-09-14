@@ -8,7 +8,8 @@
 
 import AWSS3
 import AWSMobileHubHelper
-
+import ChameleonFramework
+import SwiftIconFont
 
 protocol HANotificationModelDelegate {
     
@@ -68,6 +69,7 @@ class HANotificationModel {
         case SentFriendRequest      = "SFR"
         case ReceivedFriendRequest  = "RFR"
         case FriendAcceptedRequest  = "RFRA"
+        case FriendRequestCanceled  = "FRC"
 //        case Follow
 //        case Blocked
 //        case Blocking               = "B"
@@ -79,6 +81,8 @@ class HANotificationModel {
     var id: Int
     var type: NotificationType
     var timeStamp: String
+    
+    var date: NSDate
 
     init?(item: AnyObject) {
         
@@ -120,6 +124,11 @@ class HANotificationModel {
             print("kDate: \(aDate)")
         }
         
+        
+        let inputDate = notificationDictionary[kDate] as! String
+        
+        date = NSDate().fromTimestamp(inputDate)
+
         id = notificationDictionary[kNotificationId] as! Int
     }
     
@@ -133,62 +142,62 @@ class HANotificationModel {
             return .ReceivedFriendRequest
         case NotificationType.FriendAcceptedRequest.rawValue:
             return .FriendAcceptedRequest
+        case NotificationType.FriendRequestCanceled.rawValue:
+            return .FriendRequestCanceled
         default:
             return nil
         }
     }
     
     
-    func timeAgo() -> String {
-        
-        if timeStamp.characters.count == 13 {
-            
-        }
-
-        let notificationTimeStampInterval : NSTimeInterval = Double(timeStamp)!/1000 //(timeStamp as NSString).doubleValue/1000
-        
-        let nowTimeInterval = NSDate().timeIntervalSince1970
-        
-        
-        let secondsAgo = Int(nowTimeInterval - notificationTimeStampInterval)
-        
-        print("secondsAgo: \(secondsAgo)")
-        
-        var time: String
-        if minutes(secondsAgo) == 0 {
-            time = "\(secondsAgo)s"
-        } else if minutes(secondsAgo) < 60 {
-            time = "\(minutes(secondsAgo))m"
-
-        } else if hours(minutes(secondsAgo)) < 24 {
-            time = "\(hours(minutes(secondsAgo)))h"
-        } else  {
-            time = "\(days(hours(minutes(secondsAgo))))d"
-        }
-        
-        return time
-    }
-    
-    
-    
-    func minutes(seconds: Int) -> Int {
-        return seconds / 60
-    }
-    
-    func hours(minutes: Int) -> Int {
-        return minutes / 60
-    }
-    
-    func days(hours: Int) -> Int {
-        return hours / 24
-    }
-    
+//    func timeAgo() -> String {
+//        
+//        if timeStamp.characters.count == 13 {
+//            
+//        }
+//
+//        let notificationTimeStampInterval : NSTimeInterval = Double(timeStamp)!/1000 //(timeStamp as NSString).doubleValue/1000
+//        
+//        let nowTimeInterval = NSDate().timeIntervalSince1970
+//        
+//        
+//        let secondsAgo = Int(nowTimeInterval - notificationTimeStampInterval)
+//        
+//        print("secondsAgo: \(secondsAgo)")
+//        
+//        var time: String
+//        if minutes(secondsAgo) == 0 {
+//            time = "\(secondsAgo)s"
+//        } else if minutes(secondsAgo) < 60 {
+//            time = "\(minutes(secondsAgo))m"
+//
+//        } else if hours(minutes(secondsAgo)) < 24 {
+//            time = "\(hours(minutes(secondsAgo)))h"
+//        } else  {
+//            time = "\(days(hours(minutes(secondsAgo))))d"
+//        }
+//        
+//        return time
+//    }
+//    
+//    
+//    
+//    func minutes(seconds: Int) -> Int {
+//        return seconds / 60
+//    }
+//    
+//    func hours(minutes: Int) -> Int {
+//        return minutes / 60
+//    }
+//    
+//    func days(hours: Int) -> Int {
+//        return hours / 24
+//    }
+//    
     
 //    func imageForNotificationType() -> (image: UIImage, itsColor: UIColor, borderColor: UIColor, borderWidth: CGFloat) {
     
-    func imageForNotificationType() ->
-        (title: NSAttributedString?, image: UIImage?, backgroundImage: UIImage?,  backgroundColor: UIColor, borderColor: UIColor) {
-
+    func imageForNotificationType() -> (title: NSAttributedString?, image: UIImage?, backgroundImage: UIImage?,  backgroundColor: UIColor, borderColor: UIColor) {
         
         switch type {
             
@@ -196,9 +205,9 @@ class HANotificationModel {
             
             if otherUser.friendStatus == .Friends {
                 
-                let imageColor = UIColor.flatWhiteColor()
+                let imageColor      = UIColor.flatWhiteColor()
                 let backgroundColor = UIColor.flatGreenColor()
-                let borderColor = UIColor.clearColor()
+                let borderColor     = UIColor.clearColor()
 
                 let titleImage = NSAttributedString.titleNodeIcon(from: .MaterialIcon,
                                                                   code: "person",
@@ -216,8 +225,8 @@ class HANotificationModel {
                 // Did nothing with friend request
                 
                 
-                let imageColor = UIColor.flatBlackColor()
-                let borderColor = UIColor.flatBlackColor()
+                let imageColor      = UIColor.flatBlackColor()
+                let borderColor     = UIColor.flatBlackColor()
                 let backgroundColor = UIColor.flatWhiteColor()
 
                 let image = UIImage.icon(from: .MaterialIcon,
@@ -248,12 +257,12 @@ class HANotificationModel {
 
             } else {
                 
-                let imageColor = UIColor.flatRedColor()
+                let imageColor      = UIColor.flatRedColor()
                 let backgroundColor = UIColor.flatWhiteColor()
-                let borderColor = UIColor.flatRedColor()
+                let borderColor     = UIColor.flatRedColor()
                 
                 let image = UIImage.icon(from: .MaterialIcon,
-                                         code: "cancel", //  chnages to do.not.disturb.on
+                                         code: "do.not.disturb.on", //  chnages to do.not.disturb.on
                                          imageSize: CGSizeMake(30, 30),
                                          ofSize: 30,
                                          color: imageColor)
@@ -275,6 +284,20 @@ class HANotificationModel {
                                      color: imageColor)
             
             return (nil, image, nil, backgroundColor, borderColor)
+        
+        default:
+            let imageColor = UIColor(red: 0.2, green: 1.0, blue: 0.2, alpha: 1.0)
+            let backgroundColor = UIColor.flatWhiteColor()
+            let borderColor = UIColor.clearColor()
+            
+            let image = UIImage.icon(from: .MaterialIcon,
+                                     code: "favorite",
+                                     imageSize: CGSizeMake(30, 30),
+                                     ofSize: 30,
+                                     color: imageColor)
+            
+            return (nil, image, nil, backgroundColor, borderColor)
+            
         }
     }
     
@@ -316,6 +339,16 @@ class HANotificationModel {
                                                               textSize: kTextSizeXXS)
             fullMessageTime.appendAttributedString(usernameBold)
             fullMessageTime.appendAttributedString(attrMessage)
+        
+        
+        default:
+            
+            let attrMessage = HAGlobal.titlesAttributedString(" accepted your friend request",
+                                                              color: UIColor.blackColor(),
+                                                              textSize: kTextSizeXXS)
+            fullMessageTime.appendAttributedString(usernameBold)
+            fullMessageTime.appendAttributedString(attrMessage)
+            
         }
         
         let attributedDot = NSAttributedString(string: " · ",
@@ -325,7 +358,8 @@ class HANotificationModel {
         
         
         fullMessageTime.appendAttributedString(attributedDot)
-        let attributedTimestamp = HAGlobal.titlesAttributedString(timeAgo(),
+        
+        let attributedTimestamp = HAGlobal.titlesAttributedString( NSDate().timeAgoFromDate(date),
                                                                   color: UIColor.lightGrayColor(),
                                                                   textSize: kTextSizeXXS)
         

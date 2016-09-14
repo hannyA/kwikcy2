@@ -49,28 +49,28 @@ class User: Object {
         return usersList
     }
 
-class Album: Object {
-    
-// Specify properties to ignore (Realm won't persist these)
-    
-//  override static func ignoredProperties() -> [String] {
-//    return []
-//  }
-    
-    dynamic var id = ""
-    dynamic var title = ""
-    dynamic var guid = ""
-    dynamic var username = ""
-    dynamic var owner: User? // Properties can be optional
-
-    let acl = List<User>()
-
-}
-
-
-class Albums: Object {
-    let albums = List<Album>()
-}
+//class Album: Object {
+//    
+//// Specify properties to ignore (Realm won't persist these)
+//    
+////  override static func ignoredProperties() -> [String] {
+////    return []
+////  }
+//    
+//    dynamic var id = ""
+//    dynamic var title = ""
+//    dynamic var guid = ""
+//    dynamic var username = ""
+//    dynamic var owner: User? // Properties can be optional
+//
+//    let acl = List<User>()
+//
+//}
+//
+//
+//class Albums: Object {
+//    let albums = List<Album>()
+//}
 
 
 

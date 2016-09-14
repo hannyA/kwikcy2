@@ -10,6 +10,7 @@
 
 import AsyncDisplayKit
 import AWSMobileHubHelper
+import FBSDKLoginKit
 
 protocol HASettingsRealVCDelegate {
     func hideSelf()
@@ -145,6 +146,8 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     
     
+
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return data.count
     }
@@ -176,14 +179,30 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
        
         } else {
             
+            if title == "Log Out" {
+                
+            }
+            
             let arrow = UIImage.icon(from: .MaterialIcon,
                          code: "arrow.forward",
                          imageSize: CGSizeMake(30, 30),
                          ofSize: 30,
                          color: UIColor.blackColor())
             
+            
+            
+            let eject = UIImage.icon(from: .MaterialIcon,
+                                     code: "eject",
+                                     imageSize: CGSizeMake(30, 30),
+                                     ofSize: 30,
+                                     color: UIColor.blackColor())
+            
+
+            
+            let leftImage = title == "Log Out" ? eject : arrow
+            
             textNode = HASettingCN(withTitle: title,
-                                   rightImage: arrow,
+                                   rightImage: leftImage,
                                    isHeader: false,
                                    hasTopDivider: indexPath.row == 1 ? false :  true,
                                    hasBottomDivider: false)
@@ -270,27 +289,26 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
         let alertController = UIAlertController(title: "Report a Problem", message: nil, preferredStyle: .Alert )
         let abuseAction = UIAlertAction(title: "Abuse", style: .Default) { (defaultAction) in
             
-            let headline = "Spam or abuse"
-            let message = "Tell us what's wrong"
             
-            let contactVC = HAContactUsVC(headline: headline, message: message)
-            let navCon = UINavigationController(rootViewController: contactVC)
+            let contactVC = HAContactUsVC(headline: HAContactUsVC.HeadlineType.Abuse)
+            let navCon    = UINavigationController(rootViewController: contactVC)
             
-            self.presentViewController(navCon, animated: true, completion: nil)
+            self.presentViewController(navCon,
+                                       animated: true,
+                                       completion: nil)
      
-        
         }
         alertController.addAction(abuseAction)
         
         let bugContent = UIAlertAction(title: "Something isn't Working", style: .Default) { (defaultAction) in
 
-            let headline = "Something isn't working"
-            let message = "Briefly explain what happened."
             
-            let contactVC = HAContactUsVC(headline: headline, message: message)
-            let navCon = UINavigationController(rootViewController: contactVC)
+            let contactVC = HAContactUsVC(headline: HAContactUsVC.HeadlineType.Bug)
+            let navCon    = UINavigationController(rootViewController: contactVC)
             
-            self.presentViewController(navCon, animated: true, completion: nil)
+            self.presentViewController(navCon,
+                                       animated: true,
+                                       completion: nil)
 
         }
         alertController.addAction(bugContent)
@@ -298,13 +316,14 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
         let feedbackContent = UIAlertAction(title: "General Feedback", style: .Default) { (defaultAction) in
             print("General Feedback")
             
-            let headline = "General Feedback"
-            let message = "Tell us what you love, what you hate, or what you want changed"
             
-            let contactVC = HAContactUsVC(headline: headline, message: message)
-            let navCon = UINavigationController(rootViewController: contactVC)
+            let contactVC = HAContactUsVC(headline: HAContactUsVC.HeadlineType.General)
+            let navCon    = UINavigationController(rootViewController: contactVC)
            
-            self.presentViewController(navCon, animated: true, completion: nil)
+    
+            self.parentViewController!.presentViewController(navCon,
+                                                             animated: true,
+                                                             completion: nil)
         }
         alertController.addAction(feedbackContent)
         
@@ -323,48 +342,9 @@ class HASettingsRealVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     
     func handleLogout() {
-        if AWSIdentityManager.defaultIdentityManager().loggedIn {
-            
-            AWSIdentityManager.defaultIdentityManager().logoutWithCompletionHandler({(result: AnyObject?, error: NSError?) -> Void in
-                
-                print("Result: \(result)")
-                print("Error: \(error)")
-                
-                if let errorMessage = AWSConstants.errorMessage(error) {
-                    
-                    print("errorMessage: \(errorMessage)")
-                }
-                
-                Me.wipeData()
-                
-                self.presentSignInViewController()
-            })
-        } else {
-            assert(false)
-            //Show could not log out...
-        }
+       
+        (self.tabBarController as? HATabBarController)?.logoutFacebookUser()
     }
-
-    
-    
-    
-    func presentSignInViewController() {
-        print("presentSignInViewController")
-        
-        if !AWSIdentityManager.defaultIdentityManager().loggedIn {
-            print("!AWSIdentityManager.defaultIdentityManager().loggedIn ")
-
-            
-            
-            presentViewController(SignInVC(), animated: false, completion: {
-                
-                self.tabBarController?.selectedIndex = 0
-                
-                self.navigationController?.popViewControllerAnimated(false)
-            })
-        }
-    }
-    
 }
 
 

@@ -18,6 +18,12 @@ struct Constants {
 }
 
 
+
+let kSecretAdminCode   = "secretAdminCode"
+let theSecretAdminCode = "MUHAHAHAHAHA-In-yo-face"
+
+
+
 let AppName = "Chap Chat"
 let iTunesLink = "https://itunes.apple.com/us/app/tinder/id547702041?mt=8"
 // "itms-apps://itunes.apple.com/app/id547702041"
@@ -31,6 +37,21 @@ let kSDVersion:CGFloat = 540.0
 
 
 
+let kActive = "active"
+
+
+
+//var ActiveValues = {
+//    DoesNotExist: 0,   // Company suspended
+//    Active   : 1,
+//    Deleted  : 2, // User deleted
+//    Disabled : 3,   // User disbaled??
+//    DisabledConfirmed: 4,   // Company suspended
+//
+//};
+
+
+
 //NSUserDefaults Keys and Types
 
 let uDataUse = "DataUse" // Bool
@@ -40,6 +61,9 @@ let uDataUse = "DataUse" // Bool
 
 let kAlbumCreateNotification      = "AlbumCreateNotification"
 let kAlbumMediaUploadNotification = "AlbumMediaUploadNotification"
+
+
+let kFacebookToken = "facebookToken"
 
 
 let kDictionaryRepresentation = "dictionaryRepresentation"
@@ -102,8 +126,15 @@ let kTimestamp      = "timestamp"
 let kDate           = "date"
 
 let kCreateDate      = "createDate"
-let kNewestMediaTime = "newestTime"
-let kNewestMediaUrl  = "newestUrl"
+
+let kLastViewedMediaUrl         = "lastUrl"
+let kLastViewedMediaTimestamp   = "lastTimestamp"
+
+let kNewestMediaUrl             = "newestUrl"
+let kNewestMediaTimestamp       = "newestTimestamp"
+
+
+
 
 let kCount = "count"
 
@@ -116,6 +147,7 @@ let kFriendStatus   = "FriendStatus"
 let kProfile        = "Profile"
 let kProfileExists  = "ProfileExt"
 
+let kUpdatedValue   = "updatedValue"
 
 let kSuccess        = "Success"
 let kErrorMessage   = "ErrorMessage"

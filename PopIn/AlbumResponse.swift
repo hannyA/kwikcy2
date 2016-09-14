@@ -12,19 +12,11 @@ import Foundation
 let kAlbums = "Albums"
 
 
+
+
 class AlbumResponse {
     
-    struct Album {
-        var albumId    :String
-        var title      :String
-        var date       :String
-        var newestTime :String?
-        var newestUrl  :String?
-        var mediaCount :Int
-    }
-    
-    
-    var albums: [Album]
+    var albums: [UserAlbum]
     
     init?(response result: AnyObject?) {
         
@@ -34,7 +26,7 @@ class AlbumResponse {
                 return nil
             }
             
-            albums = [Album]()
+            albums = [UserAlbum]()
             
             
             if let albums = response[kAlbums] as? [ AnyObject ] {
@@ -43,19 +35,25 @@ class AlbumResponse {
                     
                     let albumId    = album[kAlbumId] as! String
                     let title      = album[kTitle] as! String
-                    let date       = album[kCreateDate] as! String
-                    let newestTime = album[kNewestMediaTime] as? String
-                    let newestUrl  = album[kNewestMediaUrl] as? String
-                    let mediaCount = album[kCount] as? Int ?? 0
+                    
+                    let createTimestamp  = album[kCreateDate] as! String
+                    let createDate  = NSDate().fromTimestamp(createTimestamp)
+
+                    let newestTimestamp = album[kNewestMediaTimestamp] as! String
+                    let newestDate  = NSDate().fromTimestamp(newestTimestamp)
+
+                    
+                    let newestUrl  = album[kNewestMediaUrl] as! String
+                    let mediaCount = album[kCount] as! Int
 
                     print("this count: mediaCount: \(mediaCount),  album[kCount]: \( album[kCount])")
                     
-                    let album = Album(albumId: albumId,
-                                       title: title,
-                                       date: date,
-                                       newestTime: newestTime,
-                                       newestUrl: newestUrl,
-                                       mediaCount: mediaCount)
+                    let album = UserAlbum(albumId: albumId,
+                                           title: title,
+                                           date: createDate,
+                                           newestTime: newestDate,
+                                           newestUrl: newestUrl,
+                                           mediaCount: mediaCount)
                     
                     self.albums.append(album)
                 }

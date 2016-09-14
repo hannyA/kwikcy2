@@ -34,7 +34,7 @@ INCameraContainerViewViewControllerDelegate {
    
     init(withCameraPosition position: AVCaptureDevicePosition) {
         
-        controlsCellNode = INCameraControlsCellNode()
+        controlsCellNode     = INCameraControlsCellNode()
         nextControlsCellNode = INCameraNextCellNode()
         
         fullCameraDisplay = INFullCameraDisplayNode(controlsCellNode: controlsCellNode, nextControlsCellNode: nextControlsCellNode)

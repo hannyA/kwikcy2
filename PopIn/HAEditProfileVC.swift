@@ -57,9 +57,12 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
     var originalUserData: UserData
     var changedUserData : UserData
     
-    init() {
+    let userModel: MeUserModel
+    
+    init(userModel: MeUserModel) {
         tableNode = ASTableNode(style: .Plain)
         
+        self.userModel = userModel
         
         originalUserData = UserData()
         changedUserData  = UserData()
@@ -100,13 +103,14 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Done, target: self, action: #selector(dimissMessageVC))
     
         
+
         
-        let fullname    = Me.fullname() ?? ""
-        let username    = Me.username() ?? ""
-        let website     = Me.website() ?? ""
-        let bio         = Me.bio() ?? ""
-        let email  = Me.email() ?? ""
-        let mobile = Me.mobile() ?? ""
+        let fullname    = userModel.fullName ///Me.sharedInstance.fullname()  ?? ""
+        let username    = userModel.userName // Me.sharedInstance.username()  ?? ""
+        let website     = userModel.domain ?? "" //Me.sharedInstance.website()   ?? ""
+        let bio         = userModel.about ?? "" /// Me.sharedInstance.bio()       ?? ""
+        let email       = userModel.email ?? "" //Me.sharedInstance.email()     ?? ""
+        let mobile      = userModel.mobile ?? "" // Me.sharedInstance.mobile()    ?? ""
 //        let gender = Me.gender() ?? ""
         
         textFieldValues.append(TextFieldValues(placeHolder: "", text: "", imageCode: nil, imageType: nil))
@@ -254,8 +258,9 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
             textField.keyboardType = .URL
             textField.autocapitalizationType = .None
         }
-        if indexPath.row == 3 {
+        if indexPath.row == 4 {
             textField.autocapitalizationType = .Sentences
+            textField.autocorrectionType = .Yes
         }
         if indexPath.row == 6 {
             textField.keyboardType = .EmailAddress
@@ -298,7 +303,16 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
         
         disableView()
         
-        let acctId = Me.acctId()!
+        guard let acctId = userModel.acctId ?? Me.sharedInstance.acctId() else {
+            
+            Drop.down("Could not send request at this time. Try again shortly.",
+                      state: .Warning ,
+                      duration: 3.0,
+                      action: nil)
+            return
+        }
+        
+        
         
         var jsonInput:[String: AnyObject] = [kAcctId: acctId]
         
@@ -353,34 +367,8 @@ class HAEditProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, UIT
                             
                             print("response.newData: \(response.newData)")
                             
-                            if let username = response.newData.username {
-                                print("response.newData: \(response.newData.username)")
-                                Me.saveUsername(username)
-                            }
-                            if let fullname = response.newData.fullname {
-                                print("response.newData: \(response.newData.fullname)")
-                                Me.saveFullname(fullname)
-                            }
-                            if let website = response.newData.website {
-                                print("response.newData: \(response.newData.website)")
-                                Me.saveWebsite(website)
-                            }
-                            if let bio = response.newData.bio {
-                                print("response.newData: \(response.newData.bio)")
-                                Me.saveBio(bio)
-                            }
-                            if let email = response.newData.email {
-                                print("response.newData: \(response.newData.email)")
-                                Me.saveEmail(email)
-                            }
-                            if let mobile = response.newData.mobile {
-                                print("response.newData: \(response.newData.mobile)")
-                                Me.saveMobile(mobile)
-                            }
-
-//                            if let gender = response.newData.gender {
-//                                Me.saveGender(gender)
-//                            }
+                            self.userModel.saveResponse(response.newData)
+                            
                             self.dimissMessageVC()
                         }
                     } else {

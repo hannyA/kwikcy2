@@ -7,23 +7,26 @@
 //
 
 import AsyncDisplayKit
-
 import SwiftIconFont
+import NVActivityIndicatorView
 
 protocol HAFollowingTableNodeDelegate {
     func tabbarHeight() -> CGFloat
     func openCamera()
 }
+
 class HAFollowingTableNode: ASDisplayNode {
     
     
-    var delegate: HAFollowingTableNodeDelegate?
+    var delegate : HAFollowingTableNodeDelegate?
     let tableNode: ASTableNode
 
-    let screenView: ASDisplayNode
-    let cameraButton: ASButtonNode
-    var activityIndicatorView: UIActivityIndicatorView
-
+    let screenView           : ASDisplayNode
+    let cameraButton         : ASButtonNode
+    let activityIndicatorView = NVActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50),
+                                                        type: .Snapper2,
+                                                        color: UIColor.flatPlumColor(),
+                                                        padding: 10.0)
     override init() {
 
         screenView = ASDisplayNode()
@@ -36,11 +39,11 @@ class HAFollowingTableNode: ASDisplayNode {
   
         cameraButton = ASButtonNode()
         cameraButton.hidden = true
-        
-        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
 
-        super.init()
+        activityIndicatorView.hidesWhenStopped = true
+
         
+        super.init()
         
         addSubnode(screenView)
         addSubnode(tableNode)
@@ -49,7 +52,15 @@ class HAFollowingTableNode: ASDisplayNode {
     }
     
     override func didLoad() {
-        super.didLoad()        
+        super.didLoad()
+        
+        
+        let backgroundImageView         = UIImageView(frame: tableNode.bounds)
+        backgroundImageView.image       = UIImage(named: "mad-men-1.png")
+        backgroundImageView.contentMode = .ScaleAspectFill
+        // tableNode.view.contentMode    = .ScaleAspectFill
+        tableNode.view.backgroundView = backgroundImageView
+
         cameraButton.addTarget(self, action: #selector(openCamera), forControlEvents: .TouchUpInside)
        
         view.addSubview(activityIndicatorView)
@@ -69,6 +80,7 @@ class HAFollowingTableNode: ASDisplayNode {
         activityIndicatorView.frame = refreshRect
         activityIndicatorView.color = UIColor.blackColor()
         
+//        activityIndicatorView.center = view.center
     }
     
     
@@ -79,14 +91,13 @@ class HAFollowingTableNode: ASDisplayNode {
     
     
     func showSpinningWheel() {
-        activityIndicatorView.startAnimating()
+        activityIndicatorView.startAnimation()
         screenView.hidden = false
     }
     
     func hideSpinningWheel() {
-        activityIndicatorView.stopAnimating()
+        activityIndicatorView.stopAnimation()
         screenView.hidden = true
-        
     }
     
 
@@ -131,7 +142,7 @@ class HAFollowingTableNode: ASDisplayNode {
         
 
         let tabarHeight = getTabbarHeight()
-        let buttonWidth = constrainedSize.max.width/7
+        let buttonWidth = constrainedSize.max.width/6
         
         let cameraButtonYPosition = constrainedSize.max.height - tabarHeight - buttonWidth  - 10
         
@@ -145,7 +156,7 @@ class HAFollowingTableNode: ASDisplayNode {
         cameraButton.titleNodeIcon(from: .Ionicon,
                                    code: "android-camera",
                                    ofSize: buttonWidth - 10,
-                                   color: UIColor(red: 1.0, green: 0.3, blue: 0.3, alpha: 1.0),
+                                   color: UIColor.flatRedColorDark(),
                                    forState: .Highlighted)
         
         

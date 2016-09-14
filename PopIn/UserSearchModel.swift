@@ -128,27 +128,14 @@ class UserSearchModel: UserModel {
     func lambdaNotificationAction(action: String, notificationId: Int, completionClosure: (successful :Bool, errorMessage: String?, friendStatus: PublicFriendStatus) ->()) {
         
         
-        let jsonInput:[String: AnyObject] = [kAcctId         : Me.acctId()!,
+        let jsonInput:[String: AnyObject] = [kAcctId         : Me.sharedInstance.acctId()!,
                                              kAction         : action,
                                              kNotificationId : notificationId,
                                              kFriendGuid     : guid]
         
-        var parameters: [String: AnyObject]
+        print("lambdaNotificationAction calling lambdaChangeFriendStatus \(jsonInput)")
         
-        do {
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(jsonInput, options: .PrettyPrinted)
-            let anyObj = try NSJSONSerialization.JSONObjectWithData(jsonData, options: []) as! [String: AnyObject]
-            parameters = anyObj
-            
-        } catch let error as NSError {
-            print("json error: \(error.localizedDescription)")
-            completionClosure(successful: false, errorMessage: nil, friendStatus: .Unknown)
-            return
-        }
-        
-        print("lambdaNotificationAction calling lambdaChangeFriendStatus \(parameters)")
-        
-        lambdaChangeFriendStatus(parameters, completionClosure: completionClosure)
+        lambdaChangeFriendStatus(jsonInput, completionClosure: completionClosure)
     }
     
     
@@ -163,24 +150,11 @@ class UserSearchModel: UserModel {
             
             print("action: \(action)")
             
-            let jsonInput:[String: String] = [kAcctId     : Me.acctId()!,
+            let jsonInput:[String: String] = [kAcctId     : Me.sharedInstance.acctId()!,
                                               kAction     : action,
                                               kFriendGuid : guid]
-
-            var parameters: [String: AnyObject]
             
-            do {
-                let jsonData = try NSJSONSerialization.dataWithJSONObject(jsonInput, options: .PrettyPrinted)
-                let anyObj = try NSJSONSerialization.JSONObjectWithData(jsonData, options: []) as! [String: AnyObject]
-                parameters = anyObj
-                
-            } catch let error as NSError {
-                print("json error: \(error.localizedDescription)")
-                completionClosure(success: false, errorMessage: nil,  newStatus: self.friendStatus)
-                return
-            }
-            
-            lambdaChangeFriendStatus(parameters, completionClosure: completionClosure)
+            lambdaChangeFriendStatus(jsonInput, completionClosure: completionClosure)
         }
     }
     
@@ -202,15 +176,10 @@ class UserSearchModel: UserModel {
                 dispatch_async(dispatch_get_main_queue(), {
                     print("UserSearch CloudLogicViewController: Result: \(result)")
                     
-                    
-                    
                     let (didUpdateFriendStatus, errorMessage) = self.updateFriendStatus(result)
                     
                     
-              
-                    
-                    
-//                    
+
 //                    // Get the default Realm
 //                    let realm = try! Realm()
 //                    // You only need to do this once (per thread)
@@ -275,21 +244,10 @@ class UserSearchModel: UserModel {
 //            download(downloadRequest)
 //        }
         
-        let jsonInput = ["friendGuid": guid,
-                         "acctId"    : Me.acctId()!]
+        let parameters = [kFriendGuid: guid,
+                          kAcctId    : Me.sharedInstance.acctId()!]
         
-        var parameters: [String: AnyObject]
-        
-        do {
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(jsonInput, options: .PrettyPrinted)
-            let anyObj = try NSJSONSerialization.JSONObjectWithData(jsonData, options: []) as! [String: AnyObject]
-            parameters = anyObj
-            
-        } catch let error as NSError {
-            print("json error: \(error.localizedDescription)")
-            completionClosure(success: false)
-            return
-        }
+
         
         //        HAUserProfileBasic
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaGetUsersProfile,
@@ -368,36 +326,55 @@ class UserSearchModel: UserModel {
     
     
     
-    let kDidUpdate = "DidUpdate"
     
     func updateFriendStatus(object: AnyObject?) -> (Bool, String?) {
         
         print("updateFriendStatus")
         
-        if let objectAsDictionary: [String: AnyObject] = object as? [String: AnyObject] {
+        if let objectAsDictionary = object as? [String: AnyObject] {
             
-            if objectAsDictionary.isEmpty {
-                return (false, nil)
-            } else {
-                if let didUpdate = objectAsDictionary[kDidUpdate] as? Bool {
+            
+            let didUpdate    = objectAsDictionary[kDidUpdate]    as? Bool
+            let errorMessage = objectAsDictionary[kErrorMessage] as? String
+            
+            
+            if let didUpdate = didUpdate {
+                
+                if didUpdate {
                     
-                    if didUpdate {
-                        
-                        let status = objectAsDictionary[kFriendStatus] as! String
-                        
-                        updateFriendStatus(friendshipStatus(status))
-                        return (didUpdate, nil)
+                    let friendStatus = objectAsDictionary[kFriendStatus] as! String
                     
-                    } else {
-                        let errorMessage = objectAsDictionary["Message"] as! String
-                        return (false, errorMessage)
-                    }
+                    updateFriendStatus(friendshipStatus(friendStatus))
+                    return (didUpdate, nil)
+                    
+                } else if let errorMessage = errorMessage {
+                    
+                    return (false, errorMessage)
+
                 } else {
                     return (false, nil)
                 }
+            } else {
+                return (false, AWSErrorBackend)
             }
+//            if let didUpdate = objectAsDictionary[kDidUpdate] as? Bool {
+//                
+//                if didUpdate {
+//                    
+//                    let status = objectAsDictionary[kFriendStatus] as! String
+//                    
+//                    updateFriendStatus(friendshipStatus(status))
+//                    return (didUpdate, nil)
+//                
+//                } else {
+//                    let errorMessage = objectAsDictionary["Message"] as! String
+//                    return (false, errorMessage)
+//                }
+//            } else {
+//                return (false, nil)
+//            }
         }
-        return (false, nil)
+        return (false, AWSErrorBackend)
     }
 
     

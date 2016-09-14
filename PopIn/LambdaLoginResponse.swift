@@ -16,12 +16,21 @@ let kProfiles       = "Profiles"
 class LambdaLoginResponse {
     
     struct User {
-        var guid:String
-        var acctId:String
+        var guid    :String
+        var acctId  :String
+        var active  :Int
+
         var username:String
+        var fullname:String?
+        var about   :String?
+        var domain  :String?
+        var verified:Bool
+        var gender  :Int?
     }
     
-    let userExists: Bool
+    
+    
+    
     let savedImage: Bool
     var profiles: [User]
     
@@ -32,11 +41,9 @@ class LambdaLoginResponse {
             return nil
         } else if let response  = result as? [String: AnyObject]  {
             
-            if (response[kErrorMessage] as? String) != nil {
-              
+            if let _  = response[kErrorMessage] as? String {
                 return nil
             }
-            
             
             if let savedImage = response[kSavedImage] as? Bool {
                 self.savedImage = savedImage
@@ -44,25 +51,41 @@ class LambdaLoginResponse {
                 savedImage = false
             }
             
-            userExists  = response[kUserExists] as! Bool
             profiles = [User]()
-
-            if userExists {
-                
-                let usersProfiles  = response[kProfiles] as! [ AnyObject]
+            if let usersProfiles = response[kProfiles] as? [ AnyObject ] {
                 
                 for profile in usersProfiles {
                     
+                    let acctId      = profile[kAcctId]   as! String
+                    let guid        = profile[kGuid]     as! String
+                    let active      = profile[kActive]   as! Int
+
                     let username    = profile[kUserName] as! String
-                    let acctId      = profile[kAcctId] as! String
-                    let guid        = profile[kGuid] as! String
+                    let verified    = profile[kVerified] as! Bool
+                    let fullname    = profile[kFullName] as? String
+                    let about       = profile[kAbout]    as? String
+                    let domain      = profile[kDomain]   as? String
+                    let gender      = profile[kGender]   as? Int
+
+                    let user = User(guid: guid,
+                                    acctId: acctId,
+                                    active: active,
+                                    username: username,
+                                    fullname: fullname,
+                                    about: about,
+                                    domain: domain,
+                                    verified: verified,
+                                    gender: gender)
                     
-                    let user = User(guid: guid, acctId: acctId, username: username)
-                    
+
                     profiles.append(user)
                 }
+            } else {
+
+                return nil
             }
         } else {
+
             return nil
         }
     }

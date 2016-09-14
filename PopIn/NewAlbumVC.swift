@@ -11,7 +11,7 @@ import AsyncDisplayKit
 
 protocol NewAlbumVCDelegate {
     func dismissVC()
-    func createNewAlbum(album: AlbumModel )
+    func createNewAlbum(album: UserAlbumModel )
 
 }
 
@@ -120,7 +120,7 @@ class NewAlbumVC: ASViewController, ASTableDelegate, ASTableDataSource, UITextFi
             friendsGuidList.append(selectedUser.guid)
         }
         
-        let newAlbum = AlbumModel(withTitle: albumTitle, usersAccessControlList: friendsGuidList)
+        let newAlbum = UserAlbumModel(withTitle: albumTitle, usersAccessControlList: friendsGuidList)
 
         delegate?.createNewAlbum(newAlbum)
         dismissVC()

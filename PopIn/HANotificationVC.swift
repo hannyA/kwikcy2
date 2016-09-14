@@ -60,9 +60,15 @@ class HANotificationVC: ASViewController, ASTableDelegate, ASTableDataSource, HA
     override func viewDidLoad() {
         super.viewDidLoad()
         hasMessageNodeShowing = true
+//        refreshControl.beginRefreshing()
+//        refreshTable(refreshControl)
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         refreshControl.beginRefreshing()
         refreshTable(refreshControl)
-        
     }
     
  
@@ -74,23 +80,61 @@ class HANotificationVC: ASViewController, ASTableDelegate, ASTableDataSource, HA
             self.tableNode.view.beginUpdates()
             reloadMessageNode()
             self.tableNode.view.endUpdates()
-
         }
         
-        notificationFeed.queryLambdaNotifications(true) { (hasNewMessages, count) in
+        notificationFeed.queryLambdaNotifications(refreshNotifications: true) { (hasNewMessages, delete, insert, reload) in
+            
             
             refreshControl.endRefreshing()
-
+            
             print("returned queryLambdaNotifications")
             
             self.tableNode.view.beginUpdates()
-
+        
+        
+            var firstTimeLoading = false
             if hasNewMessages {
                 if self.hasMessageNodeShowing {
+                    print("yes sir")
+                    firstTimeLoading = true
                     self.deleteMessageNode()
                 }
-                self.insertNewRowsInTableView(count)
-
+                
+                if let deleteRows = delete {
+                    
+                    var rowsToDelete = [NSIndexPath]()
+                    for row in deleteRows {
+                        
+                        rowsToDelete.append( NSIndexPath(forRow: row, inSection: 0) )
+                    }
+                    
+                    self.tableNode.view.deleteRowsAtIndexPaths(rowsToDelete, withRowAnimation: .Left)
+                }
+                
+                if let insertRows = insert {
+                    
+                    var rowsToInsert = [NSIndexPath]()
+                    for row in insertRows {
+                        
+                        print("Inserting row at index: \(row)")
+                        rowsToInsert.append( NSIndexPath(forRow: row, inSection: 0) )
+                    }
+                    
+                    self.tableNode.view.insertRowsAtIndexPaths(rowsToInsert,
+                                                               withRowAnimation: firstTimeLoading ? .Top : .Right )
+                }
+                
+                if let reloadRows = reload {
+                    
+                    var rowsToReload = [NSIndexPath]()
+                    for row in reloadRows {
+                        
+                        rowsToReload.append( NSIndexPath(forRow: row, inSection: 0) )
+                    }
+                    
+                    self.tableNode.view.reloadRowsAtIndexPaths(rowsToReload, withRowAnimation: .None)
+                }
+                
             } else if self.hasMessageNodeShowing {
                 self.reloadMessageNode()
             }
@@ -147,15 +191,8 @@ class HANotificationVC: ASViewController, ASTableDelegate, ASTableDataSource, HA
     
     func tableView(tableView: ASTableView, nodeBlockForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
         
-        func notificationCN() -> ASCellNodeBlock {
-            let notificationObject = notificationFeed.objectAtIndex(indexPath.row)
-            return {() -> ASCellNode in
-                let cell = HANotificationCellNode(withNotificationObject: notificationObject)
-                cell.delegate = self
-                cell.selectionStyle = .None
-                return cell
-            }
-        }
+//        func notificationCN() -> ASCellNodeBlock {
+//                   }
         
         
         if hasMessageNodeShowing {
@@ -176,19 +213,45 @@ class HANotificationVC: ASViewController, ASTableDelegate, ASTableDataSource, HA
             }
         }
         else {
-            return notificationCN()
+            let notificationObject = notificationFeed.objectAtIndex(indexPath.row)
+            let actionButtonInfo = notificationObject.imageForNotificationType()
+
+            print("OBject is \(notificationObject.id)")
+            return {() -> ASCellNode in
+                let cell = HANotificationCellNode(withNotificationObject: notificationObject,
+                                                  buttonInfo: actionButtonInfo)
+                cell.delegate = self
+                cell.selectionStyle = .None
+                return cell
+            }
         }
     }
     
     
     
     
+    func reloadRowForNotification(notification: HANotificationModel) {
+        
+        
+        if let index = notificationFeed.indexOfNotificationModel(notification) {
+        
+            let section = 0
+            
+            tableNode.view.beginUpdates()
+            let indexPath = NSIndexPath(forRow: index,
+                                        inSection: section)
+            tableNode.view.reloadRowsAtIndexPaths([indexPath],
+                                                  withRowAnimation: .None)
+            tableNode.view.endUpdates()
+        }
+    }
+    
+    
     
     func deleteRowForNotification(notification: HANotificationModel) {
         
-        let index = notificationFeed.indexOfNotificationModel(notification)
+        if let index = notificationFeed.indexOfNotificationModel(notification) {
         
-        if let index = index {
             let section = 0
             
             tableNode.view.beginUpdates()

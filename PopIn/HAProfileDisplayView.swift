@@ -16,7 +16,7 @@ class HAProfileDisplayView: ASDisplayNode {
     let profileView: BasicProfileCellNode
     let tableNode: ASTableNode
     
-    init(withUserModel model: UserSearchModel) {
+    init(withUserModel model: MeUserModel) {
         
         profileView = BasicProfileCellNode(withProfileModel: model, loggedInUser: true)
         tableNode = ASTableNode(style: .Plain)

@@ -20,7 +20,6 @@ class SignInDisplayNode: ASDisplayNode {
     let signinButton: LTRButtonNode
 
     let screenView: ASDisplayNode
-//    let activityIndicatorView: UIActivityIndicatorView
     
     let spinningWheel: NVActivityIndicatorView
     
@@ -28,15 +27,10 @@ class SignInDisplayNode: ASDisplayNode {
     
     override init() {
         spinningWheel = NVActivityIndicatorView(frame: CGRectMake(0, 0, 65, 65),
-                                    type: .BallRotateChase,
+                                    type: .Snapper2,
                                     color: UIColor.flatWhiteColor(),
                                     padding: 10.0)
         spinningWheel.hidesWhenStopped = true
-        
-    
-        
-//        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-//        activityIndicatorView.color = UIColor.blackColor()
         
         screenView = ASDisplayNode()
         screenView.backgroundColor = UIColor(white: 0.5, alpha: 0.4)

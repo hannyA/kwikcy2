@@ -29,11 +29,6 @@ public extension UIImage
         return image
     }
     
-    // Class func
-//    public static func icon(from font: Fonts, code: String, imageSize: CGSize, ofSize size: CGFloat, color: UIColor) {
-//        return UIImage.icon(from: font, code: code, imageSize: imageSize, ofSize: size, color: color)
-//    }
-    
 }
 
 public extension NSAttributedString {

@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyUserDefaults
+import AWSMobileHubHelper
 
 protocol PhotoFeedControllerProtocol {
     func resetAllData()
@@ -21,8 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-  
         
+        print("didFinishLaunchingWithOptions")
         let window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window = window
         
@@ -35,15 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         signInVCNavCtrl.navigationBarHidden = true
         window.rootViewController = signInVCNavCtrl
         window.makeKeyAndVisible()
-        
-        
-        
-        
-        if Defaults[.isFirstLaunch] {
-            print("First launch")
-        } else {
-            print("Not First launch")
-        }
         
         
         let versionNumber = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
@@ -77,7 +69,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 //    }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        // print("application application: \(application.description), openURL: \(url.absoluteURL), sourceApplication: \(sourceApplication)")
+        
+         print("application application: \(application.description), openURL: \(url.absoluteURL), sourceApplication: \(sourceApplication)")
+        
         return AWSMobileClient.sharedInstance.withApplication(application, withURL: url, withSourceApplication: sourceApplication, withAnnotation: annotation)
     }
     
@@ -94,23 +88,68 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
+        
+        print("applicationWillEnterForeground")
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
 
+        
+
+        
     }
+    
+    
+    let kCurrentUserVersion = "version"
+    let kCurrentUserBuild   = "build"
+    
     
     
     //MARK: Uncomment below
 
     func applicationDidBecomeActive(application: UIApplication) {
+        print("applicationDidBecomeActive")
+
+        
+        var jsonObj = [String: String]()
+        
+        
+        let versionNumber = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
+        let buildNumber   = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+        
+        print("versionNumber: \(versionNumber), buildNumber: \(buildNumber)")
+
+        jsonObj[kCurrentUserVersion] = versionNumber
+        jsonObj[kCurrentUserBuild]   = buildNumber
+        
+
+        
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(kWebResponseDelayFast * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+            
+            
+//            if true tell tabbarcontroller to present full screen view to block all UI
+//            
+//                and a message to update the app
+//            if false then tell tabbarcontroller to remove screen if it exists
+            
+        }
+
+
+//        AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaDromoAppUptoDate,
+//         withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
+//
+//        }
+        
+        
+        
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         AWSMobileClient.sharedInstance.applicationDidBecomeActive(application)
     }
 //
-//    func applicationWillTerminate(application: UIApplication) {
-//        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-//    }
-//    
+    func applicationWillTerminate(application: UIApplication) {
+        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+//
 //    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
 //        AWSMobileClient.sharedInstance.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
 //    }

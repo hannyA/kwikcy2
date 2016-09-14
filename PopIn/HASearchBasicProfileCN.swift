@@ -162,7 +162,7 @@ class HASearchBasicProfileCN: ASCellNode {
         showSpinningWheel()
         
         
-        let shouldTestOut = true
+        let shouldTestOut = false
         
         if shouldTestOut && self.userProfile.friendStatus == .ReceivedFriendRequest {
             
@@ -179,18 +179,22 @@ class HASearchBasicProfileCN: ASCellNode {
         self.userProfile.changeFriendshipStatus { (success, errorMessage,  newStatus) in
            
             self.hideSpinningWheel()
-            self.enableFriendButton()
             
             if let errorMessage  = errorMessage {
                 self.delegate?.showErrorMessage(errorMessage)
+                self.enableFriendButton()
+
             } else {
+                
                 UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
                     
                     print("will setupFriendButton")
                     
                     self.setupFriendButton()
-                    
-                }, completion: nil)
+
+                    }, completion: { (done) in
+                        self.enableFriendButton()
+                })
             }
         }
     
@@ -496,7 +500,7 @@ class HASearchBasicProfileCN: ASCellNode {
             mainContents.append(shortDescription)
         }
         
-        if let myGuid = Me.guid() {
+        if let myGuid = Me.sharedInstance.guid() {
             if userProfile.guid != myGuid {
                 friendsButton.spacingBefore = 10.0
                 friendsButton.preferredFrameSize = CGSizeMake(maxWidth - 50, 50)
@@ -530,7 +534,7 @@ class HASearchBasicProfileCN: ASCellNode {
         
         var lowerHalfStack:[ASLayoutable] = []
         
-        if let myGuid = Me.guid() {
+        if let myGuid = Me.sharedInstance.guid() {
             if userProfile.guid != myGuid {
                 lowerHalfStack.append(friendsButton)
             }

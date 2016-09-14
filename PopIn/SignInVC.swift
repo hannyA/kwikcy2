@@ -13,6 +13,9 @@ import NVActivityIndicatorView
 
 import AWSCognitoIdentityProvider
 import BigBrother
+import SwiftyDrop
+
+import FBSDKLoginKit
 
 class SignInVC: ASViewController, RegisterUserVCDelegate  {
     
@@ -38,21 +41,31 @@ class SignInVC: ASViewController, RegisterUserVCDelegate  {
         print("Sign In Loading.")
 
         didSignInObserver =  NSNotificationCenter.defaultCenter().addObserverForName( AWSIdentityManagerDidSignInNotification,
-                                                        object: AWSIdentityManager.defaultIdentityManager(),
-                                                        queue: NSOperationQueue.mainQueue(),
-                                                        usingBlock: {(note: NSNotification) -> Void in
-                                                        
+            object: AWSIdentityManager.defaultIdentityManager(),
+            queue: NSOperationQueue.mainQueue(),
+            usingBlock: {(note: NSNotification) -> Void in
+            
             // perform successful login actions here
             
             print("SignInVC didSignInObserver")
         })
         
         
-        AWSFacebookSignInProvider.sharedInstance().setPermissions(["public_profile"]);
+        
 
+        //TODO: Change verified -->  is_verified
+    
+        AWSFacebookSignInProvider.sharedInstance().setPermissions(["user_friends", "email", "user_birthday", "user_photos"])
+        AWSFacebookSignInProvider.sharedInstance().setLoginBehavior(FBSDKLoginBehavior.Browser.rawValue)
+
+        // SystemAccount = Alert Pop up ---> Easiest
+        // Browser - Browswer Modal
+        // Web - Pop up in screen   ---> Coolest
+        // , Native = Browswer Modal
         
-        signInDisplayNode.signinButton.addTarget(self, action: #selector(handleFacebookLogin), forControlEvents: .TouchUpInside)
-        
+        signInDisplayNode.signinButton.addTarget(self,
+                                                 action: #selector(handleFacebookLogin),
+                                                 forControlEvents: .TouchUpInside)
         
         signInDisplayNode.signinButton.userInteractionEnabled = true
         signInDisplayNode.hideSpinningWheel()
@@ -93,11 +106,11 @@ class SignInVC: ASViewController, RegisterUserVCDelegate  {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        print("View did appear")
+        print("SigninVC View did appear")
         var token: dispatch_once_t = 0
         dispatch_once(&token) { () -> Void in
             
-            print("View did appear: dispatch_once")
+            print("SigninVC View did appear: dispatch_once")
 
             UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseIn, animations: {
             
@@ -122,16 +135,20 @@ class SignInVC: ASViewController, RegisterUserVCDelegate  {
             self.view.alpha = 0.0
         }) { (completed) in
             self.dismissViewControllerAnimated(false, completion: nil)
-//            self.navigationController?.popViewControllerAnimated(false)
         }
     }
-    
-    
     
     
     func didRegister() {
         navigationController?.popViewControllerAnimated(false)
         dismissVC()
+    }
+    
+    
+    // MARK: - IBActions
+    func handleFacebookLogin() {
+        
+        handleLoginWithSignInProvider(AWSFacebookSignInProvider.sharedInstance())
     }
     
     // MARK: - Utility Methods
@@ -153,36 +170,70 @@ class SignInVC: ASViewController, RegisterUserVCDelegate  {
                 
                 self.signInDisplayNode.signinButton.userInteractionEnabled = false
                 self.signInDisplayNode.showSpinningWheel()
-            
+                BigBrother.Manager.sharedInstance.incrementActivityCount()
                 // Lambda function does userId exist?
                 
-                BigBrother.Manager.sharedInstance.incrementActivityCount()
-
+                      
                 AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaLogin,
                  withParameters: nil) { (result: AnyObject?, error: NSError?) in
-
+                    
                     print("3) Is Main Thread: \(NSThread.isMainThread()), ASSERT to false")
-
-                    BigBrother.Manager.sharedInstance.decrementActivityCount()
-
+                    
+                    dispatch_async(dispatch_get_main_queue(), {
+                        BigBrother.Manager.sharedInstance.decrementActivityCount()
+                    })
+                    
                     if let result = result {
+                        
                         print("Logged into App: \(AppName)")
                         dispatch_async(dispatch_get_main_queue(), {
-                            print("4) Is Main Thread: \(NSThread.isMainThread()), ASSERT to true")
-
+                            
                             print("CloudLogicViewController: Result: \(result)")
-                           
+                            
                             self.signInDisplayNode.hideSpinningWheel()
-
+                            
                             if let userDetails = LambdaLoginResponse(response: result) {
                                 
-                                if userDetails.userExists {
+                                if userDetails.profiles.count > 0 {
                                     
                                     if userDetails.hasOneProfile() {
+                                        let profile = userDetails.profiles.first!
                                         
-                                        Me.saveGuid((userDetails.profiles.first?.guid)!)
-                                        Me.saveAcctid((userDetails.profiles.first?.acctId)!)
-                                        Me.saveUsername((userDetails.profiles.first?.username)!)
+                                        if profile.active == UserActiveStatus.Active.rawValue  {
+                                            
+                                            Me.sharedInstance.saveGuid(profile.guid)
+                                            Me.sharedInstance.saveAcctid(profile.acctId)
+                                            Me.sharedInstance.saveUsername(profile.username)
+                                            Me.sharedInstance.saveVerification(profile.verified)
+                                            
+                                            if let fullname = profile.fullname {
+                                                Me.sharedInstance.saveFullname(fullname)
+                                            }
+                                            if let about = profile.about {
+                                                Me.sharedInstance.saveBio(about)
+                                            }
+                                            if let domain = profile.domain {
+                                                Me.sharedInstance.saveWebsite(domain)
+                                            }
+                                            if let gender = profile.gender {
+                                                Me.sharedInstance.saveGender(gender)
+                                            }
+                                            self.dismissVC()
+                                            
+                                        } else if profile.active == UserActiveStatus.Disabled.rawValue  {
+                                            
+                                            Drop.down("This account has been disabled.",
+                                                state: .Error ,
+                                                duration: 6.0,
+                                                action: nil)
+                                            
+                                            print("Push register")
+                                            
+                                            let vc = RegisterUserVC()
+                                            vc.delegate = self
+                                            self.navigationController?.pushViewController(vc, animated: false)
+                                        }
+                                        
                                         
                                     } else {
                                         // Show Multi profile user selection.
@@ -191,19 +242,18 @@ class SignInVC: ASViewController, RegisterUserVCDelegate  {
                                     }
                                     
                                     // aslso get username and profilephoto
-                                    self.dismissVC()
-
+                                    
                                 } else {
                                     // User does not exist
                                     print("Push register")
-
+                                    
                                     let vc = RegisterUserVC()
                                     vc.delegate = self
                                     self.navigationController?.pushViewController(vc, animated: false)
                                 }
                             } else {
                                 // User does not exist
-                                self.serverError(AppName)
+                                self.serverError(.AppName, message: nil)
                             }
                         })
                     }
@@ -212,26 +262,74 @@ class SignInVC: ASViewController, RegisterUserVCDelegate  {
                         dispatch_async(dispatch_get_main_queue(), {
                             print("Error occurred in invoking Lambda Function: \(error)")
                             
-                            self.serverError(AppName)
+                            self.serverError(.AppName, message: nil)
                         })
                     }
                 }
-            } else { // error
-                self.serverError("Facebook")
             }
-            print("result = \(result), error = \(error)")
+            
+            else { // error
+                print("Logged into facebook through AWS error")
+           
+                if let error = error {
+                    
+                    // let localizedDescription = error.localizedDescription
+                    
+                    if error.code == 306 {
+                        self.serverError(.FacebookDeniedSettings, message: nil)
+                    } else {
+                        self.serverError(.Other, message: error.localizedDescription)
+
+                    }
+                    
+                } else {
+                
+                    self.serverError(.Facebook, message: nil)
+                
+                }
+            }
         })
     }
     
     
-    func serverError(type: String) {
+    enum SigninErrorType {
+        case FacebookDeniedSettings
+        case Facebook
+        case AppName
+        case Other
+    }
+    
+    
+    func serverError(type: SigninErrorType, message: String?) {
         
         signInDisplayNode.signinButton.userInteractionEnabled = true
         signInDisplayNode.hideSpinningWheel()
         
 
-        
-        if type == "Facebook" {
+        switch type {
+            
+        case .FacebookDeniedSettings:
+            let alertView = UIAlertController(title: NSLocalizedString("Access Denied",
+                comment: "Title bar for error alert."),
+                                              message: "Access has not been granted to the Facebook account. Verify device settings.",
+                                              preferredStyle: .Alert)
+          
+            alertView.addAction(UIAlertAction(title: NSLocalizedString("OK",
+                comment: "Button on alert dialog."),
+                style: .Cancel,
+                handler: nil))
+            
+            alertView.addAction(UIAlertAction(title: NSLocalizedString("Take me there",
+                comment: "Button on alert dialog."),
+                style: .Default,
+                handler: { (alertAction) in
+                    UIApplication.sharedApplication().openURL(NSURL(string:"prefs:root=FACEBOOK")!)
+            }))
+            
+            
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+        case .Facebook:
             let alertView = UIAlertController(title: NSLocalizedString("Error",
                                               comment: "Title bar for error alert."),
                                               message: "Could not Login through Facebook at this time",
@@ -242,7 +340,7 @@ class SignInVC: ASViewController, RegisterUserVCDelegate  {
                                               handler: nil))
             self.presentViewController(alertView, animated: true, completion: nil)
        
-        } else if type == AppName {
+        case .AppName:
             let alertView = UIAlertController(title: NSLocalizedString("Error",
                 comment: "Title bar for error alert."),
                                               message: "Could not login to \(AppName) at this time. Please try again shortly.",
@@ -253,47 +351,20 @@ class SignInVC: ASViewController, RegisterUserVCDelegate  {
                 handler: nil))
             self.presentViewController(alertView, animated: true, completion: nil)
             
-        } else {
-            
+
+        default:
             let alertView = UIAlertController(title: NSLocalizedString("Error",
                 comment: "Title bar for error alert."),
-                                              message: AWSErrorBackend,
+                                              message: message!,
                                               preferredStyle: .Alert)
             alertView.addAction(UIAlertAction(title: NSLocalizedString("OK",
                 comment: "Button on alert dialog."),
                 style: .Default,
                 handler: nil))
             self.presentViewController(alertView, animated: true, completion: nil)
-     
-            
         }
     }
 
-
-//    func showErrorDialog(loginProviderName: String, withError error: NSError) {
-//        print("\(loginProviderName) failed to sign in w/ error: \(error)")
-//        
-//        let alertController = UIAlertController(title: NSLocalizedString("Sign-in Provider Sign-In Error",
-//                                                comment: "Sign-in error for sign-in failure."),
-//                                                message: NSLocalizedString("\(loginProviderName) failed to sign in w/ error: \(error)",
-//                                                comment: "Sign-in message structure for sign-in failure."),
-//                                                preferredStyle: .Alert)
-//        let doneAction = UIAlertAction(title: NSLocalizedString("Cancel",
-//                                       comment: "Label to cancel sign-in failure."),
-//                                       style: .Cancel,
-//                                       handler: nil)
-//        alertController.addAction(doneAction)
-//        presentViewController(alertController, animated: true, completion: nil)
-//    }
-    
-    
-    
-    // MARK: - IBActions
-    func handleFacebookLogin() {
-        
-        handleLoginWithSignInProvider(AWSFacebookSignInProvider.sharedInstance())
-    }
-    
 }
 
 

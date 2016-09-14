@@ -46,7 +46,7 @@ class BasicProfileCellNode: ASCellNode {
     
     
     // Variables
-    let userProfile: UserSearchModel
+    let userProfile: MeUserModel
     let userPic: ASImageNode // change to ASNetworkImageNode
     
     
@@ -90,7 +90,7 @@ class BasicProfileCellNode: ASCellNode {
     }
 
     
-    init(withProfileModel profile: UserSearchModel, loggedInUser loggedIn: Bool) {
+    init(withProfileModel profile: MeUserModel, loggedInUser loggedIn: Bool) {
         
         loggedInUser = loggedIn
         userProfile = profile

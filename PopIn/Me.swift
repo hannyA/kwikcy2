@@ -31,8 +31,6 @@ private extension Bool {
             return "True"
         case false:
             return "False"
-        default:
-            return nil
         }
     }
 }
@@ -41,26 +39,37 @@ private extension Bool {
 
 class Me {
     
-    private static let mAcctId   = "Acctid"
-    private static let mGuid     = "Guid"
-    
-    private static let mUsername = "Username"
-    private static let mFullname = "Fullname"
-    private static let mVerified = "Verified"
-    private static let mWebsite  = "Website"
-    private static let mBio      = "Bio"
-    private static let mEmail    = "Email"
-    private static let mMobile   = "Mobile"
-    
-    private static let mAge      = "Age"
-    private static let mGender   = "Gender"
-    private static let mProfileImage   = "ProfileImage"
-
-
-    static let keychain = Keychain(service: "com.dromo.dromo-user")
+    static let sharedInstance = Me()
 
     
-    class func acctId() -> String? {
+    
+    
+    private let mAcctId   = "Acctid"
+    private let mGuid     = "Guid"
+    
+    private let mUsername = "Username"
+    private let mFullname = "Fullname"
+    private let mVerified = "Verified"
+    private let mWebsite  = "Website"
+    private let mBio      = "Bio"
+    private let mEmail    = "Email"
+    private let mMobile   = "Mobile"
+    
+    private let mAge      = "Age"
+    private let mGender   = "Gender"
+    private let mProfileImage   = "ProfileImage"
+
+
+    
+    private let keychain = Keychain(service: "com.dromo.dromo-user")
+
+    
+    /* If we save user data, what to do?
+     *      1) Log user back out?
+     *      2) Store in NSUserdefault?
+     */
+    
+    func acctId() -> String? {
         
         if let acctId = try! keychain.get(mAcctId) {
             return acctId
@@ -70,7 +79,7 @@ class Me {
         }
     }
     
-    class func guid() -> String? {
+    func guid() -> String? {
         
         if let guid = try! keychain.get(mGuid) {
             return guid
@@ -80,7 +89,8 @@ class Me {
         }
     }
     
-    class func username() -> String? {
+    
+    func username() -> String? {
         
         if let username = try! keychain.get(mUsername) {
             return username
@@ -91,7 +101,8 @@ class Me {
 
     }
     
-    class func fullname() -> String? {
+    
+    func fullname() -> String? {
         
         if let fullname = try! keychain.get(mFullname) {
             return fullname
@@ -102,7 +113,8 @@ class Me {
     }
     
     
-    class func verified() -> Bool? {
+    
+    func verified() -> Bool? {
         
         if let verified = try! keychain.get(mVerified)?.toBool() {
             return verified
@@ -112,7 +124,8 @@ class Me {
         }
     }
     
-    class func website() -> String? {
+    
+    func website() -> String? {
         
         if let website = try! keychain.get(mWebsite) {
             return website
@@ -122,7 +135,8 @@ class Me {
         }
     }
     
-    class func bio() -> String? {
+    
+    func bio() -> String? {
         
         if let bio = try! keychain.get(mBio) {
             return bio
@@ -132,7 +146,8 @@ class Me {
         }
     }
     
-    class func email() -> String? {
+    
+    func email() -> String? {
         
         if let email = try! keychain.get(mEmail) {
             return email
@@ -143,7 +158,8 @@ class Me {
     }
     
     
-    class func mobile() -> String? {
+    
+    func mobile() -> String? {
         
         if let mobile = try! keychain.get(mMobile) {
             return mobile
@@ -153,7 +169,8 @@ class Me {
         }
     }
     
-    class func gender() -> Int? {
+    
+    func gender() -> Int? {
         
         if let gender = try! keychain.get(mGender) {
             return Int(gender)
@@ -163,7 +180,8 @@ class Me {
         }
     }
     
-    class func age() -> String? {
+    
+    func age() -> String? {
         
         if let age = try! keychain.get(mAge) {
             return age
@@ -174,7 +192,8 @@ class Me {
     }
     
     
-    class func profileImage() -> NSData? {
+    
+    func profileImage() -> NSData? {
         
         if let data = try? keychain.getData(mProfileImage) {
             return data!
@@ -184,8 +203,7 @@ class Me {
     }
 
     
-    
-    class func wipeData() -> Bool {
+    func wipeData() -> Bool {
         
         do {
             try keychain.removeAll()
@@ -198,43 +216,102 @@ class Me {
     
     
     
+//    
+//    class func saveGuid(guid: String) {
+//        keychain[mGuid] = guid
+//    }
+//    class func saveAcctid(id: String) {
+//        keychain[mAcctId] = id
+//    }
+//    class func saveUsername(username: String) {
+//        keychain[mUsername] = username
+//    }
+//    class func saveFullname(fullname: String) {
+//        keychain[mFullname] = fullname
+//    }
+//    class func saveVerification(verified: Bool) {
+//        keychain[mVerified] = verified.toString()
+//    }
+//    class func saveWebsite(website: String) {
+//        keychain[mWebsite] = website
+//    }
+//    class func saveBio(bio: String) {
+//        keychain[mBio] = bio
+//    }
+//    class func saveEmail(email: String) {
+//        keychain[mEmail] = email
+//    }
+//    class func saveMobile(mobile: String) {
+//        keychain[mMobile] = mobile
+//    }
+//    class func saveAge(age: String) {
+//        keychain[mAge] = age
+//    }
+//    class func saveGender(gender: Int) {
+//        keychain[mGender] = String(gender)
+//    }
+//    class func saveProfileImage(imageURL: NSURL) {
+//        keychain[data: mProfileImage] = NSData(contentsOfURL: imageURL)
+//    }
+//    
     
-    class func saveGuid(guid: String) {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    func saveGuid(guid: String) {
         keychain[mGuid] = guid
     }
-    class func saveAcctid(id: String) {
+    
+    func saveAcctid(id: String) {
         keychain[mAcctId] = id
     }
-    class func saveUsername(username: String) {
+    
+    func saveUsername(username: String) {
         keychain[mUsername] = username
     }
-    class func saveFullname(fullname: String) {
+    
+    func saveFullname(fullname: String) {
         keychain[mFullname] = fullname
     }
-    class func saveVerification(verified: Bool) {
+    
+    func saveVerification(verified: Bool) {
         keychain[mVerified] = verified.toString()
     }
-    class func saveWebsite(website: String) {
+    
+    func saveWebsite(website: String) {
         keychain[mWebsite] = website
     }
-    class func saveBio(bio: String) {
+    
+    func saveBio(bio: String) {
         keychain[mBio] = bio
     }
-    class func saveEmail(email: String) {
+    
+    func saveEmail(email: String) {
         keychain[mEmail] = email
     }
-    class func saveMobile(mobile: String) {
+    
+    func saveMobile(mobile: String) {
         keychain[mMobile] = mobile
     }
-    class func saveAge(age: String) {
+    
+    func saveAge(age: String) {
         keychain[mAge] = age
     }
-    class func saveGender(gender: Int) {
+    
+    func saveGender(gender: Int) {
         keychain[mGender] = String(gender)
     }
-    class func saveProfileImage(imageURL: NSURL) {
+    
+    func saveProfileImage(imageURL: NSURL) {
         keychain[data: mProfileImage] = NSData(contentsOfURL: imageURL)
     }
+
     
     
 }

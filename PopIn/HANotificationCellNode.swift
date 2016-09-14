@@ -11,11 +11,13 @@ import AsyncDisplayKit
 import pop
 import SwiftyDrop
 import ChameleonFramework
+import SwiftIconFont
 
 
 
 protocol HANotificationCellNodeDelegate {
     func showUserProfile(userModel: UserSearchModel)
+    func reloadRowForNotification(notif: HANotificationModel)
     func deleteRowForNotification(notif: HANotificationModel)
     func showErrorMessage(messsage: String)
 }
@@ -46,7 +48,7 @@ class HANotificationCellNode: ASCellNode, UserSearchModelDelegate {
     
     let activityIndicatorView: UIActivityIndicatorView
     
-    init(withNotificationObject notificationModel: HANotificationModel) {
+    init(withNotificationObject notificationModel: HANotificationModel,                                                   buttonInfo actionButtonInfo: (title: NSAttributedString?, image: UIImage?, backgroundImage: UIImage?,  backgroundColor: UIColor, borderColor: UIColor)) {
         
         self.notificationModel = notificationModel
 
@@ -74,8 +76,9 @@ class HANotificationCellNode: ASCellNode, UserSearchModelDelegate {
         actionButton.cornerRadius = 4.0
         actionButton.clipsToBounds = true
 
-        let actionButtonInfo = notificationModel.imageForNotificationType()
         
+//        let actionButtonInfo = notificationModel.imageForNotificationType()
+
         actionButton.contentSpacing = 0.0
         actionButton.setAttributedTitle(actionButtonInfo.title, forState: .Normal)
         actionButton.setImage(actionButtonInfo.image, forState: .Normal)
@@ -214,7 +217,25 @@ class HANotificationCellNode: ASCellNode, UserSearchModelDelegate {
                 
                 self.hideSpinningWheel()
 
-                if successful { // We canceled and will delete row
+                
+                if let errorMessage = errorMessage {
+                   
+                    self.enableCellNode()
+                    self.delegate?.showErrorMessage(errorMessage)
+                    
+                    UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear, animations: {
+                        
+                        self.changeButtonForSuccessfulFriendStatusUpdate()
+                        
+                        //TODO: Delete this row and insert it at the top... or in the correct order
+                        
+//                        self.delegate?.reloadRowForNotification(self.notificationModel)
+
+                    }, completion: nil)
+                    
+
+                        
+                } else if successful { // We canceled and will delete row
                     
                     UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
                        
@@ -298,8 +319,9 @@ class HANotificationCellNode: ASCellNode, UserSearchModelDelegate {
                 })
             }
 
+        default:
             
-        case .FriendAcceptedRequest: // We do nothing... Maybe later we let users to unfriend or block
+//        case .FriendAcceptedRequest: // We do nothing... Maybe later we let users to unfriend or block
             
             return // for now, later we can let user block from here
                 
@@ -407,8 +429,8 @@ class HANotificationCellNode: ASCellNode, UserSearchModelDelegate {
                 self.actionButton.borderColor = UIColor.clearColor().CGColor
             }
             
-        case .FriendAcceptedRequest:
-            
+//        case .FriendAcceptedRequest:
+        default:
             break
         }
         

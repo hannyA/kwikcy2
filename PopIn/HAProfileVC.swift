@@ -12,8 +12,9 @@ import SwiftyDrop
 import RealmSwift
 
 class HAProfileVC: ASViewController, ASTableDelegate, ASTableDataSource, //ProfilePagerControlCellNodeDelegate, 
-MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfileVCDelegate {
+MyAlbumCNDelegate, BasicProfileCNDelegate, HAEditProfileVCDelegate {
 
+    
     enum TableViewSection {
         case Albums
         case Notifications
@@ -29,7 +30,7 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
     var albums: MyAlbums
 //    var albums: My
     var isLoadingAlbums = false
-    var userModel: UserSearchModel?
+    var userModel: MeUserModel?
     let downloadManager = HADownloadManager(imageType: .Crop)
 
     init() {
@@ -66,17 +67,11 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
         print("HAProfileVC viewDidLoad")
         
         
-        let userInfo = UserSearchModel.BasicInfo(guid: Me.guid()!,
-                                                 username: Me.username()!,
-                                                 fullname: Me.fullname(),
-                                                 verified: Me.verified(),
-                                                 blocked: false)
         
-        userModel = UserSearchModel(withBasic: userInfo, imageType: .Crop)
+        userModel = MeUserModel()
+         
         
-        
-        
-        navigationItem.title = Me.username()
+        navigationItem.title = userModel?.userName
         navigationController?.navigationBar.translucent = false
         
         
@@ -98,6 +93,8 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        tabBarController?.tabBar.hidden = false
+        
         if albums.shouldUpdateTable {
             updateAlbums()
         } else if !isLoadingAlbums && !albums.isInitialized {
@@ -109,6 +106,9 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
             
             albums.load { (success) in
                 
+                
+                
+
                 print("albums.load done")
                 self.isLoadingAlbums = false
                 
@@ -215,6 +215,7 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
     func tableView(tableView: ASTableView, nodeBlockForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNodeBlock {
         
         if indexPath.section == 0 {
+            print("this is section 0")
             
             return {() -> ASCellNode in
                 let profileView = BasicProfileCellNode(withProfileModel: self.userModel!, loggedInUser: true)
@@ -318,16 +319,11 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
     }
     
     
-    func removeNewAlbum(album: AlbumModel) {
-        // Do not implement
-    }
-
     
     
-    func setupShow(album: AlbumModel) {
+    func setupShow(album: UserAlbumModel) {
         
-        let displayAlbumVC = HAAlbumDisplayVC(userAlbum: album)
-        displayAlbumVC.delegate = self
+        let displayAlbumVC = HAUserAlbumDisplayVC(album: album)
         presentViewController(displayAlbumVC, animated: false, completion: nil)
     }
     
@@ -353,7 +349,7 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
     }
 
     func editProfile() {
-        let editProfileVC = HAEditProfileVC()
+        let editProfileVC = HAEditProfileVC(userModel: userModel!)
         editProfileVC.delegate = self
         let navCon = UINavigationController(rootViewController: editProfileVC)
         presentViewController(navCon, animated: true, completion: nil)
@@ -361,13 +357,14 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
     
     
     func updateProfile() {
+        print("updateProfile will reload")
         self.tableNode.view.reloadSections(NSIndexSet(index: 0),
                                            withRowAnimation: .None)
     }
     
     
     
-    func showOptionsForAlbum(album: AlbumModel) {
+    func showOptionsForAlbum(album: UserAlbumModel) {
         
         print("showMoreOptions")
         
@@ -409,10 +406,10 @@ MyAlbumCNDelegate, BasicProfileCNDelegate, HAAlbumDisplayVCDelegate, HAEditProfi
     
     
     // Delegate method for NewAlbumVC ?
-    func uploadAlbum(album: AlbumModel) { }
+    func uploadAlbum(album: UserAlbumModel) { }
 
     
-    func retryUploadingMediaToAlbum(album: AlbumModel) {
+    func retryUploadingMediaToAlbum(album: UserAlbumModel) {
         
         album.retryUploadingLastMedia { (successful, errorMessage) in
             

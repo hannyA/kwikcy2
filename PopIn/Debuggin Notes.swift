@@ -31,10 +31,60 @@
  
  
     TODO: List
+ 
     1) Add shared instance for my albums and my friends
     2) Add network activity
     3) iOS phone App images
  
  
  
+ Ways to View
+ 
+         This should all be set up in notifications
+         If "dataing save mode" is on
+         Optins will change to:
+             1) save data on "friends messages"
+             2) Save data on all data
+             Split into Save data NSUserDefaults:
+                 a) friends
+                 b) public
+         
+         
+         Use Realm for friends Albus
+         User In-memory Realm for all other albums
+         
+        If saveDataMode == Off {
+         
+            1) Predownload all friends albums
+       
+        } else {
+ 
+             2) Click album - Downloadload everything
+             1) Auto open up
+             2) User click again to open
+             
+             3) User clicks album - it opens up to loading screen but user
+             
+         }
+ 
+ 
+         Every
+         
+         Design - For every cell ready to be opened change the 
+         background of the cell to the Chameleon color of the user album
+ 
+
+ 
+ 
+ 
  */
+
+
+
+
+
+
+
+
+
+

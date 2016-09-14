@@ -65,7 +65,6 @@ class AWSMobileClient: NSObject {
      * - parameter application: from application delegate.
      */
     func applicationDidBecomeActive(application: UIApplication) {
-        print("applicationDidBecomeActive:")
         initializeMobileAnalytics()
     }
     

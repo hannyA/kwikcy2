@@ -60,7 +60,7 @@ class UserSearchTableCN: ASCellNode {
         userRealnameLabel = ASTextNode()
         userRealnameLabel.layerBacked = true
         
-        userRealnameLabel.attributedString = HAGlobal.titlesAttributedString(userModel.fullName,
+        userRealnameLabel.attributedString = HAGlobal.titlesAttributedString(userModel.fullName ?? "",
                                                                              color: UIColor.blackColor(),
                                                                              textSize: 16)
         

@@ -137,6 +137,11 @@ class HARadioCN: ASCellNode {
     }
     
     
+    func isNotMakeingNetworkCall() -> Bool {
+        
+        return userInteractionEnabled
+    }
+    
     func makingNetworkCall() {
         userInteractionEnabled = false
         spiningWheel.startAnimating()

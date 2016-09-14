@@ -16,8 +16,8 @@ class MyAlbums {
     var isInitialized: Bool
     
     
-    private var albums: [AlbumModel]
-    private var newAlbums: [AlbumModel]
+    private var albums: [UserAlbumModel]
+    private var newAlbums: [UserAlbumModel]
     //    var publicAlbums: [AlbumModel]
     
     
@@ -27,8 +27,8 @@ class MyAlbums {
     // Sort by title, last input date
     
     init() {
-        albums    = [AlbumModel]()
-        newAlbums = [AlbumModel]()
+        albums    = [UserAlbumModel]()
+        newAlbums = [UserAlbumModel]()
         isInitialized = false
     }
     
@@ -44,15 +44,15 @@ class MyAlbums {
     }
     
     
-    func insertNewAlbum(album: AlbumModel) {
+    func insertNewAlbum(album: UserAlbumModel) {
         newAlbums.insert(album, atIndex: 0)
     }
     
     
-    func oldAlbumAtIndex(index: Int) -> AlbumModel {
+    func oldAlbumAtIndex(index: Int) -> UserAlbumModel {
         return albums[index]
     }
-    func newAlbumAtIndex(index: Int) -> AlbumModel {
+    func newAlbumAtIndex(index: Int) -> UserAlbumModel {
         return newAlbums[index]
     }
     
@@ -89,7 +89,7 @@ class MyAlbums {
 //    }
     
     
-    func indexOfAlbum(album:AlbumModel, inList list: [AlbumModel]) -> Int? {
+    func indexOfAlbum(album:AlbumModel, inList list: [UserAlbumModel]) -> Int? {
         
         return list.indexOf { (albumModel) -> Bool in
             if album === albumModel {
@@ -100,7 +100,7 @@ class MyAlbums {
     }
     
     
-    func albumsIds(albums:[AlbumModel]) -> [String] {
+    func albumsIds(albums:[UserAlbumModel]) -> [String] {
         
         var uploadAlbums = [String]()
         
@@ -113,7 +113,7 @@ class MyAlbums {
     }
     
     
-    func findAlbum(album: AlbumModel) -> NSIndexPath? {
+    func findAlbum(album: UserAlbumModel) -> NSIndexPath? {
         
         if let index = indexOfAlbum(album, inList: newAlbums) {
             return NSIndexPath(forRow: 0, inSection: index)
@@ -148,7 +148,7 @@ class MyAlbums {
                         
                         for albumItem in myAlbumsList.albums {
                             
-                            let album = AlbumModel(withAlbum: albumItem)
+                            let album = UserAlbumModel(withAlbum: albumItem)
                             self.albums.append(album)
                         }
 
@@ -172,7 +172,7 @@ class MyAlbums {
     
     
     
-    func uploadMedia(base64Encoded: String, type: String, timelimit: Int, to selectedAlbums: [AlbumModel], completionClosure: (success: Bool, errorMessage: String?) ->()) {
+    func uploadMedia(base64Encoded: String, type: String, timelimit: Int, to selectedAlbums: [UserAlbumModel], completionClosure: (success: Bool, errorMessage: String?) ->()) {
         
         print("uploadMedia to \(selectedAlbums.count) albums")
        
@@ -194,8 +194,8 @@ class MyAlbums {
         
         var jsonObj = [String: AnyObject]()
         
-        jsonObj[kGuid]      = Me.guid()
-        jsonObj[kAcctId]    = Me.acctId()
+        jsonObj[kGuid]      = Me.sharedInstance.guid()
+        jsonObj[kAcctId]    = Me.sharedInstance.acctId()
 
         jsonObj[kMedia]     = base64Encoded
         jsonObj[kType]      = type

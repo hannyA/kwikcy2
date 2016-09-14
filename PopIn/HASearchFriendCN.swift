@@ -79,22 +79,7 @@ class HASearchFriendCN: ASCellNode {
         //        friendsButton.setTitle("Friends", withFont: UIFont(name:"HelveticaNeue", size: 18 ) , withColor: UIColor.blackColor(), forState: .Normal)
         
         
-//        // Make images round
-//        let verificationRoundModBlock: asimagenode_modification_block_t = { image in
-//            var modifiedImage: UIImage
-//            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
-//            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
-//            
-//            
-//            UIBezierPath(roundedRect: rect, cornerRadius: 6.0).addClip()
-//            
-//            image.drawInRect(rect)
-//            modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
-//            UIGraphicsEndImageContext()
-//            return modifiedImage
-//        }
-        
-        
+       
         verificationImage = ASImageNode()
         verificationImage.image = UIImage(named: "circle-tick-7.png")
         verificationImage.backgroundColor =  UIColor.lightBlueColor()
@@ -103,24 +88,7 @@ class HASearchFriendCN: ASCellNode {
         //        verificationImage.imageModificationBlock = verificationRoundModBlock
         verificationImage.layerBacked = true
 
-        
-//        // Make images round
-//        let tickRoundModBlock: asimagenode_modification_block_t = { image in
-//            var modifiedImage: UIImage
-//            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
-//            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.mainScreen().scale)
-//            
-//            
-//            UIBezierPath(roundedRect: rect, cornerRadius: 6.0).addClip()
-//            
-//            image.drawInRect(rect)
-//            modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
-//            UIGraphicsEndImageContext()
-//            return modifiedImage
-//        }
-        
-        
-        
+ 
         
         checkImage = ASImageNode()
         checkImage.layerBacked = true

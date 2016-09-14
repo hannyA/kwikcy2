@@ -28,7 +28,7 @@ enum kCompression: CGFloat {
 }
 
 protocol RegisterUserVCDelegate {
-    func didRegister()
+    func didRegister() // this will dimiss viewcontroller, chnage this later to an explain viewcontroller
 }
 
 class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCameraDelegate, RSKImageCropViewControllerDelegate, RSKImageCropViewControllerDataSource {
@@ -57,6 +57,8 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
     
     
     var delegate: RegisterUserVCDelegate?
+//    var facebookId: String
+//    var verified: Bool
     
     var profileImage: UIImage?
     var croppedProfileImage: UIImage?
@@ -72,10 +74,18 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
     
     
     init() {
+        
         loadingPhoto = false
         createUserNode = CreateUserNode()
         super.init(node: createUserNode)
     }
+    
+    
+//    init() {
+//        loadingPhoto = false
+//        createUserNode = CreateUserNode()
+//        super.init(node: createUserNode)
+//    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -139,9 +149,20 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
         let originalImageBase64 = originalImage?.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
 
         
-        let jsonObj:[String: AnyObject] = [ "username": lastSearchTerm!,
-                                            "cropImage": croppedImageBase64!,
-                                            "originalImage": originalImageBase64!]
+        let facebookToken = FBSDKAccessToken.currentAccessToken()
+        let tokenString = facebookToken.tokenString
+        
+        
+        
+        let kCroppedImage  = "cropImage"
+        let kOriginalImage = "originalImage"
+        
+        
+        let jsonObj:[String: AnyObject] = [ kUserName           : lastSearchTerm!,
+                                            kSecretAdminCode    : theSecretAdminCode,
+                                            kFacebookToken      : tokenString,
+                                            kCroppedImage       : croppedImageBase64!,
+                                            kOriginalImage      : originalImageBase64!]
         
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaRegister,
          withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
@@ -155,44 +176,68 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
                     
                     if let userDetails = LambdaLoginResponse(response: result) {
                         
-                        if userDetails.userExists {
+                        print("userDetails userDetails: \(userDetails.hasOneProfile()) ")
+
+                        if userDetails.profiles.count > 0 {
+                            
+                            print("profiles.count: \(userDetails.profiles.count) ")
+
                             
                             if userDetails.hasOneProfile() {
+                                print("profiles.count: hasOneProfile ")
+
+                                let profile = userDetails.profiles.first!
                                 
-                                Me.saveGuid((userDetails.profiles.first?.guid)!)
-                                Me.saveAcctid((userDetails.profiles.first?.acctId)!)
-                                Me.saveUsername((userDetails.profiles.first?.username)!)
+                            
+                                Me.sharedInstance.saveGuid(profile.guid)
+                                Me.sharedInstance.saveAcctid(profile.acctId)
+                                Me.sharedInstance.saveUsername(profile.username)
+                                Me.sharedInstance.saveVerification(profile.verified)
+                                
+                                if let fullname = profile.fullname {
+                                    Me.sharedInstance.saveFullname(fullname)
+                                }
+                                if let about = profile.about {
+                                    Me.sharedInstance.saveBio(about)
+                                }
+                                if let domain = profile.domain {
+                                    Me.sharedInstance.saveWebsite(domain)
+                                }
+                                if let gender = profile.gender {
+                                    Me.sharedInstance.saveGender(gender)
+                                }
+                                self.delegate?.didRegister()
                                 
                             } else {
                                 // Show Multi profile user selection.
                                 // Let user pick Profile and save info then
+                                
                             }
                             
-                            self.delegate?.didRegister()
-                            // also get username and profilephoto
-//                            self.navigationController?.popToRootViewControllerAnimated(false)
-                            // self.navigationController?.popViewControllerAnimated(false)
-
+                            // aslso get username and profilephoto
+                            
                         } else {
                             // User does not exist
-                            self.showDynamoDBAlertMessage(AWSErrorBackend)
+                        
+                            Drop.down(AWSErrorBackend,
+                                state: .Error ,
+                                duration: 6.0,
+                                action: nil)
                         }
                     } else {
                         // User does not exist
                         let error = LambdaErrorResponse(response: result)
-                        self.showDynamoDBAlertMessage(error.message)
-                    }
 
+                        self.showAlertMessage(error.message)
+                    }
                 })
             }
             
             if let errorMessage = AWSConstants.errorMessage(error) {
                 dispatch_async(dispatch_get_main_queue(), {
-                
-                    self.showDynamoDBAlertMessage(errorMessage)
                     
+                    self.showAlertMessage(errorMessage)
                     self.createUserNode.blockViewController(false)
-//                    self.createUserNode.disableView(true)
                 })
             }
         }
@@ -642,7 +687,7 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
                                 self.showErrorMessage(.UsernameExists)
                             }
                         } else { // Server error
-                            self.showDynamoDBAlertMessage(AWSErrorBackend)
+                            self.showAlertMessage(AWSErrorBackend)
                         }
                     })
                 }
@@ -651,7 +696,7 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
                     dispatch_async(dispatch_get_main_queue(), {
                         print("Error occurred in invoking Lambda Function: \(error)")
                         self.createUserNode.textFieldNode.userReceivedResultsForValidText(false)
-                        self.showDynamoDBAlertMessage(errorMessage)
+                        self.showAlertMessage(errorMessage)
                     })
                 }
             }
@@ -899,7 +944,7 @@ class RegisterUserVC: ASViewController, UITextFieldDelegate, RegisterProfileCame
     }
 
     
-    func showDynamoDBAlertMessage(message: String?) {
+    func showAlertMessage(message: String?) {
         
         let alertView = UIAlertController(title: NSLocalizedString("Error",
                                           comment: "Title bar for error alert."),

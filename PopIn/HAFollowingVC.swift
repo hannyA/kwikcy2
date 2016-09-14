@@ -6,51 +6,50 @@
 //  Copyright © 2016 Aly LLC. All rights reserved.
 //
 
-
+import AWSMobileHubHelper
 import AsyncDisplayKit
 import SwiftIconFont
 import ReachabilitySwift
 import SwiftyUserDefaults
 
+import SwiftyDrop
+
+protocol HAPresentAppDelegate {
+    func showSelfWithAnimation()
+    func presentSignInController(message: String?)
+//    func presentRegisterController(message: String?)
+    func handleLogoutWithMessage(message: String?)
+
+}
+
 class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
-    HAAlbumDisplayVCDelegate, HAFollowingTableNodeDelegate {
+    HAFriendAlbumDisplayVCDelegate, HAFollowingTableNodeDelegate {
 
 
+    var delegate: HAPresentAppDelegate?
+    
     var reachability: Reachability?
 
     
     let tableNodeDisplay: HAFollowingTableNode
     
     var feedModel = FollowFeedModel(withType: .Friends)
-    
-    var fetchingMoreData:Bool
-    var refreshingData:Bool
-    
-    
+
     func tabbarHeight() -> CGFloat {
         return CGRectGetHeight((tabBarController?.tabBar.frame)!)
     }
     
     init() {
-    
-        tableNodeDisplay = HAFollowingTableNode()
-        
         print("HAFollowingVC init")
-
-        print("feedModel count \(feedModel.totalNumberOfAlbums())")
-        refreshingData = false
-        //        fetchingInitialData = true
-        fetchingMoreData = false
         
+        tableNodeDisplay = HAFollowingTableNode()
 
         super.init(node: tableNodeDisplay)
     
-        
         tableNodeDisplay.delegate = self
         
         tableNodeDisplay.tableNode.dataSource = self
         tableNodeDisplay.tableNode.delegate = self
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -68,35 +67,33 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
      ============================================================================
      */
     
+    let AUTO_TAIL_LOADING_NUM_SCREENFULS:CGFloat = 2.5
+//    
+//    override func loadView() {
+//        super.loadView()
+//        title = "Following"
+//        
+//        tableNodeDisplay.tableNode.view.separatorStyle = .None
+//        tableNodeDisplay.tableNode.view.allowsSelection = true
+//        tableNodeDisplay.tableNode.view.leadingScreensForBatching = AUTO_TAIL_LOADING_NUM_SCREENFULS  // overriding default of 2.0
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         print("HAFollowingVC viewDidLoad")
-        
-        
         title = "Following"
+        
         tableNodeDisplay.tableNode.view.separatorStyle = .None
         tableNodeDisplay.tableNode.view.allowsSelection = true
+        tableNodeDisplay.tableNode.view.leadingScreensForBatching = AUTO_TAIL_LOADING_NUM_SCREENFULS  // overriding default of 2.0
         
         if hasCamera() {
             tableNodeDisplay.cameraButton.hidden = false
-            
-            let cameraTitleButton = UIBarButtonItem()
-        
-            cameraTitleButton.icon(from: .MaterialIcon, code: "photo.camera", ofSize: 30)
-            navigationItem.setRightBarButtonItem(cameraTitleButton, animated: false)
-        }
-        
+       }
         
 //        let hostName = "google.com"
-//        
 //        let useClosures = true
-//        
-//        
 //        print("--- set up with host name: \(hostName)")
-        
         do {
             let reachability = try Reachability.reachabilityForInternetConnection()
             self.reachability = reachability
@@ -106,8 +103,6 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
             print("Unable to create Reachability with address:\n\(address)")
             return
         } catch {}
-        
-        
 //        if useClosures {
 //            reachability?.whenReachable = { reachability in
 //                dispatch_async(dispatch_get_main_queue()) {
@@ -126,8 +121,6 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
 //                                                             object: reachability)
 //        }
     }
-    
-    
     
 //    func updateWhenReachable(reachability: Reachability) {
 //       
@@ -159,9 +152,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
 //            print("reachability = I don't know....")
 //        }
 //    }
-    
-    
-    
+
 //    func startNotifier() {
 //        print("--- start notifier")
 //        do {
@@ -196,8 +187,6 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
 //            print("reachability = I don't know....")
 //        }
 //    }
-//    
-//    
 //    deinit {
 //        stopNotifier()
 //    }
@@ -207,34 +196,103 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         print("HAFollowingVC viewWillAppear")
-
         navigationController?.navigationBarHidden = false
         tabBarController?.tabBar.hidden = false
+        // print("isReachable: \(reachability?.isReachable())")
+        // print("isReachableViaWWAN: \(reachability?.isReachableViaWWAN())")
+        // print("isReachableViaWiFi: \(reachability?.isReachableViaWiFi())")
         
-        print("isReachable: \(reachability?.isReachable())")
-        print("isReachableViaWWAN: \(reachability?.isReachableViaWWAN())")
-        print("isReachableViaWiFi: \(reachability?.isReachableViaWiFi())")
-
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("HAFollowing Viewdid appear")
-        refreshFeed()
-    }
-    
-    
-    func downloadAllMedia() {
         
-        if !Defaults[.useLessData] {
+        let guid   = Me.sharedInstance.guid()
+        let acctId = Me.sharedInstance.acctId()
+        
+        // Logged in before and created an account already
+        if AWSIdentityManager.defaultIdentityManager().loggedIn && guid != nil && acctId != nil {
             
-            print("Call function to download all media content")
+            print("HATabar AWSIdentityManager loggedIn")
+            
+            self.delegate?.showSelfWithAnimation()
+
+            
+            var jsonObj = [String: AnyObject]()
+            
+            jsonObj[kGuid]   = guid!
+            jsonObj[kAcctId] = acctId!
+            
+            //Check to see if our account still exists
+            // TODO: Instead of calling AWSLambdaAccountActive, this functionality should be included in every other function
+            
+            // If account not active, show signin screen? maybe register screen
+            AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaAccountActive,
+             withParameters: jsonObj) { (result: AnyObject?, error: NSError?) in
+
+                if let result = result {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        print("1 refreshFeedWithCompletionBlock - Result: \(result)")
+                        
+                        if let response = result as? [String: AnyObject]  {
+                            
+                            print("2 refreshFeedWithCompletionBlock - Result: \(result)")
+
+                            var errorMessage: String?
+                            if let activeStatus = response[kActive] as? Int {
+                                
+                                print("--- activeStatus: \(activeStatus)")
+
+                                switch activeStatus {
+                                case UserActiveStatus.Active.rawValue:
+                                    self.refreshFeed()
+                                case UserActiveStatus.Deleted.rawValue:
+                                    errorMessage = "This account has been deleted"
+                                    fallthrough
+                                case UserActiveStatus.DoesNotExist.rawValue:
+                                    errorMessage = "Account not found"
+
+                                    fallthrough
+                                
+                                case UserActiveStatus.Disabled.rawValue:
+                                    errorMessage = "This account has been disbaled"
+
+                                    fallthrough
+                                case UserActiveStatus.DisabledConfirmed.rawValue:
+                                    errorMessage = "This account has been disbaled"
+                                    self.delegate?.handleLogoutWithMessage(errorMessage)
+                                default:
+                                    break
+                                }
+                            }
+                        } else {
+                            self.refreshFeed()
+                        }
+                    })
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.refreshFeed()
+                    })
+                }
+            }
+            // We;ve logged in through facebook, but have no guid or acctId
+        } else if AWSIdentityManager.defaultIdentityManager().loggedIn { // but no guid/accId
+            
+            
+            delegate?.handleLogoutWithMessage(nil)
+
+        
+            // Query
+            // Show sign in screen?
+
+            // We're not logged in
         } else {
-           
-            print("Don't download data: In data savings mode")
-            
+            delegate?.presentSignInController(nil)
+
         }
     }
+    
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -264,107 +322,137 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
         return false
     }
     
-    
     func openCamera() {
         let cameraVC = INCameraVC(withCameraPosition: .Back)
+//        let cameraNavCtrl = UINavigationController(rootViewController: cameraVC)
         presentClearViewController(cameraVC)
     }
-    
-    
     
     func presentClearViewController(viewController: UIViewController) {
         
         viewController.view.alpha = 0
         navigationController?.pushViewController(viewController, animated: false)
 //        presentViewController(viewController, animated: false, completion: nil)
-        
     }
-    
-    
-    
-    func closeCamera() {
-        navigationController?.popViewControllerAnimated(false)
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    
-//    func saveImage(image: UIImage) {
-//        UIImageWriteToSavedPhotosAlbum(image, self, #selector(HAFollowingVC.image(_:didFinishSavingWithError:contextInfo:)), nil)
-//    }
-//    
-//    
-//    // Save image to iPhone library
-//    func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafePointer<Void>) {
-//        print("didFinishSavingWithError")
-//        if error == nil {
-//            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .Alert)
-//            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-//            presentViewController(ac, animated: true, completion: nil)
-//        } else {
-//            let ac = UIAlertController(title: "Save error", message: error?.localizedDescription, preferredStyle: .Alert)
-//            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-//            presentViewController(ac, animated: true, completion: nil)
-//        }
-//    }
-    
-    
-    
     
     
     
     
     //MARK: - PhotoFeedViewControllerProtocol
     
-    func removeTableBackgroundView() {
-        print("removeTableBackgroundView")
-        
-        tableNodeDisplay.tableNode.view.backgroundView = nil
-    }
     
-    func showTableBackgroundViewForNoAlbums() {
-        print("showTableBackgroundViewForNoAlbums")
-        
-        let bounds = tableNodeDisplay.tableNode.bounds
-        let backgroundView = UIView(frame: bounds)
-        
-        let backgroundImageView = UIImageView(frame: backgroundView.bounds)
-        backgroundImageView.image = UIImage(named: "mad-men-1.png")
-        backgroundImageView.contentMode = .ScaleAspectFill
-        
-        backgroundView.addSubview(backgroundImageView)
-        
-        tableNodeDisplay.tableNode.contentMode = .ScaleAspectFill
-        tableNodeDisplay.tableNode.view.backgroundView = backgroundView
-    }
-    
-    
-    
-    
-    
+    // This will fetch new albums and get any updates for existing albums
     func refreshFeed() {
         
-        refreshingData = true
         tableNodeDisplay.showSpinningWheel()
         
-        feedModel.refreshFeedWithCompletionBlock({ (albumResults) in
+        feedModel.refreshFeedWithCompletionBlock({ (indexSetChange, insertSections, removeSections, reloadSections, errorMessage) in
             
-            self.refreshingData = false
-            
-            self.tableNodeDisplay.tableNode.view.reloadData()
             self.tableNodeDisplay.hideSpinningWheel()
 
-            //            self.insertNewRowsInTableView(albumResults)
+            if let errorMessage = errorMessage {
+               
+                Drop.down("\(errorMessage) \(randomUpsetEmoji())",
+                    state: .Error ,
+                    duration: 4.0,
+                    action: nil)
+           
+            } else {
+                
+                
+                self.tableNodeDisplay.tableNode.view.beginUpdates()
+                
+                if indexSetChange > 0 {
+                    
+                    self.tableNodeDisplay.tableNode.view.insertSections(NSIndexSet(index: 0),
+                                                                        withRowAnimation: .None)
+               
+                    if indexSetChange > 1 {
+                        self.tableNodeDisplay.tableNode.view.insertSections(NSIndexSet(index: 1),
+                                                                            withRowAnimation: .None)
+                    }
+                    
+                } else if indexSetChange < 0 {
+
+                    if indexSetChange < -1 {
+                        self.tableNodeDisplay.tableNode.view.deleteSections(NSIndexSet(index: 1),
+                            withRowAnimation: .None)
+                    }
+                    
+                    self.tableNodeDisplay.tableNode.view.deleteSections(NSIndexSet(index: 0),
+                                                                        withRowAnimation: .None)
+                    
+                }
+                
+                
+                self.tableNodeDisplay.tableNode.view.deleteRowsAtIndexPaths(removeSections!, withRowAnimation: .None)
+                self.tableNodeDisplay.tableNode.view.insertRowsAtIndexPaths(insertSections!, withRowAnimation: .None)
+                self.tableNodeDisplay.tableNode.view.reloadRowsAtIndexPaths(reloadSections!, withRowAnimation: .None)
+                
+                self.tableNodeDisplay.tableNode.view.endUpdates()
+                
+            }
             
-            //    // immediately start second larger fetch
-            //    [self loadPageWithContext:nil];
             
-            self.downloadAllMedia()
             
-            }, numbersOfResultsToReturn: 4)
+//                self.insertNewRowsInTableView(albumResults)
+            
+                
+            
+            
+            
+            }, numbersOfResultsToReturn: 20)
+        
+//        feedModel.refreshFeedWithCompletionBlock({ (albumResults, errorMessage) in
+//            
+//            self.tableNodeDisplay.hideSpinningWheel()
+//            
+//            if let albumResults = albumResults {
+//            
+//                self.insertNewRowsInTableView(albumResults)
+//                
+//                // immediately start second larger fetch
+//                // self.loadPageWithContext(nil)
+//            } else {
+//                Drop.down("\(errorMessage!) \(randomUpsetEmoji())",
+//                    state: .Error ,
+//                    duration: 4.0,
+//                    action: nil)
+//            }
+//        }, numbersOfResultsToReturn: 20)
     }
     
     
-    func insertNewRowsInTableView(albums: [AlbumModel]) {
+    func loadPageWithContext(context: ASBatchContext?) {
+        
+        feedModel.requestPageWithCompletionBlock({ (albumResults) in
+            
+            self.insertNewRowsInTableView(albumResults)
+
+            context?.completeBatchFetching(true)
+
+        }, numbersOfResultsToReturn: 20)
+    }
+    
+    
+    func downloadAlbumCovers() {
+//        
+//        if !Defaults[.useLessData] {
+//            
+//            print("Call function to download all media content")
+//        } else {
+//            
+//            print("Don't download data: In data savings mode")
+//            
+//        }
+    }
+    
+    
+    
+    
+    
+    
+    func insertNewRowsInTableView(albums: [FriendAlbumModel]) {
         
         let section = 0
         var indexPaths = [NSIndexPath]()
@@ -383,7 +471,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     }
     
     
-    func deleteRowsInTableView(albums: [AlbumModel]) {
+    func deleteRowsInTableView(albums: [FriendAlbumModel]) {
         
         let section = 0
         var indexPaths = [NSIndexPath]()
@@ -405,11 +493,11 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
 //    func indexPathOfALbum
     
     
-    func removeNewAlbum(album: AlbumModel) {
+    func removeNewAlbum(album: FriendAlbumModel) {
         
         if let index = feedModel.indexOfNewAlbumModel(album) {
             
-            if !album.hasNewContent {
+            if !album.hasNewContent() {
                
                 feedModel.removeNewAlbumAtIndex(index)
                 
@@ -529,23 +617,37 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     
     
     
+    
+//    func removeTableBackgroundView() {
+//        print("removeTableBackgroundView")
+//        tableNodeDisplay.tableNode.view.backgroundView?.hidden = true
+//    }
+//    
+//    
+//    func showTableBackgroundViewForNoAlbums() {
+//        print("showTableBackgroundViewForNoAlbums")
+//        tableNodeDisplay.tableNode.view.backgroundView?.hidden = false
+//    }
+    
+    
+
     //MARK: - ASTableDataSource methods
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         
         // Only spinning wheel should show
-        if refreshingData {
+        if feedModel.refreshingFeedDataInProgress {
             return 0
         }
         
         if feedModel.hasNewAlbums() {
-            removeTableBackgroundView()
+//            removeTableBackgroundView()
             return 2
         } else if feedModel.hasAlbums() {
-            removeTableBackgroundView()
+//            removeTableBackgroundView()
             return 1
         } else {
-            showTableBackgroundViewForNoAlbums()
+//            showTableBackgroundViewForNoAlbums()
             return 0
         }
     }
@@ -554,7 +656,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //        print("numberOfRowsInSection \(section)")
         
-        if refreshingData {
+        if feedModel.refreshingFeedDataInProgress {
             return 0
         }
         
@@ -582,7 +684,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
         //        }
         
         // If albums exist
-        let album: AlbumModel
+        let album: FriendAlbumModel
         
         if feedModel.hasNewAlbums() {
             if indexPath.section == 0 {
@@ -613,7 +715,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
         print("==================================================")
         
         let indexPathRow = indexPath.row
-        let album: AlbumModel
+        let album: FriendAlbumModel
         var newAlbumSection = false
         
         if feedModel.hasNewAlbums() {
@@ -621,7 +723,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
                 newAlbumSection = true
                 album = feedModel.newAlbumAtIndex(indexPathRow)!
                 print("New album at index : \(indexPathRow)")
-                print("New album has \(album.mediaCount) images")
+                print("New album has \(album.mediaCount()) images")
                 print("New newMediaIndex: \(album.newMediaIndex!)")
             } else {
                 print("Old album secton 1")
@@ -638,7 +740,7 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
         
         
 //        
-        let displayAlbumVC = HAAlbumDisplayVC(album: album, isFromNewAlbumSection:newAlbumSection)
+        let displayAlbumVC = HAFriendAlbumDisplayVC(album: album, isFromNewAlbumSection:newAlbumSection)
         displayAlbumVC.delegate = self
         presentClearViewController(displayAlbumVC)
     }
@@ -648,11 +750,11 @@ class HAFollowingVC: ASViewController, ASTableDelegate, ASTableDataSource,
     
     //MARK: - ASTableDelegate methods
     
-    // Receive a message that the tableView is near the end of its data set and more data should be fetched if necessary.
-    //    func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
-    //        context.beginBatchFetching()
-    ////        loadpagew
-    //    }
+//     Receive a message that the tableView is near the end of its data set and more data should be fetched if necessary.
+        func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
+            context.beginBatchFetching()
+            loadPageWithContext(context)
+        }
     
     
 }

@@ -42,6 +42,7 @@ import UIKit
  - SemiCircleSpin:          SemiCircleSpin animation.
  - BallRotateChase:         BallRotateChase animation.
  - Orbit:                   Orbit animation.
+ - Snapper:                 Snapper animation.
  */
 public enum NVActivityIndicatorType: Int {
     /**
@@ -237,6 +238,15 @@ public enum NVActivityIndicatorType: Int {
      */
     case AudioEqualizer
     
+    /**
+     Snapper.
+     
+     - returns: Instance of NVActivityIndicatorAnimationSnapper.
+     */
+    case Snapper
+
+    case Snapper2
+    
     private static let allTypes = (Blank.rawValue ... Orbit.rawValue).map{ NVActivityIndicatorType(rawValue: $0)! }
 
     private func animation() -> NVActivityIndicatorAnimationDelegate {
@@ -305,6 +315,10 @@ public enum NVActivityIndicatorType: Int {
             return NVActivityIndicatorAnimationOrbit()
         case .AudioEqualizer:
             return NVActivityIndicatorAnimationAudioEqualizer()
+        case .Snapper:
+            return NVActivityIndicatorAnimationSnapper()
+        case .Snapper2:
+            return NVActivityIndicatorAnimationSnapper2()
         }
     }
 }

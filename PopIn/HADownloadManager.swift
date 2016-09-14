@@ -12,10 +12,10 @@ import Foundation
 
 class HADownloadManager {
     
-    private var allUsers = [UserSearchModel]()
+    private var allUsers = [UserModel]()
     
     
-    init(imageType: UserSearchModel.ProfileImageType) {
+    init(imageType: UserModel.ProfileImageType) {
         
         do {
             try NSFileManager.defaultManager().createDirectoryAtURL(
@@ -30,43 +30,16 @@ class HADownloadManager {
     }
     
     
-//    
-//    func isEmpty() -> Bool {
-//        return searchResults.isEmpty
-//    }
-//    
-//    func count() -> Int {
-//        return searchResults.count
-//    }
-//    
-//    
-//    func indexOf(row: Int) -> UserSearchModel {
-//        return searchResults[row]
-//    }
-//    
-//    func removeAllResults() {
-//        searchResults.removeAll(keepCapacity: false)
-//    }
-//    
-//    func appendContentsOf(list : [UserSearchModel]) {
-//        searchResults.appendContentsOf(list)
-//        
-//        downloadAllUserThumbImages()
-//    }
-//    
-//    func results() -> [UserSearchModel]{
-//        return searchResults
-//    }
-//    
-//    
     
     //MARK: S3 Transfer Manager of User Profile Photos
     
     
-    func setDownloadProfileImages(users:[UserSearchModel] ) {
+    func setDownloadProfileImages(users:[UserModel] ) {
         
         allUsers.appendContentsOf( users )
     }
+    
+    
     
     func downloadAllUserThumbImages() {
         print("downloadAllUserThumbImages: coutn: \(allUsers.count)")
@@ -83,7 +56,7 @@ class HADownloadManager {
     }
     
     
-    func indexOfDownloadRequest(downloadRequest: AWSS3TransferManagerDownloadRequest?) -> UserSearchModel? {
+    func indexOfDownloadRequest(downloadRequest: AWSS3TransferManagerDownloadRequest?) -> UserModel? {
         print("indexOfDownloadRequest")
         
         for userModel in allUsers {

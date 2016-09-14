@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '2B159A1DA5F140C86F2FE492'
+               BlueprintIdentifier = 'B6892DF83C1BF4DFF929EA12'
                BlueprintName = 'VBFPopFlatButton'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'VBFPopFlatButton.framework'>

@@ -66,123 +66,323 @@ class HANotificationFeed {
      *
      */
     
-    func queryLambdaNotifications(pullNewNotifications: Bool, completionClosure: (newMessages :Bool, count: Int) ->()) {
-        
-        //TODO: I guess we're letting it crash for now, cause I don't know what to tell the user...
-        // ONly other option is to store last active account in db?
-        let acctId = Me.acctId()!
-        
-        var jsonInput:[String: AnyObject] = ["acctId": acctId]
-        
-        
-        jsonInput["pullNewNotifications"] = pullNewNotifications
+    
+    let kRefreshNotifications = "refreshNotifications"
 
-        if pullNewNotifications {
-            if !notificationList.isEmpty {
-                jsonInput["notificationId"] = notificationList.first?.id
-            }
-        } else {
-            jsonInput["notificationId"] = notificationList.last?.id
-        }
+    
+    // pull New Notifications, is from the top, cause we're geting new ones
+//    change this to refreshing or loading tail
+    func queryLambdaNotifications(refreshNotifications refreshNotifications: Bool, completionClosure: (hasNewMessages :Bool, delete: [Int]?, insert: [Int]?, reload: [Int]?) ->()) {
         
-        print("notificationId: \(jsonInput["notificationId"])")
-        
-        
-        var parameters: [String: AnyObject]
-        
-        do {
-            
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(jsonInput, options: .PrettyPrinted)
-            let anyObj = try NSJSONSerialization.JSONObjectWithData(jsonData, options: []) as! [String: AnyObject]
-            parameters = anyObj
-            
-        } catch let error as NSError {
-            print("json error: \(error.localizedDescription)")
-            completionClosure(newMessages: false, count: 0)
+        guard let acctId: String = Me.sharedInstance.acctId() else {
+            completionClosure(hasNewMessages: false, delete: nil, insert: nil, reload: nil)
             return
         }
         
-        //        HAUserProfileBasic
+        var jsonInput:[String: AnyObject] = [kAcctId: acctId]
+        
+        jsonInput[kRefreshNotifications] = refreshNotifications
+
+        if refreshNotifications {
+            if !notificationList.isEmpty {
+                if let id = notificationList.first?.id, date = notificationList.first?.date {
+                    jsonInput[kNotificationId] = id
+                    jsonInput[kTimestamp] = String(date)
+                    
+                    print("date.toString(): \(date.toString())")
+                    print("String(date):   \(String(date))")
+                }
+            }
+        } else {
+            if !notificationList.isEmpty {
+                print("jsonInput will be getting tail")
+                if let id = notificationList.last?.id, date = notificationList.last?.date {
+                    jsonInput[kNotificationId] = id
+                    jsonInput[kTimestamp] = String(date)
+                }
+            }
+        }
+        
+        print("jsonInput: \(jsonInput)")
         AWSCloudLogic.defaultCloudLogic().invokeFunction(AWSLambdaNotifications,
-         withParameters: parameters) { (result: AnyObject?, error: NSError?) in
+         withParameters: jsonInput) { (result: AnyObject?, error: NSError?) in
             
             if let result = result {
                 dispatch_async(dispatch_get_main_queue(), {
-                    print("CloudLogicViewController: Result: \(result)")
+                    print("AWSLambdaNotifications CloudLogicViewController: Result: \(result)")
                     
-                    let (didGetNotifications, count) = self.appendNewNotifications(result)
+                    let newNotifications = self.responseNotifications(result)
                     
-                    completionClosure(newMessages: didGetNotifications, count: count)
+                    if newNotifications.count == 0 {
+                        
+                        completionClosure(hasNewMessages: false, delete: nil, insert: nil, reload: nil)
 
-                    self.downloadAllUserThumbImages()
-                    
+                    } else {
+                     
+                        let deleteRows = self.deleteNotifications(newNotifications)
+                        let insertRows = self.insertNotificaitons(newNotifications)
+                        let reloadRows = self.reloadNotificaitons(newNotifications)
+                        
+                        completionClosure(hasNewMessages: true, delete: deleteRows, insert: insertRows, reload: reloadRows)
+                        self.downloadAllUserThumbImages()
+
+                    }
                 })
             }
-            
-//            var errorMesage = AWSConstants.errorMessage(error)
             
             if let _ = AWSConstants.errorMessage(error) {
             
                 dispatch_async(dispatch_get_main_queue(), {
                     print("Error occurred in invoking Lambda Function: \(error)")
                     
-                    completionClosure(newMessages: false, count: 0)
+                    completionClosure(hasNewMessages: false, delete: nil, insert: nil, reload: nil)
                 })
             }
         }
     }
     
-    func notificationExists(notificationModel: HANotificationModel) -> Bool {
+    
+    
+    
+    
+    /* TODO: THis should only be used to delete canceled friend notificatinos */
+    
+    func deleteNotifications(newImage: [HANotificationModel]) -> [Int] {
         
-        if notificationList.indexOf({ (notification) -> Bool in
-            if notificationModel.id == notification.id {
+        var indexPathsToRemove = [Int]()
+        var modelsToRemove = [HANotificationModel]()
+        
+        for index in 0..<newImage.count {
+            
+            let notification = newImage[index]
+
+            if notification.type == .FriendRequestCanceled || notification.type == .FriendAcceptedRequest {
+                
+                if let (curIndex, currentNotification) = notificationModel(notification, inList: notificationList) {
+                    
+                    modelsToRemove.append(currentNotification)
+                    indexPathsToRemove.append(curIndex)
+                }
+            }
+            
+        }
+        
+        // We don't use indexPathsToRemove because the rows will move as things are deleted
+        for model in modelsToRemove {
+            
+            let index = notificationList.indexOf({ (notification) -> Bool in
+               
+                if model.id == notification.id {
+                    return true;
+                }
+                return false
+            })!
+            
+            notificationList.removeAtIndex(index)
+        }
+        
+        return indexPathsToRemove
+    }
+    
+    
+    
+    func insertNotificaitons(newImage: [HANotificationModel]) -> [Int] {
+        
+        
+        var indexPathsToInsert = [Int]()
+        var modelsToInsert = [HANotificationModel]()
+        
+        var newRow = 0
+        for index in 0..<newImage.count {
+            
+            let notification = newImage[index]
+            
+            if notification.type != .FriendRequestCanceled {
+                
+                if !notificationExists(notification, inList: notificationList) {
+                    
+                    modelsToInsert.append(notification)
+                    indexPathsToInsert.append(newRow)
+                    newRow += 1
+                }
+                
+            }
+        }
+        
+        for index in 0..<modelsToInsert.count {
+
+            let model = modelsToInsert[index]
+            notificationList.insert(model, atIndex: index)
+        }
+        
+        return indexPathsToInsert
+    }
+    
+    
+    
+    
+    /*
+     
+        We have to reload rows, but also
+        
+        If a row has an udate timestamp, we delete that row
+        and insert a new row in the appropriate order (by time)
+     
+//     */
+//    
+//    func insertModel(mode: HANotificationModel, intoList list: [HANotificationModel])  -> Int {
+//        
+//        
+//        
+//        return 0
+//    }
+//    
+//    
+    
+    func reloadNotificaitons(newImage: [HANotificationModel]) -> [Int] {
+        
+        
+        var indexPathsToReload = [Int]()
+        
+        for index in 0..<notificationList.count {
+       
+            let oldModel = notificationList[index]
+            
+            if let (_, newModel) = notificationModel(oldModel, inList: newImage) {
+                
+                if oldModel.type != newModel.type {
+                    
+                    notificationList.replaceRange( index..<index+1 , with: [oldModel])
+                    indexPathsToReload.append(index)
+                }
+                
+            }
+        }
+        
+        return indexPathsToReload
+    }
+    
+    
+    /* Converts our backend data into model objects */
+    func responseNotifications(object: AnyObject) -> [HANotificationModel] {
+       
+        var newNotifications = [HANotificationModel]()
+        
+        if let resultArray = object as? [AnyObject] {
+        
+            for notification in resultArray {
+                
+                if let notificationModel = HANotificationModel(item: notification) {
+                    
+                    newNotifications.append(notificationModel)
+                }
+            }
+        }
+
+        return newNotifications
+    }
+    
+    
+    
+    /* Finds a notification model in a list */
+    
+    func notificationModel(model: HANotificationModel , inList list: [HANotificationModel]) -> (Int, HANotificationModel)? {
+        
+        if let index = list.indexOf({ (notification) -> Bool in
+            if model.id == notification.id {
+                return true;
+            }
+            return false
+        }) {
+            
+            return (index, list[index])
+        }
+        return nil
+    }
+    
+    
+    
+    func notificationExists(notificationModel: HANotificationModel, inList list: [HANotificationModel] ) -> Bool {
+        
+        if list.indexOf({ (notification) -> Bool in
+            if notificationModel.id == notification.id && notificationModel.timeStamp == notification.timeStamp {
                 return true;
             }
             return false
         }) == nil {
             return false
         }
-        
         return true
     }
+    
+    
+    
+    
+    /* Deprecated */
+//    func appendNewNotifications(object: AnyObject) -> (Bool, Int)  {
+//        
+//        var newNotifications = [HANotificationModel]()
+//        
+//        if let resultArray = object as? [AnyObject] {
+//            print("resultArray = object")
+//            
+//            
+//            if resultArray.isEmpty {
+//                return (false, 0)
+//            }
+//            
+//            var newItems = false
+//            
+//            var count = 0
+//            for notification in resultArray {
+//                print("notification = \(notification)")
+//
+//                
+//                if let notificationModel = HANotificationModel(item: notification) {
+//                    print("notificationList = append")
+//
+//                    if !notificationExists(notificationModel) {
+//                        newItems = true
+//                        count += 1
+//                        notificationList.insert(notificationModel, atIndex: 0)
+//                    }
+//                }
+//            }
+//            
+//            return (newItems, count)
+//            
+//        }
+//        return (false, 0)
+//    }
 
     
-    func appendNewNotifications(object: AnyObject) -> (Bool, Int)  {
-        
-        if let resultArray = object as? [AnyObject] {
-            print("resultArray = object")
-            
-            
-            if resultArray.isEmpty {
-                return (false, 0)
-            }
-            
-            var newItems = false
-            
-            var count = 0
-            for notification in resultArray {
-                print("notification = \(notification)")
-
-                
-                if let notificationModel = HANotificationModel(item: notification) {
-                    print("notificationList = append")
-
-                    if !notificationExists(notificationModel) {
-                        newItems = true
-                        count += 1
-                        notificationList.insert(notificationModel, atIndex: 0)
-                    }
-                }
-            }
-            
-            return (newItems, count)
-            
-        }
-        return (false, 0)
-    }
-
+//    /* Replaced - Soon to be Deprecated */
+//
+//    func notificationExists(notificationModel: HANotificationModel) -> Bool {
+//        
+//        if notificationList.indexOf({ (notification) -> Bool in
+//            if notificationModel.id == notification.id {
+//                return true;
+//            }
+//            return false
+//        }) == nil {
+//            return false
+//        }
+//        return true
+//    }
 
     
+    
+    /*
+        Old Notifications list         New Notifications list
+            Id: Timestamp                   Id: Timestamp
+                                            6       1s
+                                            5       1s
+            4      3s  Received             3       2s   Friend_Accepted
+            3      2m  Sent                 4       14s  I Accepted
+            2      8m                       2       8m
+            1      9m                       1       10m
+     */
     
     
     func downloadAllUserThumbImages() {

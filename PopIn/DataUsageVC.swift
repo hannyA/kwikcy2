@@ -31,7 +31,8 @@ class DataUsageVC: ASViewController, ASTableDelegate, ASTableDataSource {
     
     init() {
         
-        useLessData = Defaults[.useLessData]
+        useLessData = NSUserDefaults.shouldUseLessData()
+
         
         tableNode = ASTableNode(style: .Plain)
         
@@ -149,7 +150,7 @@ class DataUsageVC: ASViewController, ASTableDelegate, ASTableDataSource {
             
             self.useLessData = !self.useLessData
 
-            Defaults[.useLessData] = self.useLessData
+            NSUserDefaults.useLessData(self.useLessData)
             
             UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveLinear , animations: {
                 

@@ -10,24 +10,34 @@
 //    
 
 
+
+// Login/Registration
 let AWSLambdaLogin            = "DromoLogin"    //"HALogin"
 let AWSLambdaRegister         = "DromoRegisterUser" //"HA_Register_With_Locks"
 let AWSLambdaValidateUsername = "DromoValidateUsername" //"DRValidateUsername"
+
+// App
+let AWSLambdaAccountActive    = "DromoAccountIsActive"
+let AWSLambdaDromoAppUptoDate = "DromoAppUptoDate"
+
+
+// Search
 let AWSLambdaSearchUsers      = "DromoSearchUsers" //"HASearchUsers"
 
 
 let AWSLambdaNotifications    = "DromoNotifications"
 let AWSLambdaGetUsersProfile  = "DromoUserProfile"
-let AWSLambdaSocialAction     = "DromoFriendAction" 
 
+// Friends stuff
+let AWSLambdaSocialAction     = "DromoFriendAction"
 let AWSLambdaUserFriends      = "DromoUserFriends" // Gets a list of user friends
+let AWSLambdaFriendsAlbums    = "DromoAlbumsOfFriends" // List of friends albums
 
+
+// Users album
 let AWSLambdaMyAlbums         = "DromoUserAlbums" // List of my albums
 
 let AWSLambdaOpenAlbum        = "DromoAlbumOpen" // Open/Get media content
-
-let AWSLambdaFriendsAlbums    = "DromoAlbumsOfFriends" // List of friends albums
-
 let AWSLambdaCreateAlbum      = "DromoCreateAlbum"
 let AWSLambdaDeleteAlbum      = "DromoDeleteAlbum"
 
@@ -36,14 +46,21 @@ let AWSLambdaUpdateAlbum      = "DromoUpdateAlbum" // Edit title, users,
 
 let AWSLambdaUploadMedia      = "DromoMediaUpload" // Uploads media to mulitple albums
 
+//Settings
 
 let AWSLambdaUpdateProfile      = "DromoUpdateProfile"
+
+let AWSLambdaFacebookVerify     = "DromoFacebookVerification"
+let AWSLambdaDeleteAccount      = "DromoUserDeleteAccount"
+
+let AWSLambdaUpdatePushNotificationSettings   = "DromoUpdatePushNotificationSettings"
+let AWSLambdaFeedback                         = "DromoFeedback"
 
 
 
 
 let AWSErrorBackend = "\(AppName) is experiencing problems. Try again shortly."
-let AWSErrorNetwork = "Network error. Try again shortly."
+//let AWSErrorNetwork = "Network error. Try again shortly."
 
 
 class AWSConstants {

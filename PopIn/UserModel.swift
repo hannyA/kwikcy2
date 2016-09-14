@@ -42,7 +42,7 @@ class UserModel: NSObject {
     
     var dictionaryRepresentation: [String: AnyObject]
     let guid: String     // not optional  UserId#AcctId
-    let userName: String // not optional
+    var userName: String // not optional
     var fullName: String
     
     var imageS3Key: String
@@ -112,12 +112,14 @@ class UserModel: NSObject {
     
     
     
+    
+    
     class func dictionaryRep(info: BasicInfo) -> [String: AnyObject] {
         
         var rep = [String: AnyObject]()
         rep[kGuid]     = info.guid
         rep[kUserName] = info.username
-        rep[kFullName] = info.fullname
+        rep[kFullName] = info.fullname ?? ""
         rep[kVerified] = info.verified
         return rep
     }
